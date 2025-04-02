@@ -223,10 +223,15 @@ jobs:
 
       - name: Run Postman tests
         run: |
-          newman run tests/collection.json \
-            --environment tests/environment.json \
-            --delay-request 2000 \
-            --timeout 60000
+          docker exec graphql-api newman run tests/collection.json \
+          --environment tests/environment.json \
+          --delay-request 2000 \
+          --timeout 60000
+
+        # newman run tests/collection.json \
+          #   --environment tests/environment.json \
+          #   --delay-request 2000 \
+          #   --timeout 60000
 
       # - name: Cleanup test database
       #   run: docker exec graphql-api node scripts/cleanup-test-db.js

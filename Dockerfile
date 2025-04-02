@@ -4,7 +4,7 @@ FROM node:20.6.0
 # 2. Create app directory and copy files
 WORKDIR /app
 
-# Copy files
+# 3. Copy files
 # COPY . .
 COPY . /app
 
@@ -12,7 +12,10 @@ COPY . /app
 COPY package*.json ./
 RUN npm install
 
-# 5. Give execute permissions to entrypoint.sh
+# 5. Install dependencies for testing
+RUN npm install -g newman
+
+# 6. Give execute permissions to entrypoint.sh
 COPY entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 
