@@ -6,7 +6,6 @@
 # echo "Seeding MongoDB with CSV..."
 # node seed.js
 echo "Reading environment variables..."
-. ./env.sh
 echo "MONGO_USER: $MONGO_USER"
 echo "MONGO_PASSWORD: $MONGO_PASSWORD"
 
