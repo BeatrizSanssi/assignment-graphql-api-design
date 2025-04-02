@@ -215,8 +215,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Seed test database
-        run: docker exec graphql-api node scripts/seed-test-db.js
+      # - name: Seed test database
+      #   run: docker exec graphql-api node scripts/seed-test-db.js
 
       - name: Install Newman
         run: npm install -g newman
@@ -228,5 +228,5 @@ jobs:
             --delay-request 2000 \
             --timeout 60000
 
-      - name: Cleanup test database
-        run: docker exec graphql-api node scripts/cleanup-test-db.js
+      # - name: Cleanup test database
+      #   run: docker exec graphql-api node scripts/cleanup-test-db.js
