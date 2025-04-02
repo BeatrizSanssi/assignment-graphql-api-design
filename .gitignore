@@ -117,7 +117,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+# .env
 .env.test
 .env*.local
 ecosystem.config.js
