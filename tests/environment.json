@@ -1,0 +1,63 @@
+{
+	"id": "d675d922-641e-4eb6-844b-8dc4f8b0f23b",
+	"name": "GraphQL-Env",
+	"values": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8081",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "randomEmail",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "randomPassword",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "randomTitle",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "randomYear",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "savedEmail",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "savedPassword",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "movieId",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-03-31T19:42:08.618Z",
+	"_postman_exported_using": "Postman/11.37.5"
+}

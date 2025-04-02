@@ -1,0 +1,12 @@
+# Defines the GraphQL schema.
+# Author: Beatriz Sanssi
+
+type Actor {
+  id: ID!
+  name: String!
+  movies_played: [Movie]
+}
+
+extend type Query {
+  actors: [Actor]
+}

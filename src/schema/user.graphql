@@ -1,0 +1,17 @@
+# Defines the GraphQL schema.
+# Author: Beatriz Sanssi
+
+type User {
+  id: ID!
+  email: String!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+extend type Mutation {
+  registerUser(email: String!, password: String!): User
+  loginUser(email: String!, password: String!): AuthPayload
+}

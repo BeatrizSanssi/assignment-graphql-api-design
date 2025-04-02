@@ -1,0 +1,49 @@
+{
+  "name": "assignment-api-design",
+  "version": "1.0.0",
+  "description": "Clearly state the name of your API project.",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=20.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint ./src || exit 0",
+    "lint:fix": "npx eslint ./src --fix || exit 0",
+    "start": "node src/server.js",
+    "dev": "nodemon --inspect --env-file=.env src/server.js"
+  },
+  "keywords": [],
+  "author": "Beatriz Sanssi <bs222eh@student.lnu.se>",
+  "license": "ISC",
+  "dependencies": {
+    "@graphql-tools/load-files": "^7.0.1",
+    "@graphql-tools/merge": "^9.0.24",
+    "@lnu/json-js-cycle": "^2.0.5",
+    "apollo-server-express": "^3.13.0",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
+    "connect-mongo": "^5.1.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "csv-parser": "^3.2.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-http-context": "^1.2.5",
+    "express-rate-limit": "^7.5.0",
+    "express-session": "^1.18.1",
+    "graphql": "^16.10.0",
+    "graphql-request": "^7.1.2",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.12.1",
+    "morgan": "^1.10.0",
+    "winston": "^3.17.0",
+    "winston-mongodb": "^6.0.0"
+  },
+  "devDependencies": {
+    "@lnu/eslint-config": "^1.1.10",
+    "nodemon": "^3.1.9"
+  }
+}

@@ -1,0 +1,351 @@
+/**
+ * @file seed.js
+ * @description Script for reading a CSV file and saving its contents to a MongoDB database.
+ * @author Beatriz Sanssi <bs222eh@student.lnu.se>
+ */
+
+import 'dotenv/config'
+import { connectToDatabase } from './src/config/mongoose.js'
+import fs from 'fs'
+import csv from 'csv-parser'
+import { MovieModel } from './src/models/MovieModel.js'
+import { ActorModel } from './src/models/ActorModel.js'
+import { RatingModel } from './src/models/RatingModel.js'
+
+/**
+ * Parses a CSV file and returns an array of objects.
+ *
+ * @param {string} filePath - The path to the CSV file.
+ * @param {Function} transformRow - A function that transforms a CSV row to a Mongoose object.
+ * @returns {Promise<object[]>} - An array of objects.
+ */
+function parseCSV (filePath, transformRow) {
+  return new Promise((resolve, reject) => {
+    const results = []
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on('data', (row) => {
+        // Call the transformRow function to convert the row to a Mongoose object
+        const doc = transformRow(row)
+        if (doc) {
+          // Push the transformed object to the results array
+          results.push(doc)
+        }
+      })
+      // When the CSV file has been read completely (end event)
+      .on('end', () => {
+        console.log(`Finished reading CSV: ${filePath}. Found ${results.length} rows.`)
+        resolve(results)
+      })
+      .on('error', (err) => {
+        reject(err)
+      })
+  })
+}
+
+/**
+ * Parses a cast string and returns an array of actor objects.
+ *
+ * @param {string} castStr - The cast string.
+ * @returns {object[]} - An array of actor objects.
+ */
+function parseCast (castStr) {
+  // Regex to match actor ID and name
+  const regex = /'id':\s*(\d+).*?'name':\s*'([^']+)'/g
+  const actors = []
+  let match
+  // Loop through all matches in the cast string
+  while ((match = regex.exec(castStr)) !== null) {
+    actors.push({
+      id: parseInt(match[1]),
+      name: match[2]
+    })
+  }
+  return actors
+}
+
+/**
+ * Counts unique film appearances per actor.
+ *
+ * @returns {Promise<object[]>} - An array of objects containing actor IDs, names, and film counts.
+ */
+async function seedActors () {
+  // Read all rows from the credits CSV
+  const rows = await parseCSV(process.env.ACTORS_CSV_PATH, (row) => row)
+  // Create a Map: key = actor ID, value = { name, movies_played }
+  const actorMap = new Map()
+
+  // Iterate through each row (where each row represents a movie)
+  for (const row of rows) {
+    if (row.cast) {
+      const actors = parseCast(row.cast)
+      for (const actor of actors) {
+        if (!actorMap.has(actor.id)) {
+          actorMap.set(actor.id, {
+            id: actor.id,
+            name: actor.name,
+            movies_played: 0 // Initialize movies_played to 0
+          })
+        }
+        // Increment the movies_played count for the actor
+        actorMap.get(actor.id).movies_played += 1
+      }
+    }
+  }
+
+  // Convert the map to an array of objects
+  const uniqueActors = Array.from(actorMap.values())
+
+  return uniqueActors
+}
+
+// /**
+//  * Counts unique film appearances per actor.
+//  *
+//  * @returns {Promise<object[]>} - An array of objects containing actor IDs, names, and film counts.
+//  */
+// async function countUniqueFilmsPerActor () {
+//   // Read all rows from the credits CSV
+//   const rows = await parseCSV(process.env.ACTORS_CSV_PATH, row => row)
+
+//   // Create a Map: key = actor ID, value = { name, filmIds }
+//   const actorFilmMap = new Map()
+
+//   // Iterate through each row (where each row represents a movie)
+//   for (const row of rows) {
+//     const filmId = row.id
+//     if (row.cast) {
+//       const actors = parseCast(row.cast)
+//       // Iterate through each actor in the cast
+//       for (const actor of actors) {
+//         // Check if the actor is already in the map
+//         if (!actorFilmMap.has(actor.id)) {
+//           actorFilmMap.set(actor.id, { name: actor.name, filmIds: new Set() })
+//         }
+//         // Add the film ID to the actor's filmIds set
+//         actorFilmMap.get(actor.id).filmIds.add(filmId)
+//       }
+//     }
+//   }
+
+//   // Convert the map to an array of objects
+//   const result = []
+//   for (const [actorId, data] of actorFilmMap.entries()) {
+//     result.push({
+//       actorId,
+//       name: data.name,
+//       filmCount: data.filmIds.size,
+//       filmIds: Array.from(data.filmIds)
+//     })
+//   }
+
+//   // Print the result
+//   console.log('Unika filmframträdanden per aktör:')
+//   result.forEach(actor => {
+//     console.log(`Actor ${actor.name} (ID: ${actor.actorId}) medverkar i ${actor.filmCount} film(er): ${actor.filmIds.join(', ')}`)
+//   })
+
+//   return result
+// }
+
+// // Exekvera funktionen (du kan köra denna kod separat för att se resultatet)
+// countUniqueFilmsPerActor()
+//   .then(() => console.log('Klar!'))
+//   .catch(err => console.error(err))
+
+/**
+ * Main function for seeding the database.
+ *
+ * @returns {Promise<void>} - A Promise.
+ */
+async function seed () {
+  try {
+    // 1. CONNECT TO DB
+    await connectToDatabase(process.env.DB_CONNECTION_STRING)
+    console.log('Connected to MongoDB for seeding.')
+
+    // 2. PARSE & SEED MOVIES
+    const movies = await parseCSV((process.env.CSV_FILE_PATH), (row) => {
+      // Extract data from each row
+      // A. Titel
+      const title = row.title || row.original_title || 'N/A'
+
+      // B. Release date => release_year
+      let releaseYear = 0
+      if (row.release_date) {
+        const parts = row.release_date.split('-')
+        releaseYear = parseInt(parts[0]) || 0
+      }
+
+      // C. Genre => genre
+      let genre = 'Unknown' // Default value
+      if (row.genres) {
+        try {
+          const fixedGenresStr = row.genres.replace(/'/g, '"')
+          const arr = JSON.parse(fixedGenresStr)
+          if (Array.isArray(arr) && arr.length > 0) {
+            genre = arr[0].name
+          }
+        } catch (err) {
+          // If there's an error, just use the default value
+        }
+      }
+
+      // D. Overview => description
+      const description = row.overview || 'N/A'
+
+      // E. Create a movie object with the extracted data
+      return {
+        title,
+        release_date: releaseYear,
+        genre,
+        description
+      }
+    })
+
+    // Clear the existing movies from the database
+    const limitedMovies = movies.slice(0, 100)
+    await MovieModel.deleteMany({})
+    // Insert the new movies into the database
+    await MovieModel.insertMany(limitedMovies)
+    console.log(`Inserted ${limitedMovies.length} movies into test database.`)
+
+    // 3. PARSE & SEED ACTORS (from credits.csv)
+    const uniqueActors = await seedActors()
+    // Clear the existing actors from the database
+    await ActorModel.deleteMany({})
+    // Insert the new actors into the database
+    await ActorModel.insertMany(uniqueActors)
+    console.log(`Successfully inserted ${uniqueActors.length} actors into DB.`)
+
+    // 4. PARSE & SEED RATINGS
+    const ratings = await parseCSV(process.env.RATINGS_CSV_PATH, (row) => {
+      return {
+        userId: parseInt(row.userId),
+        rating: parseFloat(row.rating)
+      }
+    })
+    await RatingModel.deleteMany({})
+    await RatingModel.insertMany(ratings)
+    console.log(`Successfully inserted ${ratings.length} ratings into DB.`)
+  } catch (error) {
+    console.error('Error while seeding:', error)
+  } finally {
+    // 5. CLOSE DB
+    await (await import('mongoose')).default.connection.close()
+    console.log('Database connection closed. Seeding complete.')
+  }
+}
+
+// /**
+//  * Main function for seeding the database.
+//  */
+// async function seed () {
+//   try {
+//     // 1. Connect to the database
+//     await connectToDatabase(process.env.DB_CONNECTION_STRING)
+//     console.log('Connected to MongoDB for seeding.')
+
+//     // 2. Set the path to the CSV file
+//     const csvFilePath = (process.env.CSV_FILE_PATH)
+
+//     // 3. Set up an array to hold the data
+//     const movies = []
+
+//     // 4. Create a promise to parse the CSV file
+//     const parseCSV = new Promise((resolve, reject) => {
+//       fs.createReadStream(csvFilePath)
+//         .pipe(csv())
+//         .on('data', (row) => {
+//           // row.title, row.release_date, row.genres, row.overview, etc.
+//           // Get the ID for each row from the CSV file, or default to 0
+//           const csvId = parseInt(row.id) || 0
+
+//           // Get the title for each row, or default to 'N/A'
+//           const title = row.title || row.original_title || 'N/A'
+
+//           // Get the release date for each row, or default to 0
+//           let releaseDate = 0
+//           if (row.release_date) {
+//             const parts = row.release_date.split('-')
+//             releaseDate = parseInt(parts[0]) || 0
+//           }
+
+//           // Parse the data in the 'genres' column to get the genre
+//           let genre = 'Unknown'
+//           if (row.genres) {
+//             try {
+//               const arr = JSON.parse(row.genres)
+//               if (Array.isArray(arr) && arr.length > 0) {
+//                 genre = arr[0].name
+//               }
+//             } catch (err) {
+//               // If there's an error, just use the default value
+//             }
+//           }
+
+//           // Get the description for each row, or default to 'N/A'
+//           const description = row.overview || 'N/A'
+
+//           // Add the movie to the array
+//           movies.push({
+//             id: csvId,
+//             title,
+//             release_date: releaseDate,
+//             genre,
+//             description
+//           })
+//         })
+//         // When the CSV file has been read completely (end event)
+//         .on('end', () => {
+//           console.log(`Finished reading CSV. ${movies.length} rows found.`)
+//           resolve()
+//         })
+//         // If there's an error while reading the CSV file
+//         .on('error', (err) => {
+//           reject(err)
+//         })
+//     })
+
+//     // const parseCSV = new Promise((resolve, reject) => {
+//     //   fs.createReadStream(csvFilePath)
+//     //     .pipe(csv())
+//     //     .on('data', (row) => {
+//     //       movies.push({
+//     //         id: parseInt(row.id) || 'N/A',
+//     //         title: row.title || 'N/A',
+//     //         release_date: row.release_date || 'N/A',
+//     //         genre: row.genres || 'Unknown',
+//     //         description: row.overview || 'N/A'
+//     //       })
+//     //     })
+//     //     .on('end', () => {
+//     //       console.log(`Finished reading CSV. ${movies.length} rows found.`)
+//     //       resolve()
+//     //     })
+//     //     .on('error', (err) => {
+//     //       reject(err)
+//     //     })
+//     // })
+
+//     // Wait for the CSV to be parsed
+//     await parseCSV
+
+//     // 5. Clear the existing movies from the database
+//     await MovieModel.deleteMany({})
+//     console.log('Cleared existing movies from DB.')
+
+//     // 6. Insert the new movies into the database
+//     await MovieModel.insertMany(movies)
+//     console.log(`Successfully inserted ${movies.length} movies into DB.`)
+//   } catch (error) {
+//     console.error('Error while seeding:', error)
+//   } finally {
+//     // 7. Close the database connection
+//     await (await import('mongoose')).default.connection.close()
+//     console.log('Database connection closed. Seeding complete.')
+//   }
+// }
+
+// Run the seed function
+seed()

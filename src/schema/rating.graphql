@@ -1,0 +1,12 @@
+# Defines the GraphQL schema.
+# Author: Beatriz Sanssi
+
+type Rating {
+  _id: ID!
+  userId: Int!
+  rating: Float!
+}
+
+extend type Query {
+  ratings(movieId: ID!): [Rating]
+}

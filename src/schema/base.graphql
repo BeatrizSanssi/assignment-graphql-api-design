@@ -1,0 +1,10 @@
+# Defines the base GraphQL schema.
+# Author: Beatriz Sanssi
+
+type Query {
+  _empty: String
+}
+
+type Mutation {
+  _empty: String
+}
