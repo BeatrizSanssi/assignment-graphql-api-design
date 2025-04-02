@@ -149,7 +149,7 @@ jobs:
           docker compose --env-file .env up -d
 
       - name: Show Docker logs
-        run: docker logs $(docker ps --format '{{.Names}}' | grep app || true)
+        run: docker logs $(docker ps --format '{{.Names}}' | grep graphql-api || true)
       
       - name: Verify Containers are up and running
         run: |
