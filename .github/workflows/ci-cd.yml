@@ -148,6 +148,9 @@ jobs:
         run: |
           docker compose --env-file .env up -d
 
+      - name: Show Docker logs
+        run: docker logs $(docker ps --format '{{.Names}}' | grep app || true)
+      
       - name: Verify Containers are up and running
         run: |
           docker ps
@@ -164,7 +167,7 @@ jobs:
             sleep 3
           done
           exit 1
-          
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
