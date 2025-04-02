@@ -131,12 +131,12 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/assignment-api-design-api:latest
+      # - name: Build and push Docker image
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     context: .
+      #     push: true
+      #     tags: ${{ secrets.DOCKER_USERNAME }}/assignment-api-design-api:latest
       
       - name: Set up environment variables
         run: |
@@ -164,6 +164,13 @@ jobs:
             sleep 3
           done
           exit 1
+          
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/assignment-api-design-api:latest
     # steps:
     #   - name: Checkout repository
     #     uses: actions/checkout@v3
