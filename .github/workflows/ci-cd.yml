@@ -137,10 +137,9 @@ jobs:
       
       - name: Set up environment variables
         run: |
-          echo "MONGO_USER=${{ secrets.MONGO_USER }}" >> $GITHUB_ENV
-          echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" >> $GITHUB_ENV
-          echo "DB_CONNECTION_STRING=mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@mongo:27017/graphql-api-db?authSource=admin" >> $GITHUB_ENV
-          echo "BASE_URL=http://localhost:8081/graphql" >> $GITHUB_ENV
+          echo "MONGO_USER=${{ secrets.MONGO_USER }}" >> .env
+          echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" >> .env
+          echo "DB_CONNECTION_STRING=mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@mongo:27017/graphql-api-db?authSource=admin" >> .env
         
       - name: Run Docker Compose
         run: |
