@@ -1,0 +1,25 @@
+module.exports = {
+  apps: [
+    {
+      name: 'graphql-api',
+      script: './src/server.js',
+      watch: true,
+      env_production: {
+        NODEJS_EXPRESS_PORT: 8081,
+        DB_CONNECTION_STRING: 'mongodb://localhost:27017/graphql-api-db',
+        // MONGO_URI: 'mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/graphql-api-db',
+        MONGO_USER: 'root',
+        MONGO_PASSWORD: 'secret',
+        PORT: '8081',
+        SESSION_SECRET: 'my-Super-Secret-Session',
+        BASE_URL: '/',
+        JWT_SECRET: 'supersecretjwtvalue',
+        CSV_FILE_PATH: '../archive/movies_metadata.csv',
+        MOVIES_CSV_PATH: './data/movies_metadata.csv',
+        ACTORS_CSV_PATH: '../archive/credits.csv',
+        RATINGS_CSV_PATH: '../archive/ratings_small.csv',
+        ENCRYPTION_IV: '0123456789abcdef'
+      }
+    }
+  ]
+}
