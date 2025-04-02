@@ -144,7 +144,7 @@ jobs:
         
       - name: Run Docker Compose
         run: |
-          docker-compose up -d
+          docker compose --env-file .env up -d
 
       - name: Verify Containers are up and running
         run: |
