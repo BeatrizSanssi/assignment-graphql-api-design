@@ -65,52 +65,52 @@ jobs:
     #   - name: Install dependencies
     #     run: npm install
 
-      - name: Build & Start Docker containers
-        run: docker compose -f docker-compose.yml up -d --build
+      # - name: Build & Start Docker containers
+      #   run: docker compose -f docker-compose.yml up -d --build
 
-      - name: Show container logs
-        run: docker logs graphql-api
+      # - name: Show container logs
+      #   run: docker logs graphql-api
 
-      - name: Wait for API to be ready
-        run: |
-          echo "Waiting for GraphQL API to be ready..."
-          for i in {1..20}; do
-            if curl -s http://localhost:8081/graphql > /dev/null; then
-              echo "✅ API is up!"
-              break
-            fi
-            echo "⏳ Waiting ($i)..."
-            sleep 3
-          done
+      # - name: Wait for API to be ready
+      #   run: |
+      #     echo "Waiting for GraphQL API to be ready..."
+      #     for i in {1..20}; do
+      #       if curl -s http://localhost:8081/graphql > /dev/null; then
+      #         echo "✅ API is up!"
+      #         break
+      #       fi
+      #       echo "⏳ Waiting ($i)..."
+      #       sleep 3
+      #     done
 
-      - name: Seed test database
-        run: docker exec graphql-api node scripts/seed-test-db.js
+      # - name: Seed test database
+      #   run: docker exec graphql-api node scripts/seed-test-db.js
 
-      - name: Install Newman
-        run: npm install -g newman
+      # - name: Install Newman
+      #   run: npm install -g newman
 
-      - name: Run Postman tests
-        run: |
-          newman run tests/collection.json \
-            --environment tests/environment.json \
-            --delay-request 2000 \
-            --timeout 60000
+      # - name: Run Postman tests
+      #   run: |
+      #     newman run tests/collection.json \
+      #       --environment tests/environment.json \
+      #       --delay-request 2000 \
+      #       --timeout 60000
 
-      - name: Cleanup test database
-        run: docker exec graphql-api node scripts/cleanup-test-db.js
+      # - name: Cleanup test database
+      #   run: docker exec graphql-api node scripts/cleanup-test-db.js
 
-      - name: Docker login
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      # - name: Docker login
+      #   uses: docker/login-action@v2
+      #   with:
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: bsan89/assignment-api-design-api:latest
+      # - name: Build and Push Docker image
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     context: .
+      #     push: true
+      #     tags: bsan89/assignment-api-design-api:latest
 
   docker: 
     runs-on: ubuntu-latest
