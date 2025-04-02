@@ -5,7 +5,8 @@ FROM node:18.16.0
 WORKDIR /app
 
 # Copy files
-COPY . .
+# COPY . .
+COPY . /app
 
 # 4. Install dependencies
 COPY package*.json ./
