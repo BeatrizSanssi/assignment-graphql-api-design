@@ -24,8 +24,7 @@ export class AuthController {
    * @returns {Promise<object>} An object with the token, refresh token, and user data.
    */
   async loginUser ({ email, password }) {
-    // We assume that your UserController.loginUser returns an object:
-    // { token, refreshToken }
+    // Check if the user and password are valid
     const { token, refreshToken } = await userController.loginUser({ email, password })
 
     // Now retrieve the full user data (if needed) and return all fields

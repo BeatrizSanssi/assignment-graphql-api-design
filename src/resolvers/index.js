@@ -19,9 +19,8 @@ export default {
   Mutation: {
     ...movieResolver.Mutation,
     ...authResolver.Mutation
+  },
+  Movie: {
+    ...movieResolver.Movie
   }
-  // // Ev. field resolvers, t.ex. Movie
-  // Movie: {
-  //   ...movieResolver.Movie
-  // }
 }

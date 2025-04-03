@@ -19,6 +19,7 @@ export class MovieController {
    */
   static async getMovies (args) {
     const filter = {}
+    if (args.id) filter.id = args.id
     if (args.genre) filter.genre = args.genre
     if (args.year) filter.release_year = args.year
     return await MovieModel.find(filter)
@@ -43,25 +44,6 @@ export class MovieController {
    */
   static async addMovie (args, user) {
     if (!user) throw new UnauthorizedError('Unauthorized')
-    // let idToUse = args.id
-    // // If no ID is provided, generate a random one.
-    // if (!idToUse) {
-    //   let isUnique = false
-    //   while (!isUnique) {
-    //     const randomId = Math.floor(Math.random() * 1000000)
-    //     const existingMovie = await MovieModel.findOne({ id: randomId })
-
-    //     if (!existingMovie) {
-    //       idToUse = randomId
-    //       isUnique = true
-    //     }
-    //   }
-    // }
-    // // const movie = new MovieModel(args)
-    // const movie = new MovieModel({
-    //   ...args,
-    //   id: idToUse
-    // })
     const movie = new MovieModel(args)
     return await movie.save()
   }

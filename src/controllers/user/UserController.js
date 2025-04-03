@@ -91,16 +91,17 @@ export class UserController {
     //   updateData.password = hashedPassword
     // }
     try {
-      const updatedUser = await UserModel.findByIdAndUpdate(userId, updateData, { new: true, runValidators: true, context: 'query' })
+      const updatedUser = await UserModel.findByIdAndUpdate(userId, updateData, { new: true })
       if (!updatedUser) {
         throw new NotFoundError('User not found')
       }
+      console.log('UpdateUser input:', userId, email)
       return updatedUser
     } catch (err) {
       // If the error is a duplicate key error, you can customize the message.
-      if (err.code === 11000) {
-        throw new UnauthorizedError('Email already in use')
-      }
+      // if (err.code === 11000) {
+      //   throw new UnauthorizedError('Email already in use')
+      // }
       // Otherwise, rethrow the original error.
       throw new UnauthorizedError(err.message)
     }

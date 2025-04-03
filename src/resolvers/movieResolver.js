@@ -38,15 +38,16 @@ export default {
      */
     actors: async () => {
       return await ActorController.getAllActors()
-    },
-    /**
-     * Get all ratings.
-     *
-     * @returns {Promise<object[]>} - A list of ratings.
-     */
-    ratings: async () => {
-      return await RatingController.getAllRatings()
     }
+    // /**
+    //  * Field resolver to get all ratings for a movie.
+    //  *
+    //  * @param {object} parent - The parent object.
+    //  * @returns {Promise<object[]>} - A list of ratings.
+    //  */
+    // rating: async (parent) => {
+    //   return await RatingController.getRatingsByMovieId(parent._id)
+    // }
   },
   Mutation: {
     /**
@@ -92,7 +93,21 @@ export default {
      */
     ratings: async (parent) => {
       // Use the parent object to get the movie ID
-      return await RatingController.getRatingsByMovieId(parent._id)
+      return await RatingController.getRatingsByMovieId(parent.id)
+    },
+    /**
+     * Field resolver to get the average rating for a movie.
+     *
+     * @param {object} parent - The parent object.
+     * @returns {Promise<object[]>} - A list of ratings.
+     */
+    averageRating: async (parent) => {
+      const ratings = await RatingController.getRatingsByMovieId(parent.id)
+
+      if (!ratings.length) return null
+
+      const total = ratings.reduce((sum, r) => sum + r.rating, 0)
+      return total / ratings.length
     }
   }
 }

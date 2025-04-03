@@ -11,12 +11,22 @@ import { RatingModel } from '../../models/RatingModel.js'
  */
 export class RatingController {
   /**
+   * Get all ratings.
+   *
+   * @returns {Promise<object[]>} Lista med betyg.
+   */
+  static async getAllRatings () {
+    return await RatingModel.find()
+  }
+
+  /**
    * Get all ratings for a specific movie.
    *
    * @param {string} movieId - Filmens ID.
    * @returns {Promise<object[]>} Lista med betyg.
    */
   static async getRatingsByMovieId (movieId) {
+    console.log('Looking for ratings with movieId:', movieId)
     return await RatingModel.find({ movieId })
   }
 }

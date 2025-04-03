@@ -132,7 +132,6 @@ try {
       return { user: req.user }
     }
   })
-
   // Start the Apollo Server asynchronously and apply the middleware.
   await apolloServer.start()
   apolloServer.applyMiddleware({ app, path: '/graphql' })

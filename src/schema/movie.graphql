@@ -3,16 +3,19 @@
 
 type Movie {
   _id: ID!
+  id: Int!
   title: String!
   release_date: Int!
   genre: String!
   description: String!
   ratings: [Rating]
+  averageRating: Float
+
 }
 
 extend type Query {
-  movies(genre: String, year: Int): [Movie]
-  movie(id: ID!): Movie
+  movies(id: Int, genre: String, year: Int): [Movie]
+  movie(id: Int!): Movie
 }
 
 extend type Mutation {

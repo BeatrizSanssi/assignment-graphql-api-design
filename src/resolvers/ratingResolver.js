@@ -8,16 +8,42 @@ import { RatingController } from '../controllers/movie/RatingController.js'
 
 export default {
   Query: {
+    // /**
+    //  * Get all ratings.
+    //  *
+    //  * @returns {Promise<object[]>} - A list of ratings.
+    //  */
+    // ratings: async () => {
+    //   return await RatingController.getAllRatings()
+    // }
+
     /**
-     * Get all actors.
+     * Get ratings by movie ID.
      *
      * @param {object} _ - The parent object.
      * @param {object} args - The arguments for the query.
      * @param {string} args.movieId - The ID of the movie.
-     * @returns {Promise<object[]>} - A list of actors.
+     * @returns {Promise<object[]>} - A list of ratings.
      */
-    ratings: async (_, { movieId }) => {
-      return await RatingController.getRatingsByMovieId(movieId)
+    // ratings: async (_, { movieId }) => {
+    //   return await RatingController.getRatingsByMovieId(movieId)
+    // }
+    ratings: async (_, args) => {
+      if (args.movieId) {
+        return await RatingController.getRatingsByMovieId(args.movieId)
+      }
+      return await RatingController.getAllRatings()
     }
+    // /**
+    //  * Get all actors.
+    //  *
+    //  * @param {object} _ - The parent object.
+    //  * @param {object} args - The arguments for the query.
+    //  * @param {string} args.movieId - The ID of the movie.
+    //  * @returns {Promise<object[]>} - A list of actors.
+    //  */
+    // ratings: async (_, { movieId }) => {
+    //   return await RatingController.getRatingsByMovieId(movieId)
+    // }
   }
 }
