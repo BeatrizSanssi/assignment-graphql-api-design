@@ -99,10 +99,6 @@ try {
   // Set the user locals.
   // app.use(setUserLocals)
 
-  // app.set('view engine', 'ejs')
-  // app.set('views', path.join(__dirname, 'views'))
-  // app.set('layout', 'layouts/default')
-
   // Middleware to be executed before the routes.
   app.use((req, res, next) => {
     // Add a request UUID to each request and store information about
