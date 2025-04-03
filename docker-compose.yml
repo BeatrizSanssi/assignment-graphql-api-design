@@ -16,11 +16,11 @@ services:
       - MONGO_PASSWORD=${MONGO_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
       - NODEJS_EXPRESS_PORT=${NODEJS_EXPRESS_PORT}
-    env_file:
-      - .env
-    volumes:
-      - .:/app
-    restart: unless-stopped
+    # env_file:
+    #   - .env
+    # volumes:
+    #   - .:/app
+    # restart: unless-stopped
   mongo:
     image: mongo:latest
     container_name: moviesDB
