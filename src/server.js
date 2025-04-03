@@ -13,6 +13,8 @@ import http from 'node:http'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { ApolloServer } from 'apollo-server-express'
+import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
+// import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core'
 
 // User-land modules.
 import '@lnu/json-js-cycle'
@@ -113,6 +115,13 @@ try {
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
+    plugins: [
+      // Activate the Apollo Server plugin for GraphQL Playground.
+      ApolloServerPluginLandingPageGraphQLPlayground()
+    ],
+    // plugins: [
+    //   ApolloServerPluginLandingPageLocalDefault({ embed: true })
+    // ],
     /**
      * Extracts the user from the request and adds it to the context.
      *

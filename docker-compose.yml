@@ -16,6 +16,7 @@ services:
       - MONGO_PASSWORD=${MONGO_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
       - NODEJS_EXPRESS_PORT=${NODEJS_EXPRESS_PORT}
+      - DB_CONNECTION_STRING=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/movieDB?authSource=admin
     # env_file:
     #   - .env
     # volumes:
@@ -23,7 +24,7 @@ services:
     # restart: unless-stopped
   mongo:
     image: mongo:latest
-    container_name: moviesDB
+    container_name: movieDB
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
