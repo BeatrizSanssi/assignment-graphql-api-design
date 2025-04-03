@@ -248,12 +248,21 @@ jobs:
       - name: Install Newman
         run: npm install -g newman
 
-      - name: Run Postman tests
+      - name: Run setup tests (register & login)
         run: |
-          docker exec graphql-api newman run tests/collection.json \
-          --environment tests/environment.json \
-          --delay-request 2000 \
-          --timeout 60000
+          newman run tests/collection.json \
+            --environment tests/environment.json \
+            --folder "registerUser (Success)" \
+            --folder "loginUser (Success)" \
+            --delay-request 1000
+      
+      - name: Run remaining Postman tests
+        run: |
+          newman run tests/collection.json \
+            --environment tests/environment.json \
+            --exclude-folder "registerUser (Success)" \
+            --exclude-folder "loginUser (Success)" \
+            --delay-request 1000
 
         # newman run tests/collection.json \
           #   --environment tests/environment.json \
