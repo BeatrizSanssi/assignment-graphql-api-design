@@ -215,6 +215,33 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+        - name: Set up Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Set up environment variables
+        run: |
+          echo "MONGO_USER=${{ secrets.MONGO_USER }}" >> .env
+          echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" >> .env
+          echo "DB_CONNECTION_STRING=mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@mongo:27017/graphql-api-db?authSource=admin" >> .env
+
+      - name: Run Docker Compose
+        run: |
+          docker compose --env-file .env up -d
+
+      - name: Wait for API to be ready
+        run: |
+          echo "Waiting for GraphQL API to be ready..."
+          for i in {1..20}; do
+            if curl -s http://localhost:8081/graphql > /dev/null; then
+              echo "API is up!"
+              exit 0
+            fi
+            echo "⏳ Waiting ($i)..."
+            sleep 3
+          done
+          exit 1
       # - name: Seed test database
       #   run: docker exec graphql-api node scripts/seed-test-db.js
 
