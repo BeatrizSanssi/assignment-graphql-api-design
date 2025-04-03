@@ -23,7 +23,7 @@ services:
     ports: 
      - "8081:8081"
     depends_on:
-      mongo:
+      movieDB:
         condition: service_healthy
     environment: 
       - MONGO_HOST=mongodb
