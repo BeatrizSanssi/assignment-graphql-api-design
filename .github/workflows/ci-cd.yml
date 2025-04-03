@@ -250,35 +250,7 @@ jobs:
 
       - name: Run setup tests (register & login)
         run: |
-          newman run tests/collection.json \
-            --environment tests/environment.json \
-            --folder "registerUser (Success)" \
-            --folder "registerUser (Failure)" \
-            --folder "loginUser (Success)" \
-            --folder "loginUser (Failure)" \
-            --delay-request 1000
-      
-      - name: Run remaining Postman tests
-        run: |
-          newman run tests/collection.json \
-            --environment tests/environment.json \
-            --folder "movies (Success)" \
-            --folder "movies (Failure)" \
-            --folder "addMovie (Success)" \
-            --folder "addMovie (Failure)" \
-            --folder "movie (Success)" \
-            --folder "movie (Failure)" \
-            --folder "updateMovie (Success)" \
-            --folder "updateMovie (Failure)" \
-            --folder "deleteMovie (Success)" \
-            --folder "deleteMovie (Failure)" \
-            --folder "ratings (Success)" \
-            --folder "ratings (Failure)" \
-            --folder "actors (Success)" \
-            --folder "actors (Failure)" \
-            --folder "Nested Query (Success)" \
-            --folder "Nested Query (Failure)" \
-            --delay-request 1000
+          newman run tests/collection.json --environment tests/environment.json --delay-request 1000
 
         # newman run tests/collection.json \
           #   --environment tests/environment.json \
