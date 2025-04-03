@@ -38,13 +38,53 @@ export default {
     loginUser: async (_, { email, password }) => {
       // return await userController.loginUser({ email, password })
       try {
-        const authToken = await userController.loginUser({ email, password })
+        const { token, refreshToken } = await userController.loginUser({ email, password })
         const user = await UserModel.findOne({ email })
-        return { authToken, user }
+        return { token, refreshToken, user }
       } catch (err) {
         // Throw an error if the login fails.
         throw new UnauthorizedError(err.message)
       }
+    },
+    /**
+     * Updates a user.
+     *
+     * @param {*} _ - The parent object.
+     * @param {*} args - The arguments for the mutation.
+     * @param {string} args.id - The ID of the user to update.
+     * @param {string} args.email - The new email of the user.
+     * @param {string} args.password - The new password of the user.
+     * @returns {Promise<object>} - The updated user.
+     */
+    updateUser: async (_, { id, email, password }) => {
+      const user = await UserModel.findById(id)
+      if (!user) {
+        throw new UnauthorizedError('User not found')
+      }
+      if (email) {
+        user.email = email
+      }
+      if (password) {
+        user.password = password
+      }
+      await user.save()
+      return user
+    },
+    /**
+     * Deletes a user.
+     *
+     * @param {*} _ - The parent object.
+     * @param {*} args - The arguments for the mutation.
+     * @param {string} args.id - The ID of the user to delete.
+     * @returns {Promise<object>} - The deleted user.
+     */
+    deleteUser: async (_, { id }) => {
+      const user = await UserModel.findById(id)
+      if (!user) {
+        throw new UnauthorizedError('User not found')
+      }
+      await user.remove()
+      return user
     },
 
     /**
@@ -52,15 +92,15 @@ export default {
      *
      * @param {*} _ - The parent object.
      * @param {*} args - The arguments for the mutation.
-     * @param {string} args.authToken - The refresh token.
+     * @param {string} args.token - The refresh token.
      * @returns {Promise<object>} - The new access token.
      */
-    refreshToken: async (_, { authToken }) => {
+    refreshToken: async (_, { token }) => {
       try {
-        const decoded = jwt.verify(authToken, process.env.JWT_SECRET)
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
         const newAccessToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, { expiresIn: '15m' })
         const user = await UserModel.findById(decoded.id)
-        return { token: newAccessToken, user }
+        return { token: newAccessToken, refreshToken: token, user }
       } catch (err) {
         throw new UnauthorizedError('Invalid refresh token')
       }

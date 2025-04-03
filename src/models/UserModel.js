@@ -19,8 +19,27 @@ const schema = new mongoose.Schema({
     required: [true, 'Email address is required.'],
     unique: true,
     lowercase: true,
-    trim: true
-    // validate: [isEmail, 'Please provide a valid email address.']
+    trim: true,
+    validate: {
+      /**
+       * Validates the email address.
+       *
+       * @param {string} v - The email address to validate.
+       * @returns {boolean} - True if the email address is valid, false otherwise.
+       */
+      validator: function (v) {
+        // This regex ensures that the email contains an "@" and ends with .com, .se, .nu, .net, or .org
+        return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|se|nu|net|org)$/i.test(v)
+      },
+      /**
+       * Error message for invalid email address.
+       *
+       * @param {object} props - The properties of the validation error.
+       * @param {string} props.value - The invalid email address.
+       * @returns {string} - The error message.
+       */
+      message: props => `${props.value} is not a valid email address!`
+    }
   },
   password: {
     type: String,
