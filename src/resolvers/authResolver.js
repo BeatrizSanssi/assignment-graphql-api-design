@@ -59,7 +59,8 @@ export default {
       try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         const newAccessToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, { expiresIn: '15m' })
-        return { accessToken: newAccessToken }
+        const user = await UserModel.findById(decoded.id)
+        return { token: newAccessToken, user }
       } catch (err) {
         throw new UnauthorizedError('Invalid refresh token')
       }
