@@ -8,6 +8,8 @@ import { userController } from '../controllers/user/UserController.js'
 import { UserModel } from '../models/UserModel.js'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+import { UnauthorizedError } from '../../lib/errors/index.js'
+
 dotenv.config()
 
 export default {
@@ -41,7 +43,7 @@ export default {
         return { token, user }
       } catch (err) {
         // Throw an error if the login fails.
-        throw new Error(err.message)
+        throw new UnauthorizedError(err.message)
       }
     },
 
@@ -59,7 +61,32 @@ export default {
         const newAccessToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, { expiresIn: '15m' })
         return { accessToken: newAccessToken }
       } catch (err) {
-        throw new Error('Invalid refresh token')
+        throw new UnauthorizedError('Invalid refresh token')
+      }
+    },
+
+    /**
+     * Refreshes the access token using a refresh token.
+     *
+     * @param {*} _ - The parent object.
+     * @param {*} args - The arguments for the mutation.
+     * @param {string} args.refreshToken - The refresh token.
+     * @returns {Promise<object>} - The new access token.
+     */
+    refreshAccessToken: async (_, { refreshToken }) => {
+      try {
+        const payload = jwt.verify(refreshToken, process.env.JWT_SECRET)
+        const user = await UserModel.findById(payload.id)
+
+        if (!user) {
+          throw new UnauthorizedError('User not found')
+        }
+
+        const newToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' })
+
+        return { token: newToken }
+      } catch (err) {
+        throw new UnauthorizedError('Invalid refresh token')
       }
     }
   }
