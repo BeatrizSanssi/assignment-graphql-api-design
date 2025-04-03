@@ -248,7 +248,7 @@ jobs:
       - name: Install Newman
         run: npm install -g newman
 
-      - name: Run setup tests (register & login)
+      - name: Run Postman tests
         run: |
           newman run tests/collection.json \
             --environment tests/environment.json \
@@ -266,6 +266,12 @@ jobs:
             --folder "updateMovie (Failure)" \
             --folder "deleteMovie (Success)" \
             --folder "deleteMovie (Failure)" \
+            --folder "ratings (Success)" \
+            --folder "ratings (Failure)" \
+            --folder "actors (Success)" \
+            --folder "actors (Failure)" \
+            --folder "Nested Query (Success)" \
+            --folder "Nested Query (Failure)" \
             --delay-request 1000
 
       # - name: Run remaining Postman tests
