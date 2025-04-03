@@ -253,18 +253,29 @@ jobs:
           newman run tests/collection.json \
             --environment tests/environment.json \
             --folder "registerUser (Success)" \
+            --folder "registerUser (Failure)" \
             --folder "loginUser (Success)" \
+            --folder "loginUser (Failure)" \
+            --folder "movies (Success)" \
+            --folder "movies (Failure)" \
             --folder "addMovie (Success)" \
+            --folder "addMovie (Failure)" \
+            --folder "movie (Success)" \
+            --folder "movie (Failure)" \
+            --folder "updateMovie (Success)" \
+            --folder "updateMovie (Failure)" \
+            --folder "deleteMovie (Success)" \
+            --folder "deleteMovie (Failure)" \
             --delay-request 1000
 
-      - name: Run remaining Postman tests
-        run: |
-          newman run tests/collection.json \
-            --environment tests/environment.json \
-            --exclude-folder "registerUser (Success)" \
-            --exclude-folder "loginUser (Success)" \
-            --exclude-folder "addMovie (Success)" \
-            --delay-request 1000
+      # - name: Run remaining Postman tests
+      #   run: |
+      #     newman run tests/collection.json \
+      #       --environment tests/environment.json \
+      #       --exclude-folder "registerUser (Success)" \
+      #       --exclude-folder "loginUser (Success)" \
+      #       --exclude-folder "addMovie (Success)" \
+      #       --delay-request 1000
 
         # newman run tests/collection.json \
           #   --environment tests/environment.json \
