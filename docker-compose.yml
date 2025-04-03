@@ -2,7 +2,7 @@ version: '3'
 services:
   mongo:
     image: mongo:latest
-    container_name: mongo
+    container_name: moviesDB
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
