@@ -34,7 +34,7 @@ export default {
      * @returns {Promise<object>} - The token and user.
      */
     loginUser: async (_, { email, password }) => {
-      return await userController.loginUser({ email, password })
+      return await authController.loginUser({ email, password })
       // try {
       //   const { token, refreshToken } = await userController.loginUser({ email, password })
       //   const user = await UserModel.findOne({ email })
@@ -51,11 +51,10 @@ export default {
      * @param {*} args - The arguments for the mutation.
      * @param {string} args.id - The ID of the user to update.
      * @param {string} args.email - The new email of the user.
-     * @param {string} args.password - The new password of the user.
      * @returns {Promise<object>} - The updated user.
      */
-    updateUser: async (_, { id, email, password }) => {
-      return await userController.updateUser({ id, email, password })
+    updateUser: async (_, { id, email }) => {
+      return await userController.updateUser(id, { email })
       // const user = await UserModel.findById(id)
       // if (!user) {
       //   throw new UnauthorizedError('User not found')
@@ -96,7 +95,7 @@ export default {
      * @returns {Promise<object>} - The new access token.
      */
     refreshToken: async (_, { token }) => {
-      await authController.refreshToken(token)
+      return await authController.refreshToken(token)
       // try {
       //   const decoded = jwt.verify(token, process.env.JWT_SECRET)
       //   const newAccessToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, { expiresIn: '15m' })
@@ -116,7 +115,7 @@ export default {
      * @returns {Promise<object>} - The new access token.
      */
     refreshAccessToken: async (_, { refreshToken }) => {
-      await authController.refreshAccessToken(refreshToken)
+      return await authController.refreshAccessToken(refreshToken)
       //   try {
       //     const payload = jwt.verify(refreshToken, process.env.JWT_SECRET)
       //     const user = await UserModel.findById(payload.id)

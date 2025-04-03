@@ -73,25 +73,35 @@ export class UserController {
    * @param {string} userId - The ID of the user to update.
    * @param {object} param1 - Object with email and password.
    * @param {string} param1.email - The new email of the user.
-   * @param {string} param1.password - The new password of the user.
    * @returns {Promise<object>} - The updated user.
    */
-  async updateUser (userId, { email, password }) {
-    try {
-      const user = await UserModel.findById(userId)
-      if (!user) throw new NotFoundError('User not found')
+  async updateUser (userId, { email }) {
+    const user = await UserModel.findById(userId)
+    if (!user) {
+      throw new NotFoundError('User not found')
+    }
 
-      const updateData = {}
-      if (email) updateData.email = email
-      if (password) {
-        const hashedPassword = await bcrypt.hash(password, 10)
-        updateData.password = hashedPassword
+    // Prepare the data to update.
+    const updateData = {}
+    if (email) {
+      updateData.email = email
+    }
+    // if (password) {
+    //   const hashedPassword = await bcrypt.hash(password, 10)
+    //   updateData.password = hashedPassword
+    // }
+    try {
+      const updatedUser = await UserModel.findByIdAndUpdate(userId, updateData, { new: true, runValidators: true, context: 'query' })
+      if (!updatedUser) {
+        throw new NotFoundError('User not found')
       }
-      const updatedUser = await UserModel.findByIdAndUpdate(userId, updateData, { new: true })
-      if (!updatedUser) throw new NotFoundError('User not found')
       return updatedUser
     } catch (err) {
-      // Handle any errors that occur during the update process
+      // If the error is a duplicate key error, you can customize the message.
+      if (err.code === 11000) {
+        throw new UnauthorizedError('Email already in use')
+      }
+      // Otherwise, rethrow the original error.
       throw new UnauthorizedError(err.message)
     }
   }
@@ -103,13 +113,21 @@ export class UserController {
    * @returns {Promise<boolean>} - True if the user was deleted.
    */
   async deleteUser (userId) {
-    //   const user = await UserModel.findById(userId)
-    //   if (!user) throw new NotFoundError('User not found')
-    // }
-    const deleted = await UserModel.findByIdAndDelete(userId)
-    if (!deleted) throw new NotFoundError('User not found')
-    return deleted
+    try {
+      const deleted = await UserModel.findByIdAndDelete(userId)
+      if (!deleted) throw new NotFoundError('User not found')
+      return { id: deleted._id.toString(), email: deleted.email }
+    } catch (err) {
+      throw new UnauthorizedError(err.message)
+    }
   }
+  //   //   const user = await UserModel.findById(userId)
+  //   //   if (!user) throw new NotFoundError('User not found')
+  //   // }
+  //   const deleted = await UserModel.findByIdAndDelete(userId)
+  //   if (!deleted) throw new NotFoundError('User not found')
+  //   return deleted
+  // }
 }
 
 export const userController = new UserController()

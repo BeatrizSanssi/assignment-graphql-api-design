@@ -5,15 +5,37 @@
  */
 
 import { UserModel } from '../../models/UserModel.js'
+import { userController } from './UserController.js'
 import jwt from 'jsonwebtoken'
 import { UnauthorizedError } from '../../lib/errors/index.js'
-
-const JWT_SECRET = process.env.JWT_SECRET
+import dotenv from 'dotenv'
+dotenv.config()
 
 /**
  * Encapsulates a controller.
  */
 export class AuthController {
+  /**
+   * Logs in a user and returns tokens and user data.
+   *
+   * @param {object} param0 - Object with email and password.
+   * @param {string} param0.email - The email of the user.
+   * @param {string} param0.password - The password of the user.
+   * @returns {Promise<object>} An object with the token, refresh token, and user data.
+   */
+  async loginUser ({ email, password }) {
+    // We assume that your UserController.loginUser returns an object:
+    // { token, refreshToken }
+    const { token, refreshToken } = await userController.loginUser({ email, password })
+
+    // Now retrieve the full user data (if needed) and return all fields
+    const user = await UserModel.findOne({ email })
+    if (!user) {
+      throw new UnauthorizedError('User not found after login')
+    }
+    return { token, refreshToken, user: { id: user._id.toString(), email: user.email } }
+  }
+
   /**
    * Refreshes the access token given a refresh token.
    *
@@ -23,10 +45,11 @@ export class AuthController {
    */
   async refreshToken (token) {
     try {
-      const decoded = jwt.verify(token, JWT_SECRET)
-      const newAccessToken = jwt.sign({ id: decoded.id }, JWT_SECRET, { expiresIn: '15m' })
+      const decoded = jwt.verify(token, process.env.JWT_SECRET)
+      const newAccessToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, { expiresIn: '15m' })
       const user = await UserModel.findById(decoded.id)
-      return { token: newAccessToken, refreshToken: token, user }
+      if (!user) throw new UnauthorizedError('User not found')
+      return { token: newAccessToken, refreshToken: token, user: { id: user._id.toString(), email: user.email } }
     } catch (err) {
       throw new UnauthorizedError('Invalid refresh token')
     }
@@ -41,12 +64,12 @@ export class AuthController {
    */
   async refreshAccessToken (refreshToken) {
     try {
-      const payload = jwt.verify(refreshToken, JWT_SECRET)
+      const payload = jwt.verify(refreshToken, process.env.JWT_SECRET)
       const user = await UserModel.findById(payload.id)
       if (!user) {
         throw new UnauthorizedError('User not found')
       }
-      const newToken = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' })
+      const newToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' })
       return { token: newToken }
     } catch (err) {
       throw new UnauthorizedError('Invalid refresh token')

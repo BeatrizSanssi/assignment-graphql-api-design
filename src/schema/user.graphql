@@ -15,7 +15,7 @@ type AuthPayload {
 extend type Mutation {
   registerUser(email: String!, password: String!): User
   loginUser(email: String!, password: String!): AuthPayload
-  updateUser(id: ID!, email: String!, password: String!): User
+  updateUser(id: ID!, email: String!): User
   deleteUser(id: ID!): User
   refreshToken(token: String!): AuthPayload
   refreshAccessToken(refreshToken: String!): AuthPayload
