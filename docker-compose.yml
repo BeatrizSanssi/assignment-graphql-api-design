@@ -2,7 +2,7 @@ version: '3'
 services:
   mongo:
     image: mongo:latest
-    container_name: movieDB
+    container_name: mongo
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
@@ -23,7 +23,7 @@ services:
     ports: 
      - "8081:8081"
     depends_on:
-      movieDB:
+      mongo:
         condition: service_healthy
     environment: 
       - MONGO_HOST=mongodb
