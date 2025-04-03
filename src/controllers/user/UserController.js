@@ -22,13 +22,18 @@ export class UserController {
    * @returns {object} - The new user
    */
   async registerUser ({ email, password }) {
-    const existingUser = await UserModel.findOne({ email })
-    if (existingUser) {
-      throw new UnauthorizedError('User already exists')
+    try {
+      const existingUser = await UserModel.findOne({ email })
+      if (existingUser) {
+        throw new UnauthorizedError('User already exists')
+      }
+      const user = new UserModel({ email, password })
+      await user.save()
+      return user
+    } catch (err) {
+    // Handle any errors that occur during the registration process
+      throw new UnauthorizedError(err.message)
     }
-    const user = new UserModel({ email, password })
-    await user.save()
-    return user
   }
 
   /**
@@ -40,21 +45,26 @@ export class UserController {
    * @returns {Promise<string>} JWT-token if login is successful.
    */
   async loginUser ({ email, password }) {
-    const user = await UserModel.findOne({ email })
-    if (!user) {
-      throw new UnauthorizedError('Wrong credentials')
-    }
-    const isValid = await bcrypt.compare(password, user.password)
-    if (!isValid) {
-      throw new UnauthorizedError('Wrong credentials')
-    }
-    // Generate and return a JWT token.
-    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' })
+    try {
+      const user = await UserModel.findOne({ email })
+      if (!user) {
+        throw new UnauthorizedError('Wrong credentials')
+      }
+      const isValid = await bcrypt.compare(password, user.password)
+      if (!isValid) {
+        throw new UnauthorizedError('Wrong credentials')
+      }
+      // Generate and return a JWT token.
+      const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' })
 
-    // Generate and return a refresh token.
-    const refreshToken = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' })
+      // Generate and return a refresh token.
+      const refreshToken = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' })
 
-    return { token, refreshToken }
+      return { token, refreshToken }
+    } catch (err) {
+      // Throw an error if the login fails.
+      throw new UnauthorizedError(err.message)
+    }
   }
 
   /**
@@ -67,15 +77,23 @@ export class UserController {
    * @returns {Promise<object>} - The updated user.
    */
   async updateUser (userId, { email, password }) {
-    const updateData = {}
-    if (email) updateData.email = email
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10)
-      updateData.password = hashedPassword
+    try {
+      const user = await UserModel.findById(userId)
+      if (!user) throw new NotFoundError('User not found')
+
+      const updateData = {}
+      if (email) updateData.email = email
+      if (password) {
+        const hashedPassword = await bcrypt.hash(password, 10)
+        updateData.password = hashedPassword
+      }
+      const updatedUser = await UserModel.findByIdAndUpdate(userId, updateData, { new: true })
+      if (!updatedUser) throw new NotFoundError('User not found')
+      return updatedUser
+    } catch (err) {
+      // Handle any errors that occur during the update process
+      throw new UnauthorizedError(err.message)
     }
-    const updatedUser = await UserModel.findByIdAndUpdate(userId, updateData, { new: true })
-    if (!updatedUser) throw new NotFoundError('User not found')
-    return updatedUser
   }
 
   /**
@@ -85,9 +103,12 @@ export class UserController {
    * @returns {Promise<boolean>} - True if the user was deleted.
    */
   async deleteUser (userId) {
+    //   const user = await UserModel.findById(userId)
+    //   if (!user) throw new NotFoundError('User not found')
+    // }
     const deleted = await UserModel.findByIdAndDelete(userId)
     if (!deleted) throw new NotFoundError('User not found')
-    return true
+    return deleted
   }
 }
 
