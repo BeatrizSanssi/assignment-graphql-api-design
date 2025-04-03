@@ -6,6 +6,9 @@
 
 import { userController } from '../controllers/user/UserController.js'
 import { UserModel } from '../models/UserModel.js'
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+dotenv.config()
 
 export default {
   Mutation: {
@@ -39,6 +42,24 @@ export default {
       } catch (err) {
         // Throw an error if the login fails.
         throw new Error(err.message)
+      }
+    },
+
+    /**
+     * Refreshes the access token.
+     *
+     * @param {*} _ - The parent object.
+     * @param {*} args - The arguments for the mutation.
+     * @param {string} args.token - The refresh token.
+     * @returns {Promise<object>} - The new access token.
+     */
+    refreshToken: async (_, { token }) => {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        const newAccessToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, { expiresIn: '15m' })
+        return { accessToken: newAccessToken }
+      } catch (err) {
+        throw new Error('Invalid refresh token')
       }
     }
   }

@@ -19,7 +19,8 @@ module.exports = {
         MOVIES_CSV_PATH: './data/movies_metadata.csv',
         ACTORS_CSV_PATH: '../archive/credits.csv',
         RATINGS_CSV_PATH: '../archive/ratings_small.csv',
-        ENCRYPTION_IV: '0123456789abcdef'
+        ENCRYPTION_IV: '0123456789abcdef',
+        BCRYPT_SALT_ROUNDS: '10'
       }
     }
   ]
