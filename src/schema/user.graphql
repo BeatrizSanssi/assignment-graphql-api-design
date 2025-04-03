@@ -7,13 +7,13 @@ type User {
 }
 
 type AuthPayload {
-  token: String!
+  authToken: String!
   user: User!
 }
 
 extend type Mutation {
   registerUser(email: String!, password: String!): User
   loginUser(email: String!, password: String!): AuthPayload
-  refreshToken(token: String!): AuthPayload
+  refreshToken(authToken: String!): AuthPayload
   refreshAccessToken(refreshToken: String!): AuthPayload
 }

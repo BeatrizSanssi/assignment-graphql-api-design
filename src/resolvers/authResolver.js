@@ -8,7 +8,7 @@ import { userController } from '../controllers/user/UserController.js'
 import { UserModel } from '../models/UserModel.js'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
-import { UnauthorizedError } from '../../lib/errors/index.js'
+import { UnauthorizedError } from '../lib/errors/index.js'
 
 dotenv.config()
 
@@ -38,9 +38,9 @@ export default {
     loginUser: async (_, { email, password }) => {
       // return await userController.loginUser({ email, password })
       try {
-        const token = await userController.loginUser({ email, password })
+        const authToken = await userController.loginUser({ email, password })
         const user = await UserModel.findOne({ email })
-        return { token, user }
+        return { authToken, user }
       } catch (err) {
         // Throw an error if the login fails.
         throw new UnauthorizedError(err.message)
@@ -52,12 +52,12 @@ export default {
      *
      * @param {*} _ - The parent object.
      * @param {*} args - The arguments for the mutation.
-     * @param {string} args.token - The refresh token.
+     * @param {string} args.authToken - The refresh token.
      * @returns {Promise<object>} - The new access token.
      */
-    refreshToken: async (_, { token }) => {
+    refreshToken: async (_, { authToken }) => {
       try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        const decoded = jwt.verify(authToken, process.env.JWT_SECRET)
         const newAccessToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, { expiresIn: '15m' })
         const user = await UserModel.findById(decoded.id)
         return { token: newAccessToken, user }
