@@ -525,6 +525,7 @@
 							"    pm.expect(jsonData.data.addMovie.title).to.eql(pm.environment.get(\"randomTitle\"));",
 							"    // Save the movie _id for later use:",
 							"    pm.environment.set(\"movieId\", jsonData.data.addMovie._id);",
+							"    pm.environment.set(\"randomId\", jsonData.data.addMovie.id);",
 							"});"
 						],
 						"type": "text/javascript",
@@ -645,7 +646,7 @@
 					"mode": "graphql",
 					"graphql": {
 						"query": "query GetMovie($id: Int!) {\n  movie(id: $id) {\n    title\n    id\n    _id \n    release_date \n    genre \n    description\n  }\n}",
-						"variables": "{\n  \"id\": {{movieId}}\n}"
+						"variables": "{\n  \"id\": {{randomId}}\n}"
 					}
 				},
 				"url": {
