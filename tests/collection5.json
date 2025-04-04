@@ -1131,7 +1131,7 @@
 							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
 							"const jsonData = pm.response.json();",
 							"",
-							"// Kontrollera om movie finns",
+							"// Check if the response contains the expected data structure.",
 							"if (jsonData.data && jsonData.data.movie) {",
 							"    const movie = jsonData.data.movie;",
 							"",
@@ -1180,8 +1180,8 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "query GetData($id: Int!) {\n  movies {\n    id\n    title\n    release_date\n    ratings {\n      rating\n      userId\n    }\n  }\n  movie(id: $id) {\n    title\n    id\n    _id \n    release_date \n    genre \n    description\n    averageRating\n     ratings {\n      rating\n      userId\n    }\n  }\n  ratings(movieId: $id) {\n    rating\n    userId\n  }\n}",
-						"variables": "{\n  \"id\": {{id}},\n   \"movieId\": {{id}}\n}"
+						"query": "query GetData($id: Int!) {\n  movies {\n    id\n    title\n    release_date\n    ratings {\n      rating\n      userId\n    }\n  }\n  movie(id: $id) {\n    title\n    id\n    _id \n    release_date \n    genre \n    description\n    averageRating\n     ratings {\n      rating\n      userId\n    }\n  }\n  ratings(movieId: $movieId) {\n    rating\n    userId\n  }\n}",
+						"variables": "{\n  \"id\": {{id}},\n   \"movieId\": {{movieId}}\n}"
 					}
 				},
 				"url": {
