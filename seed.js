@@ -176,12 +176,10 @@ async function seed () {
     })
 
     // 4. PARSE & SEED ACTORS (from credits.csv)
-    // const uniqueActors = await seedActors()
+    const uniqueActors = await seedActors()
     await seedActors()
-    // Clear the existing actors from the database
     await ActorModel.deleteMany({})
-    // Insert the new actors into the database
-    await ActorModel.insertMany()
+    await ActorModel.insertMany(uniqueActors)
     console.log(`Successfully inserted ${length} actors into DB.`)
 
     // 5. PARSE & SEED RATINGS
