@@ -657,7 +657,7 @@
 					"mode": "graphql",
 					"graphql": {
 						"query": "query GetMovie($id: Int!) {\n  movie(id: $id) {\n    title\n    id\n    _id \n    release_date \n    genre \n    description\n  }\n}",
-						"variables": "{\n  \"id\": {{randomId}}\n}"
+						"variables": "{\n  \"id\": {{id}}\n}"
 					}
 				},
 				"url": {
