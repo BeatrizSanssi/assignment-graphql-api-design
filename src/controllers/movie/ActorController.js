@@ -18,4 +18,14 @@ export class ActorController {
   static async getAllActors () {
     return await ActorModel.find({})
   }
+
+  /**
+   * Get an actor by the movie ID.
+   *
+   * @param {string} movieId - The ID of the movie.
+   * @returns {Promise<object>} - The actor.
+   */
+  static async getActorsByMovieId (movieId) {
+    return await ActorModel.find({ movies: movieId })
+  }
 }

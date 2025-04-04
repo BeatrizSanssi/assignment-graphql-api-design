@@ -178,9 +178,8 @@ async function seed () {
     // 5. PARSE & SEED RATINGS
     const ratings = await parseCSV(process.env.RATINGS_CSV_PATH, (row) => {
       const movieIdFromCSV = parseInt(row.movieId)
-      const matchedMongoId = movieIdMap.get(movieIdFromCSV)
 
-      if (!matchedMongoId) {
+      if (!movieIdMap.has(movieIdFromCSV)) {
         console.warn(`No match for movieId ${movieIdFromCSV}`)
         return null
       }
@@ -188,7 +187,7 @@ async function seed () {
       return {
         userId: parseInt(row.userId),
         rating: parseFloat(row.rating),
-        movieId: matchedMongoId
+        movieId: movieIdFromCSV
       }
     })
     await RatingModel.deleteMany({})

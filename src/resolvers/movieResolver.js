@@ -108,6 +108,15 @@ export default {
 
       const total = ratings.reduce((sum, r) => sum + r.rating, 0)
       return total / ratings.length
+    },
+    /**
+     * Field resolver to get all actors for a movie.
+     *
+     * @param {object} parent - The parent object.
+     * @returns {Promise<object[]>} - A list of actors.
+     */
+    actors: async (parent) => {
+      return await ActorController.getActorsByMovieId(parent.id)
     }
   }
 }

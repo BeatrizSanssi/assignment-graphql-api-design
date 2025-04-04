@@ -5,10 +5,10 @@ type Rating {
   _id: ID!
   userId: Int!
   rating: Float!
-  movieId: ID!
+  movieId: Int!
 }
 
 extend type Query {
   # ratings: [Rating]
-  ratings(movieId: ID!): [Rating]
+  ratings(movieId: Int): [Rating]
 }

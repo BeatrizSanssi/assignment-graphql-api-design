@@ -8,6 +8,7 @@ type Movie {
   release_date: Int!
   genre: String!
   description: String!
+  actors: [Actor]
   ratings: [Rating]
   averageRating: Float
 

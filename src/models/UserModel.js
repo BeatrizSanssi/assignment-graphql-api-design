@@ -7,10 +7,6 @@
 
 import bcrypt from 'bcryptjs'
 import mongoose from 'mongoose'
-// import validator from 'validator'
-// import { BASE_SCHEMA } from './baseSchema.js'
-
-// const { isEmail } = validator
 
 // Create a schema.
 const schema = new mongoose.Schema({

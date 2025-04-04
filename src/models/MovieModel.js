@@ -6,9 +6,6 @@
 
 import mongoose from 'mongoose'
 
-// Application modules.
-// import { BASE_SCHEMA } from './baseSchema.js'
-
 // Create a schema.
 const schema = new mongoose.Schema({
   id: {
@@ -35,9 +32,6 @@ const schema = new mongoose.Schema({
 }, {
   // timestamps: true // Adds createdAt and updatedAt automatically
 })
-
-// Add additional schema fields from BASE_SCHEMA.
-// schema.add(BASE_SCHEMA)
 
 // Create a model using the schema.
 export const MovieModel = mongoose.model('Movie', schema)
