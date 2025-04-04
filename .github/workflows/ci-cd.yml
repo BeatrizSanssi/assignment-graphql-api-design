@@ -250,7 +250,7 @@ jobs:
 
       - name: Run Postman tests
         run: |
-          newman run tests/collection4.json \
+          newman run tests/collection5.json \
             --environment tests/environment1.json \
             --folder "registerUser (Success)" \
             --folder "registerUser (Failure)" \
