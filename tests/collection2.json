@@ -1,0 +1,822 @@
+{
+	"id": "b45893dd-95b9-4de7-ac78-87b52130878a",
+	"name": "GraphQL Movie API Tests",
+	"timestamp": "2025-03-31T13:58:58.138Z",
+	"collection_id": "31435635-7c245bed-140c-4a55-9bb3-71b254739f0a",
+	"folder_id": 0,
+	"environment_id": "31435635-d675d922-641e-4eb6-844b-8dc4f8b0f23b",
+	"totalPass": 50,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2025-03-31T13:58:57.103Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "03b2a4de-f6e5-4125-9382-b362520de5af",
+			"name": "registerUser (Success)",
+			"url": "http://localhost:8081/graphql",
+			"time": 93,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"No errors returned": true,
+				"User object returned with correct email": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"No errors returned": {
+					"pass": 1,
+					"fail": 0
+				},
+				"User object returned with correct email": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				93
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"No errors returned": true,
+					"User object returned with correct email": true
+				}
+			]
+		},
+		{
+			"id": "21b78c9c-934f-471b-b4cb-40d98fdd707b",
+			"name": "registerUser (Failure)",
+			"url": "http://localhost:8081/graphql",
+			"time": 5,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Error array is returned": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error array is returned": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Error array is returned": true
+				}
+			]
+		},
+		{
+			"id": "46860ad7-f481-46b2-b885-4a6894c68050",
+			"name": "loginUser (Success)",
+			"url": "http://localhost:8081/graphql",
+			"time": 87,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"No errors returned": true,
+				"Token is returned": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"No errors returned": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Token is returned": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				87
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"No errors returned": true,
+					"Token is returned": true
+				}
+			]
+		},
+		{
+			"id": "78c70839-8b2c-44d2-8e5b-f583da3a9464",
+			"name": "loginUser (Failure)",
+			"url": "http://localhost:8081/graphql",
+			"time": 6,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Error array is returned": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error array is returned": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Error array is returned": true
+				}
+			]
+		},
+		{
+			"id": "4b29b769-92ae-4570-a526-0b22dbd5230a",
+			"name": "movies (Success)",
+			"url": "http://localhost:8081/graphql",
+			"time": 49,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"No errors in response": true,
+				"Movies returned as an array": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"No errors in response": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Movies returned as an array": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				49
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"No errors in response": true,
+					"Movies returned as an array": true
+				}
+			]
+		},
+		{
+			"id": "a04fef45-bc94-4e85-bf8c-6c40d84e8934",
+			"name": "movies (Failure)",
+			"url": "http://localhost:8081/graphql",
+			"time": 3,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Returns GraphQL error for invalid argument": true
+			},
+			"testPassFailCounts": {
+				"Returns GraphQL error for invalid argument": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				3
+			],
+			"allTests": [
+				{
+					"Returns GraphQL error for invalid argument": true
+				}
+			]
+		},
+		{
+			"id": "e742c33c-a435-433f-9be8-f554543b669f",
+			"name": "addMovie (Success)",
+			"url": "http://localhost:8081/graphql",
+			"time": 8,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"No errors in response": true,
+				"Movie created with expected title": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"No errors in response": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Movie created with expected title": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				8
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"No errors in response": true,
+					"Movie created with expected title": true
+				}
+			]
+		},
+		{
+			"id": "604fd389-ce47-47ef-875c-260e9fcfc507",
+			"name": "addMovie (Failure)",
+			"url": "http://localhost:8081/graphql",
+			"time": 3,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Error returned for missing token": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error returned for missing token": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				3
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Error returned for missing token": true
+				}
+			]
+		},
+		{
+			"id": "2b7f0b2c-950f-4788-8dc8-1411b722a134",
+			"name": "movie (Success)",
+			"url": "http://localhost:8081/graphql",
+			"time": 4,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"No errors in response": true,
+				"Movie object is returned": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"No errors in response": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Movie object is returned": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"No errors in response": true,
+					"Movie object is returned": true
+				}
+			]
+		},
+		{
+			"id": "f42e6de2-ec22-493c-9dd8-0477ecebe5a2",
+			"name": "movie (Failure)",
+			"url": "http://localhost:8081/graphql",
+			"time": 4,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Response should contain errors or null movie": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response should contain errors or null movie": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Response should contain errors or null movie": true
+				}
+			]
+		},
+		{
+			"id": "7b8124c8-7dfe-4c59-a999-9adc2f861817",
+			"name": "updateMovie (Success)",
+			"url": "http://localhost:8081/graphql",
+			"time": 12,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"No errors in response": true,
+				"Movie title updated": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"No errors in response": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Movie title updated": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				12
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"No errors in response": true,
+					"Movie title updated": true
+				}
+			]
+		},
+		{
+			"id": "42272360-5587-4991-acc6-bf67b49ccfc2",
+			"name": "updateMovie (Failure)",
+			"url": "http://localhost:8081/graphql",
+			"time": 7,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Error returned for unauthorized update": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error returned for unauthorized update": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				7
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Error returned for unauthorized update": true
+				}
+			]
+		},
+		{
+			"id": "2f76b94c-73a1-4fbd-9b27-142cd74855fb",
+			"name": "deleteMovie (Success)",
+			"url": "http://localhost:8081/graphql",
+			"time": 6,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"No errors in response": true,
+				"Movie deleted is returned": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"No errors in response": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Movie deleted is returned": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"No errors in response": true,
+					"Movie deleted is returned": true
+				}
+			]
+		},
+		{
+			"id": "d32d5275-8792-4758-b38d-1cc7464d89ac",
+			"name": "deleteMovie (Failure)",
+			"url": "http://localhost:8081/graphql",
+			"time": 2,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Error returned due to missing authentication": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error returned due to missing authentication": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				2
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Error returned due to missing authentication": true
+				}
+			]
+		},
+		{
+			"id": "187f3958-0dcb-4172-8833-d755a3847af1",
+			"name": "ratings (Success)",
+			"url": "http://localhost:8081/graphql",
+			"time": 4,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Ratings returned as an array": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Ratings returned as an array": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Ratings returned as an array": true
+				}
+			]
+		},
+		{
+			"id": "1b2ad40a-9010-4ea0-ad4e-0e421f6f694b",
+			"name": "ratings (Failure)",
+			"url": "http://localhost:8081/graphql",
+			"time": 4,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Either errors or empty ratings array": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Either errors or empty ratings array": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Either errors or empty ratings array": true
+				}
+			]
+		},
+		{
+			"id": "1e2a70fc-0ed8-4eb6-96d5-8497cbc8e85d",
+			"name": "actors (Success)",
+			"url": "http://localhost:8081/graphql",
+			"time": 3,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"No errors in response": true,
+				"Actors returned as an array": true,
+				"Each actor has id and name": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"No errors in response": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Actors returned as an array": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Each actor has id and name": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				3
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"No errors in response": true,
+					"Actors returned as an array": true,
+					"Each actor has id and name": true
+				}
+			]
+		},
+		{
+			"id": "e190ab45-332d-46f9-899d-308d704cc1bb",
+			"name": "actors (Failure)",
+			"url": "http://localhost:8081/graphql",
+			"time": 3,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"Status code is 200 or 400 (GraphQL validation)": true,
+				"GraphQL errors array is returned": true,
+				"Error message includes 'Cannot query field'": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200 or 400 (GraphQL validation)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"GraphQL errors array is returned": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error message includes 'Cannot query field'": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				3
+			],
+			"allTests": [
+				{
+					"Status code is 200 or 400 (GraphQL validation)": true,
+					"GraphQL errors array is returned": true,
+					"Error message includes 'Cannot query field'": true
+				}
+			]
+		},
+		{
+			"id": "76512c36-4454-4ff7-87d1-26c429b88c04",
+			"name": "Nested Query (Success)",
+			"url": "http://localhost:8081/graphql",
+			"time": 5,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"No errors in response": true,
+				"Ratings is null or array (if movie exists)": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"No errors in response": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Ratings is null or array (if movie exists)": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"No errors in response": true,
+					"Ratings is null or array (if movie exists)": true
+				}
+			]
+		},
+		{
+			"id": "69ba70a3-54c6-4ccf-bbe6-1aafa8328393",
+			"name": "Nested Query (Failure)",
+			"url": "http://localhost:8081/graphql",
+			"time": 3,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Errors OR null movie": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Errors OR null movie": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				3
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Errors OR null movie": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 311,
+	"collection": {
+		"requests": [
+			{
+				"id": "03b2a4de-f6e5-4125-9382-b362520de5af",
+				"method": "POST"
+			},
+			{
+				"id": "21b78c9c-934f-471b-b4cb-40d98fdd707b",
+				"method": "POST"
+			},
+			{
+				"id": "46860ad7-f481-46b2-b885-4a6894c68050",
+				"method": "POST"
+			},
+			{
+				"id": "78c70839-8b2c-44d2-8e5b-f583da3a9464",
+				"method": "POST"
+			},
+			{
+				"id": "4b29b769-92ae-4570-a526-0b22dbd5230a",
+				"method": "POST"
+			},
+			{
+				"id": "a04fef45-bc94-4e85-bf8c-6c40d84e8934",
+				"method": "POST"
+			},
+			{
+				"id": "e742c33c-a435-433f-9be8-f554543b669f",
+				"method": "POST"
+			},
+			{
+				"id": "604fd389-ce47-47ef-875c-260e9fcfc507",
+				"method": "POST"
+			},
+			{
+				"id": "2b7f0b2c-950f-4788-8dc8-1411b722a134",
+				"method": "POST"
+			},
+			{
+				"id": "f42e6de2-ec22-493c-9dd8-0477ecebe5a2",
+				"method": "POST"
+			},
+			{
+				"id": "7b8124c8-7dfe-4c59-a999-9adc2f861817",
+				"method": "POST"
+			},
+			{
+				"id": "42272360-5587-4991-acc6-bf67b49ccfc2",
+				"method": "POST"
+			},
+			{
+				"id": "2f76b94c-73a1-4fbd-9b27-142cd74855fb",
+				"method": "POST"
+			},
+			{
+				"id": "d32d5275-8792-4758-b38d-1cc7464d89ac",
+				"method": "POST"
+			},
+			{
+				"id": "187f3958-0dcb-4172-8833-d755a3847af1",
+				"method": "POST"
+			},
+			{
+				"id": "1b2ad40a-9010-4ea0-ad4e-0e421f6f694b",
+				"method": "POST"
+			},
+			{
+				"id": "1e2a70fc-0ed8-4eb6-96d5-8497cbc8e85d",
+				"method": "POST"
+			},
+			{
+				"id": "e190ab45-332d-46f9-899d-308d704cc1bb",
+				"method": "POST"
+			},
+			{
+				"id": "76512c36-4454-4ff7-87d1-26c429b88c04",
+				"method": "POST"
+			},
+			{
+				"id": "69ba70a3-54c6-4ccf-bbe6-1aafa8328393",
+				"method": "POST"
+			}
+		]
+	}
+}

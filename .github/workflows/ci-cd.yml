@@ -250,12 +250,15 @@ jobs:
 
       - name: Run Postman tests
         run: |
-          newman run tests/collection.json \
-            --environment tests/environment.json \
+          newman run tests/collection3.json \
+            --environment tests/environment1.json \
             --folder "registerUser (Success)" \
             --folder "registerUser (Failure)" \
             --folder "loginUser (Success)" \
             --folder "loginUser (Failure)" \
+            --folder "refreshToken (Success)" \
+            --folder "refreshToken (Failure)" \
+            --folder "deleteUser (Success)" \
             --folder "movies (Success)" \
             --folder "movies (Failure)" \
             --folder "addMovie (Success)" \
