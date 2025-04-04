@@ -101,17 +101,19 @@ node seed.js
 The script reads CSV files, transforms the data, and inserts it into MongoDB.
 (See seed.js)
 
-Running the Application
+## Running the Application
 
-Locally
+### Locally
 
 Start the server using:
 
+```bash
 npm start
+```
 
 The API will run on the port specified in your .env (e.g., <http://localhost:8081>).
 
-Using Docker Compose
+## Using Docker Compose
 
 To run the application along with a MongoDB container:
 
