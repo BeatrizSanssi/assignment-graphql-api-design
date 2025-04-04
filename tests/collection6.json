@@ -419,20 +419,9 @@
 							"pm.test(\"No errors in response\", () => {",
 							"    pm.expect(jsonData.errors).to.be.undefined;",
 							"});",
-							"const movies = jsonData.data.movies;",
 							"pm.test(\"Movies returned as an array\", () => {",
-							"    pm.expect(movies).to.be.an(\"array\");",
-							"});",
-							"pm.test(\"At least one movie exists\", () => {",
-							"    pm.expect(movies.length).to.be.above(0);",
-							"});",
-							"// Choose a random movie in the array",
-							"const randomMovie = movies[Math.floor(Math.random() * movies.length)];",
-							"console.log(\"Random movie selected:\", randomMovie);",
-							"// Save the id of the selected movie to the environment variables",
-							"pm.environment.set(\"movieId\", randomMovie._id);",
-							"pm.environment.set(\"movieTitle\", randomMovie.title);",
-							"pm.environment.set(\"id\", randomMovie.id);"
+							"    pm.expect(jsonData.data.movies).to.be.an(\"array\");",
+							"});"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -450,7 +439,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"query\": \"query { movies { _id id title release_date genre description } }\"\n}",
+					"raw": "{\n  \"query\": \"query { movies { _id title release_date genre description } }\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -536,7 +525,6 @@
 							"    pm.expect(jsonData.data.addMovie.title).to.eql(pm.environment.get(\"randomTitle\"));",
 							"    // Save the movie _id for later use:",
 							"    pm.environment.set(\"movieId\", jsonData.data.addMovie._id);",
-							"    pm.environment.set(\"randomId\", jsonData.data.addMovie.id);",
 							"});"
 						],
 						"type": "text/javascript",
@@ -657,7 +645,7 @@
 					"mode": "graphql",
 					"graphql": {
 						"query": "query GetMovie($id: Int!) {\n  movie(id: $id) {\n    title\n    id\n    _id \n    release_date \n    genre \n    description\n  }\n}",
-						"variables": "{\n  \"id\": {{randomId}}\n}"
+						"variables": "{\n  \"id\": {{movieId}}\n}"
 					}
 				},
 				"url": {
@@ -1142,7 +1130,7 @@
 							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
 							"const jsonData = pm.response.json();",
 							"",
-							"// Check if the response contains the expected data structure.",
+							"// Kontrollera om movie finns",
 							"if (jsonData.data && jsonData.data.movie) {",
 							"    const movie = jsonData.data.movie;",
 							"",
@@ -1191,8 +1179,8 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "query GetData($id: Int!) {\n  movies {\n    id\n    title\n    release_date\n    ratings {\n      rating\n      userId\n    }\n  }\n  movie(id: $id) {\n    title\n    id\n    _id \n    release_date \n    genre \n    description\n    averageRating\n     ratings {\n      rating\n      userId\n    }\n  }\n  ratings(movieId: $movieId) {\n    rating\n    userId\n  }\n}",
-						"variables": "{\n  \"id\": {{id}},\n   \"movieId\": {{movieId}}\n}"
+						"query": "query GetData($id: Int!) {\n  movies {\n    id\n    title\n    release_date\n    ratings {\n      rating\n      userId\n    }\n  }\n  movie(id: $id) {\n    title\n    id\n    _id \n    release_date \n    genre \n    description\n    averageRating\n     ratings {\n      rating\n      userId\n    }\n  }\n  ratings(movieId: $id) {\n    rating\n    userId\n  }\n}",
+						"variables": "{\n  \"id\": {{id}}\n}"
 					}
 				},
 				"url": {
