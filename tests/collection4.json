@@ -644,8 +644,8 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "query GetMovieWithActors($id: Int!) {\n  movie(id: $id) {\n    title\n    id\n    _id \n    release_date \n    genre \n    description\n  }\n}",
-						"variables": "{\n  \"id\": {{id}}\n}"
+						"query": "query GetMovie($id: Int!) {\n  movie(id: $id) {\n    title\n    id\n    _id \n    release_date \n    genre \n    description\n  }\n}",
+						"variables": "{\n  \"id\": {{movieId}}\n}"
 					}
 				},
 				"url": {
