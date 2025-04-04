@@ -165,6 +165,7 @@ You can use GraphQL Playground (integrated via Apollo Server) to explore and tes
 
 ## Project Structure
 
+```text
 ├── controllers/               # Business logic for handling movies, actors, ratings, and users
 │   ├── movie/                 # Movie, Actor, and Rating controllers
 │   └── user/                  # User and authentication controllers
@@ -183,6 +184,7 @@ You can use GraphQL Playground (integrated via Apollo Server) to explore and tes
 ├── server.js                  # Main entry point for the Express and Apollo Server application
 ├── package.json               # Project dependencies and scripts
 └── README.md                  # This file
+```
 
 ## CI/CD Integration
 
