@@ -165,24 +165,24 @@ You can use GraphQL Playground (integrated via Apollo Server) to explore and tes
 
 ## Project Structure
 
-+-- controllers/              # Business logic for handling movies, actors, ratings, and users
-|   +-- movie/                # Movie, Actor, and Rating controllers
-|   `-- user/                 # User and authentication controllers
-+-- models/                   # Mongoose models for Movies, Actors, Ratings, and Users
-+-- resolvers/                # GraphQL resolvers for queries and mutations
-|   +-- authResolver.js       # Handles authentication operations
-|   +-- movieResolver.js      # CRUD operations for movies
-|   +-- actorResolver.js      # Operations for retrieving actor data
-|   +-- ratingResolver.js     # Operations for retrieving ratings
-+-- schema/                   # GraphQL schema definitions (.graphql files)
-+-- config/                   # Configuration files (database connection, logging, rate limiting, etc.)
-+-- middleware/               # Express middleware (authentication, error handling, etc.)
-+-- public/                   # Static files served by the application
-+-- seed.js                   # Script to seed the database with sample data
-+-- docker-compose.yml        # Docker Compose configuration for containerized deployment
-+-- server.js                 # Main entry point for the Express and Apollo Server application
-+-- package.json              # Project dependencies and scripts
-`-- README.md                 # This file
+├── controllers/               # Business logic for handling movies, actors, ratings, and users
+│   ├── movie/                 # Movie, Actor, and Rating controllers
+│   └── user/                  # User and authentication controllers
+├── models/                    # Mongoose models for Movies, Actors, Ratings, and Users
+├── resolvers/                 # GraphQL resolvers for queries and mutations
+│   ├── authResolver.js        # Handles authentication operations
+│   ├── movieResolver.js       # CRUD operations for movies
+│   ├── actorResolver.js       # Operations for retrieving actor data
+│   └── ratingResolver.js      # Operations for retrieving ratings
+├── schema/                    # GraphQL schema definitions (.graphql files)
+├── config/                    # Configuration files (database connection, logging, rate limiting, etc.)
+├── middleware/                # Express middleware (authentication, error handling, etc.)
+├── public/                    # Static files served by the application
+├── seed.js                    # Script to seed the database with sample data
+├── docker-compose.yml         # Docker Compose configuration for containerized deployment
+├── server.js                  # Main entry point for the Express and Apollo Server application
+├── package.json               # Project dependencies and scripts
+└── README.md                  # This file
 
 ## CI/CD Integration
 
