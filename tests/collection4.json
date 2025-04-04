@@ -1101,12 +1101,10 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n  actors {\n    id\n    name\n    invalidField\n  }\n}",
+						"variables": ""
 					}
 				},
 				"url": {
