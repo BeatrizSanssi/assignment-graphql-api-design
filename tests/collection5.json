@@ -450,7 +450,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"query\": \"query { movies { _id id title release_date genre description } }\"\n}",
+					"raw": "{\n  \"query\": \"query { movies { id title release_date genre description } }\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
