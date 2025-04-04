@@ -102,6 +102,7 @@ export default {
      * @returns {Promise<object[]>} - A list of ratings.
      */
     averageRating: async (parent) => {
+      console.log('parent in averageRating:', parent)
       const ratings = await RatingController.getRatingsByMovieId(parent.id)
 
       if (!ratings.length) return null

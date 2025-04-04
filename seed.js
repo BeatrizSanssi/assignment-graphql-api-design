@@ -77,6 +77,7 @@ async function seedActors () {
 
   // Iterate through each row (where each row represents a movie)
   for (const row of rows) {
+    const movieId = parseInt(row.id)
     if (row.cast) {
       const actors = parseCast(row.cast)
       for (const actor of actors) {
@@ -84,19 +85,24 @@ async function seedActors () {
           actorMap.set(actor.id, {
             id: actor.id,
             name: actor.name,
-            movies_played: 0 // Initialize movies_played to 0
+            movies_played: 0,
+            movies: []
           })
         }
-        // Increment the movies_played count for the actor
-        actorMap.get(actor.id).movies_played += 1
+
+        const entry = actorMap.get(actor.id)
+        if (!entry.movies.includes(movieId)) {
+          entry.movies_played++
+          entry.movies.push(movieId)
+        }
       }
     }
   }
 
-  // Convert the map to an array of objects
   const uniqueActors = Array.from(actorMap.values())
-
-  return uniqueActors
+  await ActorModel.deleteMany({})
+  await ActorModel.insertMany(uniqueActors)
+  console.log(`✓ Inserted ${uniqueActors.length} actors`)
 }
 
 /**
@@ -125,14 +131,16 @@ async function seed () {
 
       // C. Genre => genre
       let genre = 'Unknown' // Default value
-      if (row.name) {
+      if (row.genres) {
         try {
-          const fixedGenresStr = row.name.replace(/'/g, '"')
-          const arr = JSON.parse(fixedGenresStr)
-          if (Array.isArray(arr) && arr.length > 0) {
-            genre = arr[0].name
+          const fixedGenresStr = row.genres.replace(/'/g, '"')
+          const parsedGenres = JSON.parse(fixedGenresStr)
+
+          if (Array.isArray(parsedGenres) && parsedGenres.length > 0) {
+            genre = parsedGenres.map(g => g.name).join(', ')
           }
         } catch (err) {
+          console.warn(`Could not parse genre for movie: ${row.title}`, err)
           // If there's an error, just use the default value
         }
       }
@@ -168,28 +176,45 @@ async function seed () {
     })
 
     // 4. PARSE & SEED ACTORS (from credits.csv)
-    const uniqueActors = await seedActors()
+    // const uniqueActors = await seedActors()
+    await seedActors()
     // Clear the existing actors from the database
     await ActorModel.deleteMany({})
     // Insert the new actors into the database
-    await ActorModel.insertMany(uniqueActors)
-    console.log(`Successfully inserted ${uniqueActors.length} actors into DB.`)
+    await ActorModel.insertMany()
+    console.log(`Successfully inserted ${length} actors into DB.`)
 
     // 5. PARSE & SEED RATINGS
+    const ratingSeen = new Set()
     const ratings = await parseCSV(process.env.RATINGS_CSV_PATH, (row) => {
       const movieIdFromCSV = parseInt(row.movieId)
+      const userId = parseInt(row.userId)
+      const rating = parseFloat(row.rating)
 
       if (!movieIdMap.has(movieIdFromCSV)) {
         console.warn(`No match for movieId ${movieIdFromCSV}`)
         return null
       }
 
+      const key = `${movieIdFromCSV}-${userId}`
+      if (ratingSeen.has(key)) {
+        return null // Skip duplicates
+      }
+
+      ratingSeen.add(key)
+
       return {
-        userId: parseInt(row.userId),
-        rating: parseFloat(row.rating),
+        userId,
+        rating,
         movieId: movieIdFromCSV
       }
+      // return {
+      //   userId: parseInt(row.userId),
+      //   rating: parseFloat(row.rating),
+      //   movieId: movieIdFromCSV
+      // }
     })
+
     await RatingModel.deleteMany({})
     await RatingModel.insertMany(ratings)
     console.log(`Successfully inserted ${ratings.length} ratings into DB.`)

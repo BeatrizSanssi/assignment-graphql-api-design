@@ -37,6 +37,16 @@ export class MovieController {
   }
 
   /**
+   * Get movies by IDs.
+   *
+   * @param {Array<string>} ids - The IDs of the movies.
+   * @returns {Promise<object[]>} - A list of movies.
+   */
+  static async getMoviesByIds (ids) {
+    return await MovieModel.find({ id: { $in: ids } })
+  }
+
+  /**
    * Adds a new movie.
    *
    * @param {object} args - The movie data.
@@ -71,6 +81,21 @@ export class MovieController {
    */
   static async deleteMovie (id, user) {
     if (!user) throw new UnauthorizedError('Unauthorized')
-    return await MovieModel.findByIdAndDelete(id)
+    const movie = await MovieModel.findById(id)
+
+    if (!movie) {
+      return {
+        deletedMovie: null,
+        message: 'Movie already deleted or does not exist in the database.'
+      }
+    }
+
+    await MovieModel.deleteOne({ _id: id })
+
+    return {
+      deletedMovie: movie,
+      message: 'Movie successfully deleted and is no longer available in the database.'
+    }
+    // return await MovieModel.findByIdAndDelete(id)
   }
 }

@@ -4,9 +4,10 @@
 type Actor {
   id: ID!
   name: String!
-  movies_played: [Movie]
+  movies_played: Int!
+  movies: [Movie]  
 }
 
 extend type Query {
-  actors: [Actor]
+  actors(limit: Int): [Actor]
 }

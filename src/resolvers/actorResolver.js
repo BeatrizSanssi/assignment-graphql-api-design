@@ -11,10 +11,26 @@ export default {
     /**
      * Get all actors.
      *
+     * @param {object} _ - The parent object.
+     * @param {object} args - Arguments for filtering the actors.
      * @returns {Promise<object[]>} - A list of actors.
      */
-    actors: async () => {
-      return await ActorController.getAllActors()
+    actors: async (_, args) => {
+      return await ActorController.getAllActors(args.limit)
+    }
+    // actors: async () => {
+    //   return await ActorController.getAllActors()
+    // }
+  },
+  Actor: {
+    /**
+     * Get all the movie an actor has starred in.
+     *
+     * @param {object} parent - The parent object.
+     * @returns {Promise<object>} - The actor.
+     */
+    movies: async (parent) => {
+      return await ActorController.getMoviesByIds(parent.movies)
     }
   }
 }
