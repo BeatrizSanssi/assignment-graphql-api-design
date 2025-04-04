@@ -32,7 +32,8 @@ export class MovieController {
    * @returns {Promise<object>} - The
    */
   static async getMovieById (id) {
-    return await MovieModel.findOne({ id })
+    return await MovieModel.findOne({ id: Number(id) })
+    // return await MovieModel.findOne({ id })
     // return await MovieModel.findById(id)
   }
 
