@@ -430,7 +430,6 @@
 							"const randomMovie = movies[Math.floor(Math.random() * movies.length)];",
 							"console.log(\"Random movie selected:\", randomMovie);",
 							"// Save the id of the selected movie to the environment variables",
-							"pm.environment.set(\"movieId\", randomMovie._id);",
 							"pm.environment.set(\"movieTitle\", randomMovie.title);",
 							"pm.environment.set(\"id\", randomMovie.id);"
 						],
