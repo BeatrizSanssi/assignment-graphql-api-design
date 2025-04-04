@@ -244,6 +244,9 @@ jobs:
           exit 1
       # - name: Seed test database
       #   run: docker exec graphql-api node scripts/seed-test-db.js
+      
+      - name: Seed the database
+        run: node seed.js
 
       - name: Install Newman
         run: npm install -g newman
