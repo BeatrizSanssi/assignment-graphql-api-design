@@ -37,7 +37,7 @@ const schema = new mongoose.Schema({
   },
   actors: {
     type: [Number],
-    required: true
+    default: []
   }
 }, {
   timestamps: true // Adds createdAt and updatedAt automatically
