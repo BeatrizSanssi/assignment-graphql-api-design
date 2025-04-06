@@ -16,7 +16,7 @@ services:
       - MONGO_PASSWORD=${MONGO_PASSWORD}
       - JWT_SECRET=${JWT_SECRET}
       - NODEJS_EXPRESS_PORT=${NODEJS_EXPRESS_PORT}
-      - DB_CONNECTION_STRING=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/movieDB?authSource=admin
+      - DB_CONNECTION_STRING=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/graphql-api-db?authSource=admin
       - CSV_FILE_PATH=/app/archive/movies_metadata.csv
       - ACTORS_CSV_PATH=/app/archive/credits.csv
       - RATINGS_CSV_PATH=/app/archive/ratings_small.csv
