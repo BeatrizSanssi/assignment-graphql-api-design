@@ -309,6 +309,9 @@ jobs:
       #     echo "❌ movieDB did not become healthy in time."
       #     exit 1
 
+      - name: Seed MongoDB test database
+        run: docker exec graphql-api node seed.js
+        
       - name: Debug MongoDB – list all databases
         run: |
           docker exec graphql-api node -e '
