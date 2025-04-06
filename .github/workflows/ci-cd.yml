@@ -246,7 +246,7 @@ jobs:
       #   run: docker exec graphql-api node scripts/seed-test-db.js
       
       - name: Seed the database
-        run: node seed.js
+        run: docker exec graphql-api node seed.js
 
       - name: Install Newman
         run: npm install -g newman
