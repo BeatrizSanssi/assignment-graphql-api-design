@@ -245,8 +245,12 @@ jobs:
       # - name: Seed test database
       #   run: docker exec graphql-api node scripts/seed-test-db.js
       
-      - name: Seed the database
-        run: docker exec graphql-api node seed.js
+      # - name: Seed the database
+      #   run: docker exec graphql-api node seed.js
+
+      - name: Verify MongoDB seed
+        run: |
+          docker exec movieDB mongosh -u root -p secret --authenticationDatabase admin --eval 'db.getSiblingDB("graphql-api-db").movies.countDocuments()'
 
       - name: Install Newman
         run: npm install -g newman
