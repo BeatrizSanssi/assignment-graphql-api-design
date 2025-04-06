@@ -309,6 +309,23 @@ jobs:
       #     echo "❌ movieDB did not become healthy in time."
       #     exit 1
 
+      - name: Debug MongoDB – list all databases
+        run: |
+          docker exec graphql-api node -e '
+            const mongoose = require("mongoose");
+            mongoose.connect(process.env.DB_CONNECTION_STRING).then(async () => {
+              const dbs = await mongoose.connection.db.admin().listDatabases();
+              console.log("📦 All databases:");
+              dbs.databases.forEach(d => console.log(" -", d.name));
+              process.exit(0);
+            }).catch(err => {
+              console.error("❌ Error:", err);
+              process.exit(1);
+            });
+          '
+        env:
+          DB_CONNECTION_STRING: mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@movieDB:27017/graphql-api-db?authSource=admin
+      
       - name: Verify MongoDB seed
         run: |
           docker exec graphql-api node -e '
