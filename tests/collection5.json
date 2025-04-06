@@ -422,7 +422,7 @@
 							"pm.test(\"Movie created with expected title\", () => {",
 							"    pm.expect(jsonData.data.addMovie.title).to.eql(pm.environment.get(\"randomTitle\"));",
 							"    // Save the movie _id for later use:",
-							"    pm.environment.set(\"movieId\", jsonData.data.addMovie._id);",
+							"    pm.environment.set(\"randomMovieId\", jsonData.data.addMovie._id);",
 							"    pm.environment.set(\"randomId\", jsonData.data.addMovie.id);",
 							"});"
 						],
@@ -756,7 +756,7 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "mutation {\n  updateMovie(\n    id: \"{{randomId}}\",\n    title: \"Updated Title\"\n  ) {\n    id\n    _id\n    title\n    release_date\n    genre\n    description\n  }\n}",
+						"query": "mutation {\n  updateMovie(\n    id: \"{{randomMovieId}}\",\n    title: \"Updated Title\"\n  ) {\n    id\n    _id\n    title\n    release_date\n    genre\n    description\n  }\n}",
 						"variables": ""
 					}
 				},
