@@ -22,3 +22,6 @@ RUN npm install -g newman
 # This script will run the server and then run the tests
 # It will also wait for the server to be ready before running the tests
 # CMD ["./entrypoint.sh"]
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
+CMD ["./entrypoint.sh"]

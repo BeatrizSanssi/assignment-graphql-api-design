@@ -140,12 +140,15 @@ jobs:
       - name: Run Docker Compose
         run: |
           docker compose --env-file .env up -d
+      
+      - name: Seed database
+        run: docker exec graphql-api node seed.js
 
-      - name: Restore MongoDB from dump
-        run: ./restore-db.sh
-        env:
-          MONGO_USER: ${{ secrets.MONGO_USER }}
-          MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+      # - name: Restore MongoDB from dump
+      #   run: ./restore-db.sh
+      #   env:
+      #     MONGO_USER: ${{ secrets.MONGO_USER }}
+      #     MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
 
       - name: Show Docker logs
         run: |
