@@ -21,7 +21,7 @@ type DeleteMovieResponse {
 
 extend type Query {
   movies: [Movie]
-  movie(id: Int!): Movie
+  movie(id: ID!): Movie
 }
 
 extend type Mutation {
