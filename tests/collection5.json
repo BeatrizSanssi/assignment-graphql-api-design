@@ -406,6 +406,115 @@
 			"response": []
 		},
 		{
+			"name": "addMovie (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"const jsonData = pm.response.json();",
+							"pm.test(\"No errors in response\", () => {",
+							"    pm.expect(jsonData.errors).to.be.undefined;",
+							"});",
+							"pm.test(\"Movie created with expected title\", () => {",
+							"    pm.expect(jsonData.data.addMovie.title).to.eql(pm.environment.get(\"randomTitle\"));",
+							"    // Save the movie _id for later use:",
+							"    pm.environment.set(\"movieId\", jsonData.data.addMovie._id);",
+							"    pm.environment.set(\"randomId\", jsonData.data.addMovie.id);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  addMovie(\n    title: \"{{randomTitle}}\",\n    release_date: {{randomYear}},\n    genre: \"Action\",\n    description: \"A generated movie\"\n  ) {\n    _id\n    title\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/graphql",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "### addMovie (Success)\n\nThis test ensures that a new movie can be successfully added to the database when provided with valid input data and a valid authentication token.\n\n**Expected Result:**\n\n- The server should return **HTTP status 200**.\n    \n- The response should not contain any errors.\n    \n- The addMovie mutation should return a movie object with:\n    \n    - _id (MongoDB ID)\n        \n    - id (external movie ID)\n        \n    - title matching the randomTitle used in the request.\n        \n- The movie _id and id should be saved as environment variables for use in later requests."
+			},
+			"response": []
+		},
+		{
+			"name": "addMovie (Failure)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+							"const jsonData = pm.response.json();",
+							"pm.test(\"Error returned for missing token\", () => {",
+							"    pm.expect(jsonData.errors).to.be.an(\"array\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  addMovie(\n    title: \"Unauthorized Movie\",\n    release_date: 2000,\n    genre: \"Drama\",\n    description: \"This should not be added\"\n  ) {\n    _id\n    id\n    title\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/graphql",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "### addMovie (Failure)\n\nThis test ensures that the server returns an appropriate error when trying to add a movie **without a valid token** (e.g., no Authorization header is sent).\n\n**Expected Result:**\n\n- The server should return **HTTP status 200 or 400**, depending on implementation.\n    \n- The response should contain an errors array with a descriptive message such as Unauthorized or Missing token.\n    \n- No addMovie data should be returned."
+			},
+			"response": []
+		},
+		{
 			"name": "movies (Success)",
 			"event": [
 				{
@@ -514,115 +623,6 @@
 					]
 				},
 				"description": "### movies (Failure)\n\nAttempts to fetch movies with an invalid argument type.\n\n**Expected result:**\n\n- The server returns a 400 or 500 level error, depending on the invalid query.\n    \n- The errors array is present in the response indicating validation failure or internal server error."
-			},
-			"response": []
-		},
-		{
-			"name": "addMovie (Success)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", () => {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"const jsonData = pm.response.json();",
-							"pm.test(\"No errors in response\", () => {",
-							"    pm.expect(jsonData.errors).to.be.undefined;",
-							"});",
-							"pm.test(\"Movie created with expected title\", () => {",
-							"    pm.expect(jsonData.data.addMovie.title).to.eql(pm.environment.get(\"randomTitle\"));",
-							"    // Save the movie _id for later use:",
-							"    pm.environment.set(\"movieId\", jsonData.data.addMovie._id);",
-							"    pm.environment.set(\"randomId\", jsonData.data.addMovie.id);",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{authToken}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "graphql",
-					"graphql": {
-						"query": "mutation {\n  addMovie(\n    title: \"{{randomTitle}}\",\n    release_date: {{randomYear}},\n    genre: \"Action\",\n    description: \"A generated movie\"\n  ) {\n    _id\n    title\n  }\n}",
-						"variables": ""
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/graphql",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"graphql"
-					]
-				},
-				"description": "### addMovie (Success)\n\nThis test ensures that a new movie can be successfully added to the database when provided with valid input data and a valid authentication token.\n\n**Expected Result:**\n\n- The server should return **HTTP status 200**.\n    \n- The response should not contain any errors.\n    \n- The addMovie mutation should return a movie object with:\n    \n    - _id (MongoDB ID)\n        \n    - id (external movie ID)\n        \n    - title matching the randomTitle used in the request.\n        \n- The movie _id and id should be saved as environment variables for use in later requests."
-			},
-			"response": []
-		},
-		{
-			"name": "addMovie (Failure)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
-							"const jsonData = pm.response.json();",
-							"pm.test(\"Error returned for missing token\", () => {",
-							"    pm.expect(jsonData.errors).to.be.an(\"array\");",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "graphql",
-					"graphql": {
-						"query": "mutation {\n  addMovie(\n    title: \"Unauthorized Movie\",\n    release_date: 2000,\n    genre: \"Drama\",\n    description: \"This should not be added\"\n  ) {\n    _id\n    id\n    title\n  }\n}",
-						"variables": ""
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/graphql",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"graphql"
-					]
-				},
-				"description": "### addMovie (Failure)\n\nThis test ensures that the server returns an appropriate error when trying to add a movie **without a valid token** (e.g., no Authorization header is sent).\n\n**Expected Result:**\n\n- The server should return **HTTP status 200 or 400**, depending on implementation.\n    \n- The response should contain an errors array with a descriptive message such as Unauthorized or Missing token.\n    \n- No addMovie data should be returned."
 			},
 			"response": []
 		},
