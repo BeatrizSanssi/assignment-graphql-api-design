@@ -132,7 +132,13 @@ jobs:
         run: docker ps -a
 
       - name: Show MongoDB container logs
-        run: docker logs $(docker ps --format '{{.Names}}' | grep mongo)
+        run: |
+          MONGO_CONTAINER=$(docker ps --format '{{.Names}}' | grep mongo || true)
+          if [ -n "$MONGO_CONTAINER" ]; then
+            docker logs "$MONGO_CONTAINER"
+          else
+            echo "⚠️ No MongoDB container found."
+          fi
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
