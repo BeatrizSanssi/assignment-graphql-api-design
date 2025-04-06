@@ -141,8 +141,8 @@ jobs:
         run: |
           docker compose --env-file .env up -d
       
-      - name: Seed database
-        run: docker exec graphql-api node seed.js
+      # - name: Seed database
+      #   run: docker exec graphql-api node seed.js
 
       # - name: Restore MongoDB from dump
       #   run: ./restore-db.sh

@@ -12,8 +12,5 @@ echo "MONGO_PASSWORD: $MONGO_PASSWORD"
 echo "⏳ Waiting for MongoDB..."
 until nc -z mongo 27017; do sleep 1; done
 
-echo "Seeding database..."
-node seed.js
-
 echo "Starting server..."
 npm start
