@@ -9,9 +9,9 @@ WORKDIR /app
 COPY . /app
 
 # 4. Set environment variables for csv files
-ENV CSV_FILE_PATH=./app/archive/movies_metadata.csv
-ENV ACTORS_CSV_PATH=./app/archive/credits.csv
-ENV RATINGS_CSV_PATH=./app/archive/ratings_small.csv
+ENV CSV_FILE_PATH=../archive/movies_metadata.csv
+ENV ACTORS_CSV_PATH=../archive/credits.csv
+ENV RATINGS_CSV_PATH=../archive/ratings_small.csv
 
 # 5. Install dependencies
 COPY package*.json ./
