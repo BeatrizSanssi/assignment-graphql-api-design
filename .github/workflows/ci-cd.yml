@@ -9,12 +9,6 @@ on:
     branches: 
       - main
 
-
-    # services:
-    #   mongo:
-    #     image: mongo
-    #     ports:
-          # - 27017:27017
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,87 +24,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-    # env:
-    #   MONGO_USER: ${{ secrets.MONGO_USER }}
-    #   MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
-    #   DB_CONNECTION_STRING: mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@mongo:27017/graphql-api-db?authSource=admin
-    #   BASE_URL: http://localhost:8081/graphql
-
-    # services:
-    #   mongo:
-    #     image: mongo:latest
-    #     ports:
-    #       - "27017:27017"
-    #     env:
-    #       MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_USER }}
-    #       MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
-    #     options: >-
-    #       --health-cmd "mongo --eval 'db.runCommand({ ping: 1 })'"
-    #       --health-interval=10s
-    #       --health-timeout=5s
-    #       --health-retries=5
-
-    # steps:
-    #   - name: Show container logs
-    #     run: docker logs graphql-api
-        
-    #   - name: Checkout repository
-    #     uses: actions/checkout@v3
-
-    #   - name: Set up Node.js
-    #     uses: actions/setup-node@v3
-    #     with:
-    #       node-version: '18'
-
-    #   - name: Install dependencies
-    #     run: npm install
-
-      # - name: Build & Start Docker containers
-      #   run: docker compose -f docker-compose.yml up -d --build
-
-      # - name: Show container logs
-      #   run: docker logs graphql-api
-
-      # - name: Wait for API to be ready
-      #   run: |
-      #     echo "Waiting for GraphQL API to be ready..."
-      #     for i in {1..20}; do
-      #       if curl -s http://localhost:8081/graphql > /dev/null; then
-      #         echo "✅ API is up!"
-      #         break
-      #       fi
-      #       echo "⏳ Waiting ($i)..."
-      #       sleep 3
-      #     done
-
-      # - name: Seed test database
-      #   run: docker exec graphql-api node scripts/seed-test-db.js
-
-      # - name: Install Newman
-      #   run: npm install -g newman
-
-      # - name: Run Postman tests
-      #   run: |
-      #     newman run tests/collection.json \
-      #       --environment tests/environment.json \
-      #       --delay-request 2000 \
-      #       --timeout 60000
-
-      # - name: Cleanup test database
-      #   run: docker exec graphql-api node scripts/cleanup-test-db.js
-
-      # - name: Docker login
-      #   uses: docker/login-action@v2
-      #   with:
-      #     username: ${{ secrets.DOCKER_USERNAME }}
-      #     password: ${{ secrets.DOCKER_PASSWORD }}
-
-      # - name: Build and Push Docker image
-      #   uses: docker/build-push-action@v4
-      #   with:
-      #     context: .
-      #     push: true
-      #     tags: bsan89/assignment-api-design-api:latest
 
   docker: 
     runs-on: ubuntu-latest
@@ -136,13 +49,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
-      # - name: Build and push Docker image
-      #   uses: docker/build-push-action@v4
-      #   with:
-      #     context: .
-      #     push: true
-      #     tags: ${{ secrets.DOCKER_USERNAME }}/assignment-api-design-api:latest
       
       - name: Set up environment variables
         run: |
@@ -189,20 +95,7 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/assignment-api-design-api:latest
-    # steps:
-    #   - name: Checkout repository
-    #     uses: actions/checkout@v3
-
-    #   - name: Install Docker
-    #     run: |
-    #       sudo apt-get update
-    #       sudo apt-get install -y docker.io
-
-    #   - name: Docker login
-    #     uses: docker/login-action@v2
-    #     with:
-    #       username: ${{ secrets.DOCKER_USERNAME }}
-    #       password: ${{ secrets.DOCKER_PASSWORD }}
+  
   deploy:
     runs-on : ubuntu-latest
     needs: [build, docker]
@@ -279,84 +172,7 @@ jobs:
             sleep 3
           done
           exit 1
-      # - name: Seed test database
-      #   run: docker exec graphql-api node scripts/seed-test-db.js
-      
-      # - name: Seed the database
-      #   run: docker exec graphql-api node seed.js
 
-      # - name: Verify MongoDB seed
-      #   run: |
-      #     docker exec $(docker ps --format '{{.Names}}' | grep mongo) mongosh -u root -p secret --authenticationDatabase admin --eval 'db.getSiblingDB("graphql-api-db").movies.countDocuments()'
-
-      # - name: Wait for movieDB to be healthy
-      #   run: |
-      #     echo "⏳ Waiting for movieDB to be healthy..."
-
-      #     for i in {1..20}; do
-      #       MONGO_CONTAINER=$(docker ps --format '{{.Names}}' | grep movieDB || true)
-
-      #       if [ -z "$MONGO_CONTAINER" ]; then
-      #         echo "❌ movieDB container not found."
-      #       else
-      #         HEALTH=$(docker inspect --format='{{.State.Health.Status}}' "$MONGO_CONTAINER" || echo "unknown")
-
-      #         echo "⏱️  [$i] Status: $HEALTH"
-
-      #         if [ "$HEALTH" = "healthy" ]; then
-      #           echo "✅ movieDB is healthy!"
-      #           exit 0
-      #         fi
-      #       fi
-
-      #       sleep 3
-      #     done
-
-      #     echo "❌ movieDB did not become healthy in time."
-      #     exit 1
-
-      # - name: Seed MongoDB test database
-      #   run: docker exec graphql-api node seed.js
-
-      # - name: Debug MongoDB – list all databases
-      #   run: |
-      #     docker exec graphql-api node -e '
-      #       const mongoose = require("mongoose");
-      #       mongoose.connect(process.env.DB_CONNECTION_STRING).then(async () => {
-      #         const dbs = await mongoose.connection.db.admin().listDatabases();
-      #         console.log("📦 All databases:");
-      #         dbs.databases.forEach(d => console.log(" -", d.name));
-      #         process.exit(0);
-      #       }).catch(err => {
-      #         console.error("❌ Error:", err);
-      #         process.exit(1);
-      #       });
-      #     '
-      #   env:
-      #     DB_CONNECTION_STRING: mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@movieDB:27017/graphql-api-db?authSource=admin
-      
-      # - name: Verify MongoDB seed
-      #   run: |
-      #     docker exec graphql-api node -e '
-      #       const mongoose = require("mongoose");
-      #       mongoose.connect(process.env.DB_CONNECTION_STRING).then(async () => {
-      #         const count = await mongoose.connection.db.collection("movies").countDocuments();
-      #         console.log("🎬 Movie count:", count);
-      #         process.exit(count > 0 ? 0 : 1);
-      #       }).catch(err => {
-      #         console.error("❌ Connection error:", err);
-      #         process.exit(1);
-      #       });
-      #     '
-      #   env:
-      #     DB_CONNECTION_STRING: mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@movieDB:27017/graphql-api-db?authSource=admin
-      # DB_CONNECTION_STRING: mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@localhost:27017/graphql-api-db?authSource=admin  
-      # - name: Verify MongoDB seed
-      #   run: |
-      #     MONGO_CONTAINER=$(docker ps --format '{{.Names}}' | grep movieDB)
-      #     echo "✅ Found MongoDB container: $MONGO_CONTAINER"
-      #     docker exec "$MONGO_CONTAINER" mongosh --username "${{ secrets.MONGO_USER }}" --password "${{ secrets.MONGO_PASSWORD }}" --authenticationDatabase admin --eval 'db.getSiblingDB("graphql-api-db").movies.countDocuments()'
-      
       - name: Install Newman
         run: npm install -g newman
 
