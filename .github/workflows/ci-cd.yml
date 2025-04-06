@@ -262,10 +262,10 @@ jobs:
             --folder "refreshToken (Success)" \
             --folder "refreshToken (Failure)" \
             --folder "deleteUser (Success)" \
-            --folder "movies (Success)" \
-            --folder "movies (Failure)" \
             --folder "addMovie (Success)" \
             --folder "addMovie (Failure)" \
+            --folder "movies (Success)" \
+            --folder "movies (Failure)" \
             --folder "movie (Success)" \
             --folder "movie (Failure)" \
             --folder "updateMovie (Success)" \
