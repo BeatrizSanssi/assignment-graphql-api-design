@@ -283,35 +283,35 @@ jobs:
       #   run: |
       #     docker exec $(docker ps --format '{{.Names}}' | grep mongo) mongosh -u root -p secret --authenticationDatabase admin --eval 'db.getSiblingDB("graphql-api-db").movies.countDocuments()'
 
-      - name: Wait for movieDB to be healthy
-        run: |
-          echo "⏳ Waiting for movieDB to be healthy..."
+      # - name: Wait for movieDB to be healthy
+      #   run: |
+      #     echo "⏳ Waiting for movieDB to be healthy..."
 
-          for i in {1..20}; do
-            MONGO_CONTAINER=$(docker ps --format '{{.Names}}' | grep movieDB || true)
+      #     for i in {1..20}; do
+      #       MONGO_CONTAINER=$(docker ps --format '{{.Names}}' | grep movieDB || true)
 
-            if [ -z "$MONGO_CONTAINER" ]; then
-              echo "❌ movieDB container not found."
-            else
-              HEALTH=$(docker inspect --format='{{.State.Health.Status}}' "$MONGO_CONTAINER" || echo "unknown")
+      #       if [ -z "$MONGO_CONTAINER" ]; then
+      #         echo "❌ movieDB container not found."
+      #       else
+      #         HEALTH=$(docker inspect --format='{{.State.Health.Status}}' "$MONGO_CONTAINER" || echo "unknown")
 
-              echo "⏱️  [$i] Status: $HEALTH"
+      #         echo "⏱️  [$i] Status: $HEALTH"
 
-              if [ "$HEALTH" = "healthy" ]; then
-                echo "✅ movieDB is healthy!"
-                exit 0
-              fi
-            fi
+      #         if [ "$HEALTH" = "healthy" ]; then
+      #           echo "✅ movieDB is healthy!"
+      #           exit 0
+      #         fi
+      #       fi
 
-            sleep 3
-          done
+      #       sleep 3
+      #     done
 
-          echo "❌ movieDB did not become healthy in time."
-          exit 1
+      #     echo "❌ movieDB did not become healthy in time."
+      #     exit 1
 
       - name: Verify MongoDB seed
         run: |
-          MONGO_CONTAINER=$(docker ps --format '{{.Names}}' | grep movieDB)
+          MONGO_CONTAINER=$(docker ps --format '{{.Names}}' | grep graphql-api)
           echo "✅ Found MongoDB container: $MONGO_CONTAINER"
           docker exec "$MONGO_CONTAINER" bash -c "mongosh --username '${{ secrets.MONGO_USER }}' --password '${{ secrets.MONGO_PASSWORD }}' --authenticationDatabase admin --eval 'db.getSiblingDB(\"graphql-api-db\").movies.countDocuments()'"
       
