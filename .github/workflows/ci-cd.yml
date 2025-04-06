@@ -131,13 +131,13 @@ jobs:
       - name: List all running containers
         run: docker ps -a
 
-      - name: Show MongoDB container logs
+      - name: Show Docker logs
         run: |
-          MONGO_CONTAINER=$(docker ps --format '{{.Names}}' | grep mongo || true)
-          if [ -n "$MONGO_CONTAINER" ]; then
-            docker logs "$MONGO_CONTAINER"
+          CONTAINER=$(docker ps --format '{{.Names}}' | grep graphql-api || true)
+          if [ -n "$CONTAINER" ]; then
+            docker logs "$CONTAINER"
           else
-            echo "⚠️ No MongoDB container found."
+            echo "⚠️ graphql-api container not found."
           fi
 
       - name: Login to DockerHub
