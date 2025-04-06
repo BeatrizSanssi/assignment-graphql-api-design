@@ -14,7 +14,7 @@ COPY package*.json ./
 RUN npm install
 
 # 6. Install dependencies for testing
-RUN apt-get update && apt-get install -y netcat
+RUN apt-get update && apt-get install -y netcat-openbsd
 RUN npm install -g newman
 
 
