@@ -279,10 +279,17 @@ jobs:
       # - name: Seed the database
       #   run: docker exec graphql-api node seed.js
 
+      # - name: Verify MongoDB seed
+      #   run: |
+      #     docker exec $(docker ps --format '{{.Names}}' | grep mongo) mongosh -u root -p secret --authenticationDatabase admin --eval 'db.getSiblingDB("graphql-api-db").movies.countDocuments()'
+
       - name: Verify MongoDB seed
         run: |
-          docker exec $(docker ps --format '{{.Names}}' | grep mongo) mongosh -u root -p secret --authenticationDatabase admin --eval 'db.getSiblingDB("graphql-api-db").movies.countDocuments()'
-
+          MONGO_CONTAINER=$(docker ps --format '{{.Names}}' | grep mongo)
+          echo "✅ Found MongoDB container: $MONGO_CONTAINER"
+          
+          docker exec "$MONGO_CONTAINER" bash -c 'mongosh --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --eval "db.getSiblingDB(\"graphql-api-db\").movies.countDocuments()"'
+      
       - name: Install Newman
         run: npm install -g newman
 
