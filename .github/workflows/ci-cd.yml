@@ -283,6 +283,21 @@ jobs:
       #   run: |
       #     docker exec $(docker ps --format '{{.Names}}' | grep mongo) mongosh -u root -p secret --authenticationDatabase admin --eval 'db.getSiblingDB("graphql-api-db").movies.countDocuments()'
 
+      - name: Wait for MongoDB to be healthy
+        run: |
+          echo "⏳ Waiting for MongoDB to be healthy..."
+          for i in {1..20}; do
+            HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' $(docker ps --format '{{.Names}}' | grep mongo) | tr -d '"')
+            echo "⏱️  Status: $HEALTH"
+            if [ "$HEALTH" = "healthy" ]; then
+              echo "✅ MongoDB is healthy!"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "❌ MongoDB did not become healthy in time."
+          exit 1
+
       - name: Verify MongoDB seed
         run: |
           MONGO_CONTAINER=$(docker ps --format '{{.Names}}' | grep mongo)
