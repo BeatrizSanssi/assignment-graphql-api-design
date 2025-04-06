@@ -4,7 +4,7 @@
 	"values": [
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:8081",
+			"value": "https://cscloud6-136.lnu.se/graphql-api",
 			"type": "default",
 			"enabled": true
 		},
