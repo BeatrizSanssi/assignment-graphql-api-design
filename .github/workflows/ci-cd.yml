@@ -287,8 +287,7 @@ jobs:
         run: |
           MONGO_CONTAINER=$(docker ps --format '{{.Names}}' | grep mongo)
           echo "✅ Found MongoDB container: $MONGO_CONTAINER"
-          
-          docker exec "$MONGO_CONTAINER" bash -c 'mongosh --username "$MONGO_INITDB_ROOT_USERNAME" --password "$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --eval "db.getSiblingDB(\"graphql-api-db\").movies.countDocuments()"'
+          docker exec "$MONGO_CONTAINER" bash -c "mongosh --username '${{ secrets.MONGO_USER }}' --password '${{ secrets.MONGO_PASSWORD }}' --authenticationDatabase admin --eval 'db.getSiblingDB(\"graphql-api-db\").movies.countDocuments()'"
       
       - name: Install Newman
         run: npm install -g newman
