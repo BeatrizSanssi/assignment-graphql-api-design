@@ -150,6 +150,9 @@ jobs:
           echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" >> .env
           echo "DB_CONNECTION_STRING=mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@mongo:27017/graphql-api-db?authSource=admin" >> .env
         
+      - name: Remove MongoDB volume to force fresh import
+        run: docker volume rm assignment-graphql-api-design_mongo-data || true
+        
       - name: Run Docker Compose
         run: |
           docker compose --env-file .env up -d
