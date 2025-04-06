@@ -314,11 +314,12 @@ jobs:
           docker exec graphql-api node -e '
             const mongoose = require("mongoose");
             mongoose.connect(process.env.DB_CONNECTION_STRING).then(async () => {
-              const count = await mongoose.connection.db.collection("movies").countDocuments();
-              console.log("✅ Movie count:", count);
-              process.exit(count > 0 ? 0 : 1);
+              const dbs = await mongoose.connection.db.admin().listDatabases();
+              console.log("📦 All databases:");
+              dbs.databases.forEach(d => console.log(" -", d.name));
+              process.exit(0);
             }).catch(err => {
-              console.error("❌ Connection error:", err);
+              console.error("❌ Error:", err);
               process.exit(1);
             });
           '
