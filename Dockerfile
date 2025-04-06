@@ -7,7 +7,7 @@ WORKDIR /app
 # 3. Copy files
 # COPY . .
 COPY . /app
-
+COPY archive ./app/archive
 
 # 5. Install dependencies
 COPY package*.json ./
