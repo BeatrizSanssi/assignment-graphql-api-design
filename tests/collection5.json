@@ -756,7 +756,7 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "mutation {\n  updateMovie(\n    id: \"{{movieId}}\",\n    title: \"Updated Title\"\n  ) {\n    id\n    _id\n    title\n    release_date\n    genre\n    description\n  }\n}",
+						"query": "mutation {\n  updateMovie(\n    id: \"{{randomId}}\",\n    title: \"Updated Title\"\n  ) {\n    id\n    _id\n    title\n    release_date\n    genre\n    description\n  }\n}",
 						"variables": ""
 					}
 				},
@@ -797,7 +797,7 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "mutation {\n  updateMovie(\n    id: \"{{movieObjectId}}\",\n    title: \"Should Not Update\"\n  ) {\n    id\n    title\n  }\n}",
+						"query": "mutation {\n  updateMovie(\n    id: \"{{movieId}}\",\n    title: \"Should Not Update\"\n  ) {\n    id\n    title\n  }\n}",
 						"variables": ""
 					}
 				},
@@ -1191,7 +1191,7 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "query GetData($id: Int!) {\n  movies {\n    id\n    title\n    release_date\n    ratings {\n      rating\n      userId\n    }\n  }\n  movie(id: $id) {\n    title\n    id\n    _id \n    release_date \n    genre \n    description\n    averageRating\n     ratings {\n      rating\n      userId\n    }\n  }\n  ratings(movieId: $movieId) {\n    rating\n    userId\n  }\n}",
+						"query": "query GetData($id: Int!) {\n  movies {\n    _id\n    id\n    title\n    release_date\n    ratings {\n      rating\n      userId\n    }\n  }\n  movie(id: $id) {\n    title\n    id\n    _id \n    release_date \n    genre \n    description\n    averageRating\n     ratings {\n      rating\n      userId\n    }\n  }\n  ratings(movieId: $movieId) {\n    rating\n    userId\n  }\n}",
 						"variables": "{\n  \"id\": {{id}},\n   \"movieId\": {{movieId}}\n}"
 					}
 				},
