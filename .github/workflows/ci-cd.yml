@@ -132,7 +132,7 @@ jobs:
         run: docker ps -a
 
       - name: Show MongoDB container logs
-        run: docker logs movieDB
+        run: docker logs $(docker ps --format '{{.Names}}' | grep mongo)
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -265,7 +265,7 @@ jobs:
 
       - name: Verify MongoDB seed
         run: |
-          docker exec movieDB mongosh -u root -p secret --authenticationDatabase admin --eval 'db.getSiblingDB("graphql-api-db").movies.countDocuments()'
+          docker exec $(docker ps --format '{{.Names}}' | grep mongo) mongosh -u root -p secret --authenticationDatabase admin --eval 'db.getSiblingDB("graphql-api-db").movies.countDocuments()'
 
       - name: Install Newman
         run: npm install -g newman
