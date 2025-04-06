@@ -540,7 +540,8 @@
 							"console.log(\"Random movie selected:\", randomMovie);",
 							"// Save the id of the selected movie to the environment variables",
 							"pm.environment.set(\"movieTitle\", randomMovie.title);",
-							"pm.environment.set(\"id\", randomMovie.id);"
+							"pm.environment.set(\"id\", randomMovie.id);",
+							"pm.environment.set(\"movieId\", randomMovie._id);"
 						],
 						"type": "text/javascript",
 						"packages": {}
