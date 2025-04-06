@@ -286,15 +286,26 @@ jobs:
       - name: Wait for MongoDB to be healthy
         run: |
           echo "⏳ Waiting for MongoDB to be healthy..."
+
           for i in {1..20}; do
-            HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' $(docker ps --format '{{.Names}}' | grep mongo) | tr -d '"')
-            echo "⏱️  Status: $HEALTH"
-            if [ "$HEALTH" = "healthy" ]; then
-              echo "✅ MongoDB is healthy!"
-              exit 0
+            MONGO_CONTAINER=$(docker ps --format '{{.Names}}' | grep mongo || true)
+
+            if [ -z "$MONGO_CONTAINER" ]; then
+              echo "❌ MongoDB container not found."
+            else
+              HEALTH=$(docker inspect --format='{{.State.Health.Status}}' "$MONGO_CONTAINER" || echo "unknown")
+
+              echo "⏱️  [$i] Status: $HEALTH"
+
+              if [ "$HEALTH" = "healthy" ]; then
+                echo "✅ MongoDB is healthy!"
+                exit 0
+              fi
             fi
+
             sleep 3
           done
+
           echo "❌ MongoDB did not become healthy in time."
           exit 1
 
