@@ -152,7 +152,7 @@ jobs:
         
       - name: Remove MongoDB volume to force fresh import
         run: docker volume rm assignment-graphql-api-design_mongo-data || true
-        
+
       - name: Run Docker Compose
         run: |
           docker compose --env-file .env up -d
@@ -248,8 +248,18 @@ jobs:
         run: |
           docker compose --env-file .env up -d
 
-      - name: Show MongoDB container logs
-        run: docker logs movieDB
+      - name: Show Docker logs
+        run: |
+          CONTAINER=$(docker ps --format '{{.Names}}' | grep graphql-api || true)
+          if [ -n "$CONTAINER" ]; then
+            docker logs "$CONTAINER"
+          else
+            echo "⚠️ graphql-api container not found."
+          fi
+      
+      - name: Verify Containers are up and running
+        run: |
+          docker ps
 
       - name: Wait for API to be ready
         run: |
