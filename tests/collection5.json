@@ -1191,7 +1191,7 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "query GetData($id: Int!) {\n  movies {\n    _id\n    id\n    title\n    release_date\n    ratings {\n      rating\n      userId\n    }\n  }\n  movie(id: $id) {\n    title\n    id\n    _id \n    release_date \n    genre \n    description\n    averageRating\n     ratings {\n      rating\n      userId\n    }\n  }\n  ratings(movieId: $Id) {\n    rating\n    userId\n  }\n}",
+						"query": "query GetData($id: Int!) {\n  movies {\n    _id\n    id\n    title\n    release_date\n    ratings {\n      rating\n      userId\n    }\n  }\n  movie(id: $id) {\n    title\n    id\n    _id \n    release_date \n    genre \n    description\n    averageRating\n     ratings {\n      rating\n      userId\n    }\n  }\n  ratings(movieId: $id) {\n    rating\n    userId\n  }\n}",
 						"variables": "{\n  \"id\": {{id}},\n   \"movieId\": {{movieId}}\n}"
 					}
 				},
