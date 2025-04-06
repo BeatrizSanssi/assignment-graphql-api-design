@@ -866,7 +866,7 @@
 					"mode": "graphql",
 					"graphql": {
 						"query": "mutation DeleteMovie($id: ID!) {\n  deleteMovie(id: $id) {\n    deletedMovie {\n      id\n      title\n      genre\n      release_date\n      description\n    }\n    message\n  }\n}",
-						"variables": "{\n  \"id\": \"{{movieId}}\"\n}"
+						"variables": "{\n  \"id\": \"{{randomMovieId}}\"\n}"
 					}
 				},
 				"url": {
