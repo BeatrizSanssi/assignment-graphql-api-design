@@ -20,10 +20,6 @@ services:
       - CSV_FILE_PATH=/app/archive/movies_metadata.csv
       - ACTORS_CSV_PATH=/app/archive/credits.csv
       - RATINGS_CSV_PATH=/app/archive/ratings_small.csv
-    volumes:
-      - ../archive:/app/archive
-      - .:/app
-    restart: unless-stopped
 
     # env_file:
     #   - .env

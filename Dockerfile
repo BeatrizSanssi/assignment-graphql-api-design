@@ -8,19 +8,24 @@ WORKDIR /app
 # COPY . .
 COPY . /app
 
-# 4. Install dependencies
+# 4. Set environment variables for csv files
+ENV CSV_FILE_PATH=/app/archive/movies_metadata.csv
+ENV ACTORS_CSV_PATH=/app/archive/credits.csv
+ENV RATINGS_CSV_PATH=/app/archive/ratings_small.csv
+
+# 5. Install dependencies
 COPY package*.json ./
 RUN npm install
 
-# 5. Install dependencies for testing
+# 6. Install dependencies for testing
 RUN npm install -g newman
 
-# 6. Give execute permissions to entrypoint.sh
+# 7. Give execute permissions to entrypoint.sh
 COPY entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 
 
-# 6. Run the entrypoint script
+# 8. Run the entrypoint script
 # This script will run the server and then run the tests
 # It will also wait for the server to be ready before running the tests
 CMD ["./entrypoint.sh"]
