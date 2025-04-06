@@ -8,13 +8,13 @@ WORKDIR /app
 # COPY . .
 COPY . /app
 
-COPY . .
 
 # 5. Install dependencies
 COPY package*.json ./
 RUN npm install
 
 # 6. Install dependencies for testing
+RUN apt-get update && apt-get install -y netcat
 RUN npm install -g newman
 
 
