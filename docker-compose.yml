@@ -28,7 +28,6 @@ services:
     # restart: unless-stopped
   mongo:
     image: mongo:latest
-    container_name: movieDB
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
