@@ -248,6 +248,12 @@ jobs:
         run: |
           docker compose --env-file .env up -d
 
+      - name: Restore MongoDB from dump
+        run: ./restore-db.sh
+        env:
+          MONGO_USER: ${{ secrets.MONGO_USER }}
+          MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+
       - name: Show Docker logs
         run: |
           CONTAINER=$(docker ps --format '{{.Names}}' | grep graphql-api || true)
@@ -309,41 +315,41 @@ jobs:
       #     echo "❌ movieDB did not become healthy in time."
       #     exit 1
 
-      - name: Seed MongoDB test database
-        run: docker exec graphql-api node seed.js
-        
-      - name: Debug MongoDB – list all databases
-        run: |
-          docker exec graphql-api node -e '
-            const mongoose = require("mongoose");
-            mongoose.connect(process.env.DB_CONNECTION_STRING).then(async () => {
-              const dbs = await mongoose.connection.db.admin().listDatabases();
-              console.log("📦 All databases:");
-              dbs.databases.forEach(d => console.log(" -", d.name));
-              process.exit(0);
-            }).catch(err => {
-              console.error("❌ Error:", err);
-              process.exit(1);
-            });
-          '
-        env:
-          DB_CONNECTION_STRING: mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@movieDB:27017/graphql-api-db?authSource=admin
+      # - name: Seed MongoDB test database
+      #   run: docker exec graphql-api node seed.js
+
+      # - name: Debug MongoDB – list all databases
+      #   run: |
+      #     docker exec graphql-api node -e '
+      #       const mongoose = require("mongoose");
+      #       mongoose.connect(process.env.DB_CONNECTION_STRING).then(async () => {
+      #         const dbs = await mongoose.connection.db.admin().listDatabases();
+      #         console.log("📦 All databases:");
+      #         dbs.databases.forEach(d => console.log(" -", d.name));
+      #         process.exit(0);
+      #       }).catch(err => {
+      #         console.error("❌ Error:", err);
+      #         process.exit(1);
+      #       });
+      #     '
+      #   env:
+      #     DB_CONNECTION_STRING: mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@movieDB:27017/graphql-api-db?authSource=admin
       
-      - name: Verify MongoDB seed
-        run: |
-          docker exec graphql-api node -e '
-            const mongoose = require("mongoose");
-            mongoose.connect(process.env.DB_CONNECTION_STRING).then(async () => {
-              const count = await mongoose.connection.db.collection("movies").countDocuments();
-              console.log("🎬 Movie count:", count);
-              process.exit(count > 0 ? 0 : 1);
-            }).catch(err => {
-              console.error("❌ Connection error:", err);
-              process.exit(1);
-            });
-          '
-        env:
-          DB_CONNECTION_STRING: mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@movieDB:27017/graphql-api-db?authSource=admin
+      # - name: Verify MongoDB seed
+      #   run: |
+      #     docker exec graphql-api node -e '
+      #       const mongoose = require("mongoose");
+      #       mongoose.connect(process.env.DB_CONNECTION_STRING).then(async () => {
+      #         const count = await mongoose.connection.db.collection("movies").countDocuments();
+      #         console.log("🎬 Movie count:", count);
+      #         process.exit(count > 0 ? 0 : 1);
+      #       }).catch(err => {
+      #         console.error("❌ Connection error:", err);
+      #         process.exit(1);
+      #       });
+      #     '
+      #   env:
+      #     DB_CONNECTION_STRING: mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@movieDB:27017/graphql-api-db?authSource=admin
       # DB_CONNECTION_STRING: mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@localhost:27017/graphql-api-db?authSource=admin  
       # - name: Verify MongoDB seed
       #   run: |
