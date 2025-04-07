@@ -12,6 +12,9 @@ import { MovieModel } from './src/models/MovieModel.js'
 import { ActorModel } from './src/models/ActorModel.js'
 import { RatingModel } from './src/models/RatingModel.js'
 
+// const isDocker = process.env.DOCKER === 'true'
+// const host = isDocker ? 'mongo' : 'localhost'
+
 /**
  * Parses a CSV file and returns an array of objects.
  *
@@ -113,7 +116,7 @@ async function seedActors () {
 async function seed () {
   try {
     // 1. CONNECT TO DB
-    await connectToDatabase(process.env.DB_CONNECTION_STRING)
+    await connectToDatabase(process.env.DB_CONNECTION_STRING_LOCAL)
     console.log('Connected to MongoDB for seeding.')
 
     // 2. PARSE & SEED MOVIES

@@ -40,8 +40,8 @@ dotenv.config()
 
 try {
   // Connect to MongoDB.
-  await connectToDatabase(process.env.DB_CONNECTION_STRING)
-  console.log(`Database Connection String: ${process.env.DB_CONNECTION_STRING}`)
+  await connectToDatabase(process.env.DB_CONNECTION_STRING_LOCAL)
+  console.log(`Database Connection String: ${process.env.DB_CONNECTION_STRING_LOCAL}`)
   console.log(`Base URL: ${process.env.BASE_URL}`)
 
   // Determine current file directory.
@@ -176,6 +176,7 @@ try {
     logger.info(`Server running at http://localhost:${server.address().port}`)
     logger.info(`GraphQL endpoint at http://localhost:${server.address().port}/graphql`)
     logger.info('Press Ctrl-C to terminate...')
+    console.log('Server is up and listening on', process.env.NODEJS_EXPRESS_PORT)
   })
 } catch (err) {
   logger.error(err.message, { error: err })
