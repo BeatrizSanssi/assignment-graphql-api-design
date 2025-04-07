@@ -63,7 +63,7 @@ jobs:
 
       - name: Run Docker Compose
         run: |
-          docker compose --env-file .env up --build
+          docker compose --env-file .env up --build -d
 
       - name: Show Docker logs
         run: |
@@ -147,7 +147,7 @@ jobs:
 
       - name: Run Docker Compose
         run: |
-          docker compose --env-file .env up --build
+          docker compose --env-file .env up --build -d
         
       - name: Run docker logs for debugging
         run: docker compose logs graphql-api
