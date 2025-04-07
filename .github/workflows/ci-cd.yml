@@ -53,8 +53,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Show Docker Compose config
-        run: docker compose config
+      # - name: Show Docker Compose config
+      #   run: docker compose config
   
       - name: List all running containers
         run: docker ps -a
