@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo "👀 entrypoint.sh is running"
 # echo "Installing dependencies (if needed)..."
 # npm install
 

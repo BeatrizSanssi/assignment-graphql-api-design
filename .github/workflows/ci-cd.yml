@@ -63,7 +63,7 @@ jobs:
 
       - name: Run Docker Compose
         run: |
-          docker compose --env-file .env up -d
+          docker compose --env-file .env up --build
 
       - name: Show Docker logs
         run: |
@@ -80,7 +80,7 @@ jobs:
 
       - name: Print container logs before waiting
         run: docker logs graphql-api || true
-        
+
       - name: Wait for API to be ready
         run: |
           echo "Waiting for GraphQL API to be ready..."
@@ -147,7 +147,10 @@ jobs:
 
       - name: Run Docker Compose
         run: |
-          docker compose --env-file .env up -d
+          docker compose --env-file .env up --build
+        
+      - name: Run docker logs for debugging
+        run: docker compose logs graphql-api
       
       # - name: Seed database
       #   run: docker exec graphql-api node seed.js
