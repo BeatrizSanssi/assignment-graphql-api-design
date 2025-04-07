@@ -150,7 +150,7 @@ jobs:
           docker compose --env-file .env up --build -d
         
       - name: Run docker logs for debugging
-        run: docker compose logs graphql-api
+        run: docker compose logs app
       
       # - name: Seed database
       #   run: docker exec graphql-api node seed.js
