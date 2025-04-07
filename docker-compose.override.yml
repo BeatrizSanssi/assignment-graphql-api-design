@@ -1,5 +1,5 @@
-services:
-  graphql-api:
-    build: .
-    volumes:
-      - ./archive:/app/archive
+# services:
+#   graphql-api:
+#     build: .
+#     volumes:
+#       - ./archive:/app/archive
