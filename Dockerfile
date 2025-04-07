@@ -5,8 +5,8 @@ FROM node:20.6.0
 WORKDIR /app
 
 # 3. Copy files
-# COPY . .
-COPY . /app
+COPY . .
+# COPY . /app
 
 # 5. Install dependencies
 COPY package*.json ./
