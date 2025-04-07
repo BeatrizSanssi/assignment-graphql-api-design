@@ -20,6 +20,9 @@ echo "✅ Mongo is up!"
 #   node seed.js || echo "⚠️ Seeding failed, continuing anyway"
 # fi
 
+echo "Starting server..."
+npm start
+
 echo "Seeding database..."
 node seed.js || echo "⚠️ Seeding failed, continuing anyway"
 echo "Seeding completed."
@@ -33,5 +36,5 @@ docker exec mongo mongosh --quiet --eval 'db = db.getSiblingDB("graphql-api-db")
 echo "Ratings count:"
 docker exec mongo mongosh --quiet --eval 'db = db.getSiblingDB("graphql-api-db"); db.ratings.countDocuments()'
 
-echo "Starting server..."
-npm start
+# echo "Starting server..."
+# npm start
