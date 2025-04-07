@@ -187,6 +187,18 @@ jobs:
           done
           exit 1
 
+      - name: Seed database
+        run: docker exec graphql-api node seed.js
+
+      - name: Check collections in MongoDB
+        run: |
+          echo "Movies count:"
+          docker exec mongo mongosh --quiet --eval 'db = db.getSiblingDB("graphql-api-db"); db.movies.countDocuments()'
+          echo "Actors count:"
+          docker exec mongo mongosh --quiet --eval 'db = db.getSiblingDB("graphql-api-db"); db.actors.countDocuments()'
+          echo "Ratings count:"
+          docker exec mongo mongosh --quiet --eval 'db = db.getSiblingDB("graphql-api-db"); db.ratings.countDocuments()'
+
       - name: Install Newman
         run: npm install -g newman
 

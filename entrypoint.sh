@@ -22,22 +22,3 @@ echo "✅ Mongo is up!"
 
 echo "Starting server..."
 npm start
-
-echo "Seeding database..."
-node seed.js || echo "⚠️ Seeding failed, continuing anyway"
-echo "Seeding completed."
-
-echo "Movies count:"
-mongosh "mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/graphql-api-db?authSource=admin" \
-  --quiet --eval 'db.movies.countDocuments()'
-
-echo "Actors count:"
-mongosh "mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/graphql-api-db?authSource=admin" \
-  --quiet --eval 'db.actors.countDocuments()'
-
-echo "Ratings count:"
-mongosh "mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/graphql-api-db?authSource=admin" \
-  --quiet --eval 'db.ratings.countDocuments()'
-
-# echo "Starting server..."
-# npm start
