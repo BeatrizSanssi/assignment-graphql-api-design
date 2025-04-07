@@ -78,6 +78,9 @@ jobs:
         run: |
           docker ps
 
+      - name: Print container logs before waiting
+        run: docker logs graphql-api || true
+        
       - name: Wait for API to be ready
         run: |
           echo "Waiting for GraphQL API to be ready..."
@@ -89,6 +92,9 @@ jobs:
             echo "⏳ Waiting ($i)..."
             sleep 3
           done
+          exit 1
+          echo "❌ API did not start in time. Dumping logs:"
+          docker logs graphql-api || true
           exit 1
 
       - name: Build and push Docker image
