@@ -25,7 +25,7 @@ import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 
 // Application modules.
-import { connectToDatabase } from './config/mongoose.js'
+import { connectToDatabase, getMongoUri } from './config/mongoose.js'
 import { morganLogger } from './config/morgan.js'
 import { limiter } from './config/rateLimiter.js'
 import { logger } from './config/winston.js'
@@ -40,8 +40,9 @@ dotenv.config()
 
 try {
   // Connect to MongoDB.
-  await connectToDatabase(process.env.DB_CONNECTION_STRING_LOCAL)
-  console.log(`Database Connection String: ${process.env.DB_CONNECTION_STRING_LOCAL}`)
+  await connectToDatabase(getMongoUri())
+  // await connectToDatabase(process.env.DB_CONNECTION_STRING)
+  console.log(`Database Connection String: ${process.env.DB_CONNECTION_STRING}`)
   console.log(`Base URL: ${process.env.BASE_URL}`)
 
   // Determine current file directory.
@@ -172,11 +173,11 @@ try {
   })
 
   // Starts the HTTP server listening for connections.
-  const server = app.listen(process.env.NODEJS_EXPRESS_PORT, () => {
+  const server = app.listen(process.env.NODEJS_EXPRESS_PORT_LOCAL, () => {
     logger.info(`Server running at http://localhost:${server.address().port}`)
     logger.info(`GraphQL endpoint at http://localhost:${server.address().port}/graphql`)
     logger.info('Press Ctrl-C to terminate...')
-    console.log('Server is up and listening on', process.env.NODEJS_EXPRESS_PORT)
+    console.log('Server is up and listening on', process.env.NODEJS_EXPRESS_PORT_LOCAL)
   })
 } catch (err) {
   logger.error(err.message, { error: err })
