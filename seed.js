@@ -5,7 +5,7 @@
  */
 
 import 'dotenv/config'
-import { connectToDatabase, getMongoUri } from './src/config/mongoose.js'
+import { connectToDatabase, getMongoUri, getPort } from './src/config/mongoose.js'
 import fs from 'fs'
 import csv from 'csv-parser'
 import { MovieModel } from './src/models/MovieModel.js'
@@ -105,7 +105,7 @@ async function seedActors () {
   const uniqueActors = Array.from(actorMap.values())
   await ActorModel.deleteMany({})
   await ActorModel.insertMany(uniqueActors)
-  console.log(`✓ Inserted ${uniqueActors.length} actors`)
+  console.log(`Successfully inserted ${uniqueActors.length} actors into DB.`)
 }
 
 /**
@@ -118,6 +118,9 @@ async function seed () {
     // 1. CONNECT TO DB
     // await connectToDatabase(process.env.DB_CONNECTION_STRING_LOCAL)
     await connectToDatabase(getMongoUri())
+    const port = getPort()
+    console.log(`MongoDB URI for seeding: ${getMongoUri()}`)
+    console.log(`MongoDB Port for seeding: ${port}`)
     console.log('Connected to MongoDB for seeding.')
 
     // 2. PARSE & SEED MOVIES
@@ -180,11 +183,11 @@ async function seed () {
     })
 
     // 4. PARSE & SEED ACTORS (from credits.csv)
-    const uniqueActors = await seedActors()
+    // const uniqueActors = await seedActors()
     await seedActors()
-    await ActorModel.deleteMany({})
-    await ActorModel.insertMany(uniqueActors)
-    console.log(`Successfully inserted ${length} actors into DB.`)
+    // await ActorModel.deleteMany({})
+    // await ActorModel.insertMany(uniqueActors)
+    // console.log(`Successfully inserted ${length} actors into DB.`)
 
     // 5. PARSE & SEED RATINGS
     const ratingSeen = new Set()

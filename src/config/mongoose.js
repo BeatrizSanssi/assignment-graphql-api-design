@@ -15,30 +15,46 @@ import { logger } from './winston.js'
  *
  * @returns {string} The MongoDB URI.
  */
-export function getMongoUri () {
-  const {
-    DOCKER,
-    MONGO_USER,
-    MONGO_PASSWORD,
-    DB_NAME,
-    DB_PORT,
-    DB_HOST_LOCAL,
-    DB_HOST_DOCKER,
-    AUTH_SOURCE
-  } = process.env
+export const getMongoUri = () => {
+  return process.env.DOCKER === 'true'
+    ? process.env.DB_CONNECTION_STRING
+    : process.env.DB_CONNECTION_STRING_LOCAL
+}
+// export function getMongoUri () {
+//   const {
+//     DOCKER,
+//     MONGO_USER,
+//     MONGO_PASSWORD,
+//     DB_NAME,
+//     DB_PORT,
+//     DB_HOST_LOCAL,
+//     DB_HOST_DOCKER,
+//     AUTH_SOURCE
+//   } = process.env
 
-  const isDocker = DOCKER === 'true'
+//   const isDocker = DOCKER === 'true'
 
-  const host = isDocker ? DB_HOST_DOCKER : DB_HOST_LOCAL || 'localhost'
-  const port = DB_PORT || 27017
-  const dbName = DB_NAME || 'graphql-api-db'
+//   const host = isDocker ? DB_HOST_DOCKER : DB_HOST_LOCAL || 'localhost'
+//   const port = DB_PORT || 27017
+//   const dbName = DB_NAME || 'graphql-api-db'
 
-  if (isDocker) {
-    return `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${host}:${port}/${dbName}?authSource=${AUTH_SOURCE || 'admin'}`
-  }
+//   if (isDocker) {
+//     return `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${host}:${port}/${dbName}?authSource=${AUTH_SOURCE || 'admin'}`
+//   }
 
-  // No auth locally
-  return `mongodb://${host}:${port}/${dbName}`
+//   // No auth locally
+//   return `mongodb://${host}:${port}/${dbName}`
+// }
+
+/**
+ * Gets the port for the application based on environment.
+ *
+ * @returns {string} The port number.
+ */
+export const getPort = () => {
+  return process.env.DOCKER === 'true'
+    ? process.env.NODEJS_EXPRESS_PORT
+    : process.env.NODEJS_EXPRESS_PORT_LOCAL
 }
 
 /**
