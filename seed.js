@@ -12,6 +12,9 @@ import { MovieModel } from './src/models/MovieModel.js'
 import { ActorModel } from './src/models/ActorModel.js'
 import { RatingModel } from './src/models/RatingModel.js'
 
+console.log('MOVIES_CSV_PATH =', process.env.MOVIES_CSV_PATH)
+console.log('RATINGS_CSV_PATH =', process.env.RATINGS_CSV_PATH)
+console.log('ACTORS_CSV_PATH =', process.env.ACTORS_CSV_PATH)
 // const isDocker = process.env.DOCKER === 'true'
 // const host = isDocker ? 'mongo' : 'localhost'
 
