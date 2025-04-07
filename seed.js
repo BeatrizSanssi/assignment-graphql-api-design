@@ -103,9 +103,12 @@ async function seedActors () {
   }
 
   const uniqueActors = Array.from(actorMap.values())
+  const limitedActors = uniqueActors.slice(0, 1000)
   await ActorModel.deleteMany({})
-  await ActorModel.insertMany(uniqueActors)
-  console.log(`Successfully inserted ${uniqueActors.length} actors into DB.`)
+  // await ActorModel.insertMany(uniqueActors)
+  await ActorModel.insertMany(limitedActors)
+  // console.log(`Successfully inserted ${uniqueActors.length} actors into DB.`)
+  console.log(`Successfully inserted ${limitedActors.length} actors into DB.`)
 }
 
 /**
@@ -165,16 +168,12 @@ async function seed () {
       }
     })
 
+    const limitedMovies = movies.slice(0, 1000)
     // Clear the existing movies from the database
     await MovieModel.deleteMany({})
-    // const limitedMovies = movies.slice(0, 100)
-    const insertedMovies = await MovieModel.insertMany(movies)
+    // Insert the new movies into the database
+    const insertedMovies = await MovieModel.insertMany(limitedMovies)
     console.log(`Inserted ${insertedMovies.length} movies`)
-    // const limitedMovies = movies.slice(0, 100)
-    // await MovieModel.deleteMany({})
-    // // Insert the new movies into the database
-    // await MovieModel.insertMany(limitedMovies)
-    // console.log(`Inserted ${limitedMovies.length} movies into test database.`)
 
     // 3. Create movieId map
     const movieIdMap = new Map()
@@ -219,10 +218,12 @@ async function seed () {
       //   movieId: movieIdFromCSV
       // }
     })
-
+    const limitedRatings = ratings.slice(0, 1000)
     await RatingModel.deleteMany({})
-    await RatingModel.insertMany(ratings)
-    console.log(`Successfully inserted ${ratings.length} ratings into DB.`)
+    // await RatingModel.insertMany(ratings)
+    await RatingModel.insertMany(limitedRatings)
+    // console.log(`Successfully inserted ${ratings.length} ratings into DB.`)
+    console.log(`Successfully inserted ${limitedRatings.length} ratings into DB.`)
   } catch (error) {
     console.error('Error while seeding:', error)
   } finally {
