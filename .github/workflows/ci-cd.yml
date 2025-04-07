@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Upload archive folder (CSV)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: csv-archive
           path: archive/
@@ -55,7 +55,7 @@ jobs:
         run: docker volume rm assignment-graphql-api-design_mongo-data || true
 
       - name: Download archive into repo
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: csv-archive
           path: archive  # path inside container will be /app/archive
