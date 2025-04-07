@@ -47,6 +47,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         
+      - name: Download archive into repo
+        uses: actions/download-artifact@v4
+        with:
+          name: csv-archive
+          path: archive  
+          
       - name: Set up Docker Compose
         run: |
           sudo apt-get update
@@ -74,12 +80,6 @@ jobs:
   
       - name: Remove existing MongoDB volume
         run: docker volume rm assignment-graphql-api-design_mongo-data || true
-
-      - name: Download archive into repo
-        uses: actions/download-artifact@v4
-        with:
-          name: csv-archive
-          path: archive  
         
       - name: Run Docker Compose
         run: docker compose --env-file .env up --build -d
