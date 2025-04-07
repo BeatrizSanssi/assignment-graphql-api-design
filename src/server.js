@@ -182,7 +182,7 @@ try {
   //   logger.info('Press Ctrl-C to terminate...')
   //   console.log('Server is up and listening on', port)
 
-  const server = app.listen(process.env.NODEJS_EXPRESS_PORT_LOCAL, () => {
+  const server = app.listen(process.env.NODEJS_EXPRESS_PORT, () => {
     logger.info(`Server running at http://localhost:${server.address().port}`)
     logger.info(`GraphQL endpoint at http://localhost:${server.address().port}/graphql`)
     logger.info('Press Ctrl-C to terminate...')
