@@ -15,10 +15,23 @@ until nc -z mongo 27017; do sleep 1; done
 
 echo "✅ Mongo is up!"
 
-if [ "$DOCKER" = "true" ]; then
-  echo "Seeding database inside Docker..."
-  node seed.js || echo "⚠️ Seeding failed, continuing anyway"
-fi
+# if [ "$DOCKER" = "true" ]; then
+#   echo "Seeding database inside Docker..."
+#   node seed.js || echo "⚠️ Seeding failed, continuing anyway"
+# fi
+
+echo "Seeding database..."
+node seed.js || echo "⚠️ Seeding failed, continuing anyway"
+echo "Seeding completed."
+
+echo "Movies count:"
+docker exec mongo mongosh --quiet --eval 'db.movies.countDocuments()'
+
+echo "Actors count:"
+docker exec mongo mongosh --quiet --eval 'db.actors.countDocuments()'
+
+echo "Ratings count:"
+docker exec mongo mongosh --quiet --eval 'db.ratings.countDocuments()'
 
 echo "Starting server..."
 npm start
