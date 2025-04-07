@@ -25,6 +25,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Upload archive folder (CSV)
+        uses: actions/upload-artifact@v4
+        with:
+          name: csv-archive
+          path: archive/
+
   docker: 
     runs-on: ubuntu-latest
     needs: build
@@ -32,13 +38,13 @@ jobs:
     steps: 
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Upload archive folder (CSV)
-        uses: actions/upload-artifact@v4
+        
+      - name: Download archive into repo
+        uses: actions/download-artifact@v4
         with:
           name: csv-archive
-          path: archive/
-        
+          path: archive  
+
       - name: Set up Docker Compose
         run: |
           sudo apt-get update
@@ -125,11 +131,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/assignment-api-design-api:latest
 
-      - name: Download archive into repo
-        uses: actions/download-artifact@v4
-        with:
-          name: csv-archive
-          path: archive  # path inside container will be /app/archive
 
   test:
       runs-on: ubuntu-latest  
