@@ -25,13 +25,13 @@ node seed.js || echo "⚠️ Seeding failed, continuing anyway"
 echo "Seeding completed."
 
 echo "Movies count:"
-docker exec mongo mongosh --quiet --eval 'db.movies.countDocuments()'
+docker exec mongo mongosh --quiet --eval 'db = db.getSiblingDB("graphql-api-db"); db.movies.countDocuments()'
 
 echo "Actors count:"
-docker exec mongo mongosh --quiet --eval 'db.actors.countDocuments()'
+docker exec mongo mongosh --quiet --eval 'db = db.getSiblingDB("graphql-api-db"); db.actors.countDocuments()'
 
 echo "Ratings count:"
-docker exec mongo mongosh --quiet --eval 'db.ratings.countDocuments()'
+docker exec mongo mongosh --quiet --eval 'db = db.getSiblingDB("graphql-api-db"); db.ratings.countDocuments()'
 
 echo "Starting server..."
 npm start
