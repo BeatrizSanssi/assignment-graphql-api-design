@@ -176,17 +176,17 @@ try {
   })
 
   // Starts the HTTP server listening for connections.
-  const server = app.listen(port, () => {
+  // const server = app.listen(port, () => {
+  //   logger.info(`Server running at http://localhost:${server.address().port}`)
+  //   logger.info(`GraphQL endpoint at http://localhost:${server.address().port}/graphql`)
+  //   logger.info('Press Ctrl-C to terminate...')
+  //   console.log('Server is up and listening on', port)
+
+  const server = app.listen(process.env.NODEJS_EXPRESS_PORT_LOCAL, () => {
     logger.info(`Server running at http://localhost:${server.address().port}`)
     logger.info(`GraphQL endpoint at http://localhost:${server.address().port}/graphql`)
     logger.info('Press Ctrl-C to terminate...')
-    console.log('Server is up and listening on', port)
-
-  // const server = app.listen(process.env.NODEJS_EXPRESS_PORT_LOCAL, () => {
-    // logger.info(`Server running at http://localhost:${server.address().port}`)
-    // logger.info(`GraphQL endpoint at http://localhost:${server.address().port}/graphql`)
-    // logger.info('Press Ctrl-C to terminate...')
-    // console.log('Server is up and listening on', process.env.NODEJS_EXPRESS_PORT_LOCAL)
+    console.log('Server is up and listening on', process.env.NODEJS_EXPRESS_PORT_LOCAL)
   })
 } catch (err) {
   logger.error(err.message, { error: err })
