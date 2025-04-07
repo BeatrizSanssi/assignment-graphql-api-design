@@ -1,0 +1,4 @@
+services:
+  graphql-api:
+    volumes:
+      - ./archive:/app/archive

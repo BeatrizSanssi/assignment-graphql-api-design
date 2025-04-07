@@ -23,7 +23,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
   csv-upload:
     runs-on: ubuntu-latest
@@ -42,10 +42,11 @@ jobs:
         uses: actions/checkout@v3
         
       - name: Download archive into repo
+        if: github.actor != 'nektos/act'
         uses: actions/download-artifact@v4
         with:
           name: csv-archive
-          path: archive  
+          path: archive
           
       - name: Set up Docker Compose
         run: |
