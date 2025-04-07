@@ -43,6 +43,19 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
+
+      - name: Show Docker Compose config
+        run: docker compose config
+  
+      - name: List all running containers
+        run: docker ps -a
+  
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }} 
+            
       - name: Set env variables
         run: |
           echo "MONGO_USER=${{ secrets.MONGO_USER }}" >> .env
@@ -53,12 +66,6 @@ jobs:
   
       - name: Remove existing MongoDB volume
         run: docker volume rm assignment-graphql-api-design_mongo-data || true
-
-      - name: Download archive into repo
-        uses: actions/download-artifact@v4
-        with:
-          name: csv-archive
-          path: archive  # path inside container will be /app/archive
 
       - name: Run Docker Compose
         run: docker compose --env-file .env up --build -d
@@ -92,8 +99,20 @@ jobs:
           docker exec mongo mongosh --quiet --eval 'db = db.getSiblingDB("graphql-api-db"); db.actors.countDocuments()'
           echo "Ratings count:"
           docker exec mongo mongosh --quiet --eval 'db = db.getSiblingDB("graphql-api-db"); db.ratings.countDocuments()'
+  deploy:
+    runs-on : ubuntu-latest
+    needs: [build, docker]
 
-      - name: Login to DockerHub
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Docker
+        run: |
+          sudo apt-get update
+          curl -fsSL https://get.docker.com | sh
+
+      - name: Docker login
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -105,10 +124,16 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/assignment-api-design-api:latest
-  
+
+      - name: Download archive into repo
+        uses: actions/download-artifact@v4
+        with:
+          name: csv-archive
+          path: archive  # path inside container will be /app/archive
+
   test:
-      runs-on: ubuntu-latest
-      needs: docker
+      runs-on: ubuntu-latest  
+      needs: [build, docker, deploy]
   
       steps:
         - name: Checkout repo
