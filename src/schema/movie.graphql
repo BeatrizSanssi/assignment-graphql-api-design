@@ -20,7 +20,8 @@ type DeleteMovieResponse {
 }
 
 extend type Query {
-  movies: [Movie]
+  # movies: [Movie]
+  movies(genre: String, year: Int, id: Int): [Movie]
   movie(id: ID!): Movie
 }
 
