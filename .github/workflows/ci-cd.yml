@@ -88,14 +88,14 @@ jobs:
           docker logs graphql-api || true
           exit 1
 
-      - name: Seed DB
-        run: docker exec graphql-api node seed.js
-        env:
-          DOCKER: true
-          DB_CONNECTION_STRING: mongodb://root:secret@mongo:27017/graphql-api-db?authSource=admin
-          MOVIES_CSV_PATH: /app/archive/movies_metadata.csv
-          ACTORS_CSV_PATH: /app/archive/credits.csv
-          RATINGS_CSV_PATH: /app/archive/ratings.csv
+      # - name: Seed DB
+      #   run: docker exec graphql-api node seed.js
+      #   env:
+      #     DOCKER: true
+      #     DB_CONNECTION_STRING: mongodb://root:secret@mongo:27017/graphql-api-db?authSource=admin
+      #     MOVIES_CSV_PATH: /app/archive/movies_metadata.csv
+      #     ACTORS_CSV_PATH: /app/archive/credits.csv
+      #     RATINGS_CSV_PATH: /app/archive/ratings.csv
 
       - name: Verify Database Collections
         run: |

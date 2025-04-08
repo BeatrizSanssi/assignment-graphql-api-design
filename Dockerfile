@@ -12,9 +12,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-# Create a directory for the archive
-RUN mkdir -p /app/archive
-COPY ./archive/ /app/archive/
+# # Create a directory for the archive
+# RUN mkdir -p /app/archive
+# COPY ./archive/ /app/archive/
 
 # 4 Copy the rest of the application code
 # COPY . .
