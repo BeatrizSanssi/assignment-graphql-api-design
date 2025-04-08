@@ -9,6 +9,7 @@ services:
     ports: 
      - "8081:8081"
     environment: 
+      - NODEJS_EXPRESS_PORT=8081
       - MOVIES_CSV_PATH=/app/archive/movies_metadata.csv
       - ACTORS_CSV_PATH=/app/archive/credits.csv
       - RATINGS_CSV_PATH=/app/archive/ratings.csv
