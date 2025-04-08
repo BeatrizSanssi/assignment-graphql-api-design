@@ -4,7 +4,6 @@
  * @author Beatriz Sanssi <bs222eh@student.lnu.se>
  */
 
-import 'dotenv/config'
 import { connectToDatabase } from './src/config/mongoose.js'
 import fs from 'fs'
 import csv from 'csv-parser'
