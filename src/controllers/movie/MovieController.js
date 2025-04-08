@@ -21,7 +21,7 @@ export class MovieController {
     const filter = {}
     if (args.id) filter.id = args.id
     if (args.genre) filter.genre = args.genre
-    if (args.year) filter.release_year = args.year
+    if (args.year) filter.release_date = args.year
     return await MovieModel.find(filter)
   }
 
