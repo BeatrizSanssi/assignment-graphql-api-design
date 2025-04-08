@@ -70,8 +70,12 @@ jobs:
       - name: Restore MongoDB dump
         run: |
           docker exec mongo mongorestore --username=root --password=secret --authenticationDatabase=admin /dump
+      
       - name: Show Docker logs
         run: docker logs graphql-api || true
+      
+      - name: Debug container status before waiting
+        run: docker ps -a && docker logs graphql-api || true 
 
       - name: Wait for API to be ready
         run: |
