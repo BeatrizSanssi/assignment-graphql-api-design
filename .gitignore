@@ -200,3 +200,4 @@ mongodb-seed
 mongodb-seed/
 archive/
 
+.env.local
