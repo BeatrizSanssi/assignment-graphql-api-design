@@ -148,6 +148,10 @@ jobs:
         - name: Install Newman
           run: npm install -g newman
 
+        - name: Override Postman environment for CI
+          run: |
+            jq '.values[] |= if .key == "baseUrl" then .value = "http://host.docker.internal:8081" else . end' tests/environment1.json > env.ci.json
+        
         - name: Run Postman tests
           run: |
             newman run tests/collection5.json \
