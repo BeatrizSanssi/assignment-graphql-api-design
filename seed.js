@@ -5,7 +5,7 @@
  */
 
 import 'dotenv/config'
-import { connectToDatabase, getMongoUri, getPort } from './src/config/mongoose.js'
+import { connectToDatabase } from './src/config/mongoose.js'
 import fs from 'fs'
 import csv from 'csv-parser'
 import { MovieModel } from './src/models/MovieModel.js'
@@ -122,11 +122,11 @@ async function seedActors () {
 async function seed () {
   try {
     // 1. CONNECT TO DB
-    // await connectToDatabase(process.env.DB_CONNECTION_STRING_LOCAL)
-    await connectToDatabase(getMongoUri())
-    const port = getPort()
-    console.log(`MongoDB URI for seeding: ${getMongoUri()}`)
-    console.log(`MongoDB Port for seeding: ${port}`)
+    await connectToDatabase(process.env.DB_CONNECTION_STRING)
+    // await connectToDatabase(getMongoUri())
+    // const port = getPort()
+    // console.log(`MongoDB URI for seeding: ${getMongoUri()}`)
+    // console.log(`MongoDB Port for seeding: ${port}`)
     console.log('Connected to MongoDB for seeding.')
 
     // 2. PARSE & SEED MOVIES

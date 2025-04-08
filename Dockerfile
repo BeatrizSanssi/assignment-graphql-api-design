@@ -10,7 +10,10 @@ WORKDIR /app
 
 # 3. Install dependencies
 COPY package*.json ./
-RUN npm install
+RUN npm ci
+
+# Create a directory for the archive
+RUN mkdir -p /app/archive
 
 # 4 Copy the rest of the application code
 COPY . .
