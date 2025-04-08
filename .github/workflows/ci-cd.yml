@@ -104,11 +104,11 @@ jobs:
       - name: Verify Database Collections
         run: |
           echo "Movies count:"
-          docker exec mongo mongosh --quiet --eval 'db = db.getSiblingDB("graphql-api-db"); print(db.movies.countDocuments())'
+          docker exec mongo mongosh --quiet --username root --password secret --authenticationDatabase admin --eval 'db = db.getSiblingDB("graphql-api-db"); print(db.movies.countDocuments())'
           echo "Actors count:"
-          docker exec mongo mongosh --quiet --eval 'db = db.getSiblingDB("graphql-api-db"); print(db.actors.countDocuments())'
+          docker exec mongo mongosh --quiet --username root --password secret --authenticationDatabase admin --eval 'db = db.getSiblingDB("graphql-api-db"); print(db.actors.countDocuments())'
           echo "Ratings count:"
-          docker exec mongo mongosh --quiet --eval 'db = db.getSiblingDB("graphql-api-db"); print(db.ratings.countDocuments())'
+          docker exec mongo mongosh --quiet --username root --password secret --authenticationDatabase admin --eval 'db = db.getSiblingDB("graphql-api-db"); print(db.ratings.countDocuments())'
   
   deploy:
     runs-on : ubuntu-latest
