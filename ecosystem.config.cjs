@@ -6,7 +6,7 @@ module.exports = {
       watch: true,
       env_production: {
         NODEJS_EXPRESS_PORT: 8081,
-        DB_CONNECTION_STRING: 'mongodb://localhost:27017/graphql-api-db',
+        DB_CONNECTION_STRING: 'mongodb://root:secret@mongo:27017/graphql-api-db?authSource=admin',
         // MONGO_URI: 'mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/graphql-api-db',
         MONGO_USER: 'root',
         MONGO_PASSWORD: 'secret',
@@ -15,12 +15,17 @@ module.exports = {
         // BASE_URL: '/',
         BASE_URL: 'http://localhost:8081',
         JWT_SECRET: 'supersecretjwtvalue',
-        CSV_FILE_PATH: '../archive/movies_metadata.csv',
-        MOVIES_CSV_PATH: './data/movies_metadata.csv',
-        ACTORS_CSV_PATH: '../archive/credits.csv',
-        RATINGS_CSV_PATH: '../archive/ratings_small.csv',
+        CSV_FILE_PATH: '/app/archive/movies_metadata.csv',
+        MOVIES_CSV_PATH: '/app/archive/movies_metadata.csv',
+        ACTORS_CSV_PATH: '/app/archive/credits.csv',
+        RATINGS_CSV_PATH: '/app/archive/ratings_small.csv',
         ENCRYPTION_IV: '0123456789abcdef',
-        BCRYPT_SALT_ROUNDS: '10'
+        BCRYPT_SALT_ROUNDS: '10',
+        DOCKER: 'true',
+        DB_HOST_LOCAL: 'localhost',
+        DB_HOST_DOCKER: 'mongo',
+        DB_PORT: '27017',
+        AUTH_SOURCE: 'admin'
       }
     }
   ]
