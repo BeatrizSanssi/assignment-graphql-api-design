@@ -130,7 +130,7 @@ async function seed () {
     console.log('Connected to MongoDB for seeding.')
 
     // 2. PARSE & SEED MOVIES
-    const movies = await parseCSV((process.env.CSV_FILE_PATH), (row) => {
+    const movies = await parseCSV((process.env.MOVIES_CSV_PATH), (row) => {
       // Extract data from each row
       // A. Titel
       const title = row.title || row.original_title || 'N/A'
