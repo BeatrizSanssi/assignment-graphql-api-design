@@ -15,17 +15,19 @@ module.exports = {
         // BASE_URL: '/',
         BASE_URL: 'http://localhost:8081',
         JWT_SECRET: 'supersecretjwtvalue',
-        CSV_FILE_PATH: '/app/archive/movies_metadata.csv',
-        MOVIES_CSV_PATH: '/app/archive/movies_metadata.csv',
-        ACTORS_CSV_PATH: '/app/archive/credits.csv',
-        RATINGS_CSV_PATH: '/app/archive/ratings_small.csv',
+        CSV_FILE_PATH: '../archive/movies_metadata.csv',
+        MOVIES_CSV_PATH: '../archive/movies_metadata.csv',
+        ACTORS_CSV_PATH: '../archive/credits.csv',
+        RATINGS_CSV_PATH: '../archive/ratings_small.csv',
         ENCRYPTION_IV: '0123456789abcdef',
         BCRYPT_SALT_ROUNDS: '10',
         DOCKER: 'true',
         DB_HOST_LOCAL: 'localhost',
         DB_HOST_DOCKER: 'mongo',
         DB_PORT: '27017',
-        AUTH_SOURCE: 'admin'
+        AUTH_SOURCE: 'admin',
+        DUMP_DIR: './mongodb-seed',
+        DB_NAME: 'graphql-api-db'
       }
     }
   ]
