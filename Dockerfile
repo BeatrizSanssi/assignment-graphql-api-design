@@ -26,6 +26,15 @@ COPY . /app
 RUN apt-get update && apt-get install -y netcat-openbsd
 RUN npm install -g newman
 
+# Lägg till efter att du installerat netcat, exempelvis efter:
+  RUN apt-get update && apt-get install -y netcat-openbsd
+
+  # Lägg till det här:
+  RUN apt-get install -y wget gnupg && \
+      wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | apt-key add - && \
+      echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/debian bookworm/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list && \
+      apt-get update && \
+      apt-get install -y mongodb-database-tools
 # # 6. Expose the port the app runs on
 # EXPOSE 8081
 # 8. Run the entrypoint script
