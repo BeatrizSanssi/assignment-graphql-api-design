@@ -14,7 +14,7 @@ RUN npm ci
 
 # Create a directory for the archive
 RUN mkdir -p /app/archive
-COPY archive/ /app/archive/
+# COPY archive/ /app/archive/
 
 # 4 Copy the rest of the application code
 COPY . .
