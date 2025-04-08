@@ -9,6 +9,9 @@ services:
     ports: 
      - "8081:8081"
     environment: 
+      - MOVIES_CSV_PATH=/archive/movies_metadata.csv
+      - ACTORS_CSV_PATH=/archive/credits.csv
+      - RATINGS_CSV_PATH=/archive/ratings.csv
       - DB_CONNECTION_STRING=mongodb://root:secret@mongo:27017/graphql-api-db?authSource=admin
       - DOCKER=true
     # env_file:
