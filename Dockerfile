@@ -18,7 +18,7 @@ RUN npm ci
 
 # 4 Copy the rest of the application code
 # COPY . .
-
+# COPY ./mongodb-seed /dump
 
 COPY . /app
 

@@ -39,6 +39,12 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    command: >
+      bash -c "
+        mongod --bind_ip_all --auth & 
+        sleep 5 && 
+        mongorestore -u root -p secret --authenticationDatabase admin /dump &&
+        fg"
 
   # api:
   #   build: .
