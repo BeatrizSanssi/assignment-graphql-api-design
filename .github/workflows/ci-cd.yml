@@ -158,6 +158,15 @@ jobs:
         #       --environment environment1.json \
         #       --delay-request 1000
 
+        - name: Verify Database Collections
+          run: |
+            echo "Movies count:"
+            docker exec mongo mongosh --quiet --username root --password secret --authenticationDatabase admin --eval 'db = db.getSiblingDB("graphql-api-db"); print(db.movies.countDocuments())'
+            echo "Actors count:"
+            docker exec mongo mongosh --quiet --username root --password secret --authenticationDatabase admin --eval 'db = db.getSiblingDB("graphql-api-db"); print(db.actors.countDocuments())'
+            echo "Ratings count:"
+            docker exec mongo mongosh --quiet --username root --password secret --authenticationDatabase admin --eval 'db = db.getSiblingDB("graphql-api-db"); print(db.ratings.countDocuments())'
+        
         - name: Run Postman tests
           run: |
             newman run tests/collection5.json \
