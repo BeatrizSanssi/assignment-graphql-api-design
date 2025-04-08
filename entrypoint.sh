@@ -19,14 +19,14 @@ echo "✅ Mongo is up!"
 #   echo "Seeding database inside Docker..."
 #   node seed.js || echo "⚠️ Seeding failed, continuing anyway"
 # fi
-if [ "$DOCKER" = "true" ]; then
-  if [ -d "/app/archive" ]; then
-    echo "📦 Seeding database from /app/archive..."
-    node seed.js || echo "⚠️ Seeding failed, continuing anyway"
-  else
-    echo "⚠️ No archive/ folder found in container – skipping seeding."
-  fi
-fi
+# if [ "$DOCKER" = "true" ]; then
+#   if [ -d "/app/archive" ]; then
+#     echo "📦 Seeding database from /app/archive..."
+#     node seed.js || echo "⚠️ Seeding failed, continuing anyway"
+#   else
+#     echo "⚠️ No archive/ folder found in container – skipping seeding."
+#   fi
+# fi
 
 echo "Starting server..."
 npm start
