@@ -67,6 +67,9 @@ jobs:
       - name: Show Docker logs
         run: docker logs graphql-api || true
 
+      - name: Tear down existing containers
+        run: docker compose down  
+        
       - name: Wait for API to be ready
         run: |
           echo "Waiting for GraphQL API to be ready..."
