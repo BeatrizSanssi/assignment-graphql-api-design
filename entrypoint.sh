@@ -15,6 +15,10 @@ until nc -z mongo 27017; do sleep 1; done
 
 echo "✅ Mongo is up!"
 
+echo "Seeding database..."
+node seed.js
+
+echo "Database seeded!"
 # if [ "$DOCKER" = "true" ]; then
 #   echo "Seeding database inside Docker..."
 #   node seed.js || echo "⚠️ Seeding failed, continuing anyway"
@@ -30,3 +34,5 @@ echo "✅ Mongo is up!"
 
 echo "Starting server..."
 npm start
+
+echo "🚀 Server started!"
