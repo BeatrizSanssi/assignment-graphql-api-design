@@ -4,6 +4,7 @@
  * @author Beatriz Sanssi <bs222eh@student.lnu.se>
  */
 
+import dotenv from 'dotenv'
 import { connectToDatabase } from './src/config/mongoose.js'
 import fs from 'fs'
 import csv from 'csv-parser'
@@ -11,6 +12,7 @@ import { MovieModel } from './src/models/MovieModel.js'
 import { ActorModel } from './src/models/ActorModel.js'
 import { RatingModel } from './src/models/RatingModel.js'
 
+dotenv.config()
 console.log('Seeding MOVIES_CSV_PATH =', process.env.MOVIES_CSV_PATH)
 console.log('Seeding RATINGS_CSV_PATH =', process.env.RATINGS_CSV_PATH)
 console.log('Seeding ACTORS_CSV_PATH =', process.env.ACTORS_CSV_PATH)
@@ -121,7 +123,7 @@ async function seedActors () {
 async function seed () {
   try {
     // 1. CONNECT TO DB
-    await connectToDatabase(process.env.DB_CONNECTION_STRING)
+    await connectToDatabase(process.env.DB_CONNECTION_STRING_LOCAL)
     // await connectToDatabase(getMongoUri())
     // const port = getPort()
     // console.log(`MongoDB URI for seeding: ${getMongoUri()}`)
@@ -170,11 +172,11 @@ async function seed () {
       }
     })
 
-    const limitedMovies = movies.slice(0, 1000)
+    // const limitedMovies = movies.slice(0, 1000)
     // Clear the existing movies from the database
     await MovieModel.deleteMany({})
     // Insert the new movies into the database
-    const insertedMovies = await MovieModel.insertMany(limitedMovies)
+    const insertedMovies = await MovieModel.insertMany(movies)
     console.log(`Inserted ${insertedMovies.length} movies`)
 
     // 3. Create movieId map

@@ -32,7 +32,7 @@ services:
     volumes:
       - ./mongo-init-scripts:/docker-entrypoint-initdb.d
       # - mongo-data:/data/db
-      # - ./mongodb-seed:/dump
+      - ./mongodb-seed:/dump
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })"]
       interval: 10s
