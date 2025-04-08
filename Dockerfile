@@ -17,10 +17,10 @@ RUN mkdir -p /app/archive
 # COPY ./archive/ /app/archive/
 
 # 4 Copy the rest of the application code
-COPY . .
+# COPY . .
 
 
-# COPY . /app
+COPY . /app
 
 # 5. Install dependencies for testing
 RUN apt-get update && apt-get install -y netcat-openbsd
