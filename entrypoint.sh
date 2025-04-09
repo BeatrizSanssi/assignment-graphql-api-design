@@ -14,11 +14,11 @@ until nc -z mongo 27017; do sleep 1; done
 
 echo "✅ Mongo is up!"
 
-echo "Seeding MongoDB dump..."
-mongorestore -u "$MONGO_USER" -p "$MONGO_PASSWORD" --authenticationDatabase admin /dump || echo "⚠️ mongorestore failed, continuing anyway"
+# echo "Seeding MongoDB dump..."
+# mongorestore -u "$MONGO_USER" -p "$MONGO_PASSWORD" --authenticationDatabase admin /dump || echo "⚠️ mongorestore failed, continuing anyway"
 
-echo "Seeding database..."
-node seed.js
+# echo "Seeding database..."
+# node seed.js
 
 echo "Database seeded!"
 # if [ "$DOCKER" = "true" ]; then
