@@ -177,8 +177,8 @@ jobs:
         
         - name: Run Postman tests
           run: |
-            newman run tests/collection5.json \
-              --environment tests/environment1.json \
+            newman run tests/GraphQL Movie API Tests.postman_collection.json \
+              --environment tests/GraphQL-Env.postman_environment.json\
               --folder "registerUser (Success)" \
               --folder "registerUser (Failure)" \
               --folder "loginUser (Success)" \
@@ -186,12 +186,12 @@ jobs:
               --folder "refreshToken (Success)" \
               --folder "refreshToken (Failure)" \
               --folder "deleteUser (Success)" \
-              --folder "addMovie (Success)" \
-              --folder "addMovie (Failure)" \
               --folder "movies (Success)" \
               --folder "movies (Failure)" \
               --folder "movie (Success)" \
               --folder "movie (Failure)" \
+              --folder "addMovie (Success)" \
+              --folder "addMovie (Failure)" \
               --folder "updateMovie (Success)" \
               --folder "updateMovie (Failure)" \
               --folder "deleteMovie (Success)" \
@@ -202,6 +202,8 @@ jobs:
               --folder "actors (Failure)" \
               --folder "Nested Query (Success)" \
               --folder "Nested Query (Failure)" \
+              --folder "Nested Query Actors for movie (Success)" \
+              --folder "Nested Query Actors for movie (Failure)" \
               --delay-request 1000
     
   #     - name: Show Docker Compose config

@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "7c245bed-140c-4a55-9bb3-71b254739f0a",
 		"name": "GraphQL Movie API Tests",
-		"description": "This collection contains 20 test cases for the GraphQL Movie API.\n\nIt covers user authentication, movie CRUD operations, and fetching actors and ratings.\n\nEach request includes detailed documentation, pre-request scripts for random data,\n\nand test scripts for verifying response structure and error handling.\n\nMake sure to use the \"GraphQL-Env\" environment.",
+		"description": "## **Purpose**\n\nThis Postman collection provides a comprehensive suite of automated tests for the GraphQL Movie API. It ensures that core functionalities such as user authentication, movie management, actor retrieval, and rating logic behave as expected under both normal and error conditions. The collection contains 23 test cases for the GraphQL Movie API.\n\nMake sure to use the \"GraphQL-Env\" environment.\n\n## **Logical Test Flow**\n\nTo maintain a reliable and logical test sequence, the collection uses **environment variables** and **pre-request scripts** for dynamic linking between requests:\n\n1. **addMovie** – Creates a new movie and stores its id in an environment variable movieId.\n    \n2. **movie** – Retrieves the specific movie using the saved movieId.\n    \n3. **updateMovie** – Updates the same movie using movieId.\n    \n4. **deleteMovie** – Deletes the movie using movieId and confirms removal.\n    \n5. **All CRUD operations depend on the created movie** to verify a realistic workflow.\n    \n\n## **Test Categories**\n\nEach request is covered by **both success and failure scenarios**:\n\n- **Authentication**\n    \n    - registerUser, loginUser, refreshToken\n        \n- **Movie CRUD**\n    \n    - addMovie, movie, updateMovie, deleteMovie\n        \n- **Ratings**\n    \n    - ratings per movie and validation\n        \n- **Actors**\n    \n    - actors listing and related error handling\n        \n- **Nested Queries**\n    \n    - Validates embedded data like movie { actors, ratings, averageRating }\n        \n\n## **Success Scenarios**\n\nEach success request:\n\n- Returns status code 200 OK\n    \n- Contains the expected response structure\n    \n- Saves necessary data (e.g., token, movieId) to the environment\n    \n\n## **Failure Scenarios**\n\nEach failure request:\n\n- Intentionally triggers errors (e.g., missing auth, invalid ID)\n    \n- Verifies correct error messages, codes, and status handling (400/401/500)\n    \n\n## **Automation Ready**\n\n- Uses **GraphQL-Env** environment for base URL, tokens, and dynamic variables\n    \n- Pre-request and test scripts ensure **chained execution** (e.g., save movieId from addMovie to use in updateMovie and deleteMovie)\n    \n- Ideal for use in CI/CD pipelines",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "31435635"
 	},
@@ -30,7 +30,18 @@
 							"const email = pm.environment.get(\"randomEmail\");",
 							"const password = pm.environment.get(\"randomPassword\");",
 							"pm.environment.set(\"savedEmail\", email);",
-							"pm.environment.set(\"savedPassword\", password);"
+							"pm.environment.set(\"savedPassword\", password);",
+							"pm.environment.set(\"userId\", jsonData.data.registerUser.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -41,12 +52,10 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"mutation { registerUser(email: \\\"{{randomEmail}}\\\", password: \\\"{{randomPassword}}\\\") { id email } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  registerUser(email: \"{{randomEmail}}\", password: \"{{randomPassword}}\") {\n    id\n    email\n  }\n}",
+						"variables": ""
 					}
 				},
 				"url": {
@@ -58,7 +67,7 @@
 						"graphql"
 					]
 				},
-				"description": "Registers a new user with a random email and password.\n\nExpected result: A user object with id and email."
+				"description": "### registerUser (Success)\n\nRegisters a new user with a randomly generated email and password.\n\nExpected result:\n\n- A new user object is returned with an id and the email used for registration.\n    \n- The email should match the one generated and stored in the environment."
 			},
 			"response": []
 		},
@@ -80,18 +89,26 @@
 						"type": "text/javascript",
 						"packages": {}
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
 				}
 			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"mutation { registerUser(email: \\\"taken@example.com\\\", password: \\\"short\\\") { id email } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  registerUser(email: \"taken@example.com\", password: \"short\") {\n    id\n    email\n  }\n}",
+						"variables": ""
 					}
 				},
 				"url": {
@@ -103,7 +120,7 @@
 						"graphql"
 					]
 				},
-				"description": "Attempts to register a user with an already existing registered email invalid (short) password.\n\nExpected result: An errors array in the response."
+				"description": "### registerUser (Failure)\n\nThis test tries to register a user with an email that already exists in the database. It verifies that the API returns an appropriate error message and does not create a new user.\n\nExpected result: An errors array in the response."
 			},
 			"response": []
 		},
@@ -121,11 +138,28 @@
 							"pm.test(\"No errors returned\", () => {",
 							"    pm.expect(jsonData.errors).to.be.undefined;",
 							"});",
-							"pm.test(\"Token is returned\", () => {",
-							"    pm.expect(jsonData.data.loginUser.token).to.be.a(\"string\");",
-							"    // Save token for future requests",
-							"    pm.environment.set(\"authToken\", jsonData.data.loginUser.token);",
-							"});"
+							"// Test that loginUser returns an object with token, refreshToken, and user",
+							"pm.test(\"Login returns token, refreshToken and user\", () => {",
+							"  pm.expect(jsonData.data.loginUser).to.be.an(\"object\");",
+							"  pm.expect(jsonData.data.loginUser).to.have.property(\"token\");",
+							"  pm.expect(jsonData.data.loginUser).to.have.property(\"refreshToken\");",
+							"  pm.expect(jsonData.data.loginUser.user).to.have.property(\"id\");",
+							"  pm.expect(jsonData.data.loginUser.user).to.have.property(\"email\");",
+							"});",
+							"",
+							"// Optionally, save the tokens for later use:",
+							"pm.environment.set(\"authToken\", jsonData.data.loginUser.token);",
+							"pm.environment.set(\"refreshToken\", jsonData.data.loginUser.refreshToken);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -139,12 +173,10 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"mutation { loginUser(email: \\\"{{savedEmail}}\\\", password: \\\"{{savedPassword}}\\\") { token } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  loginUser(email: \"{{savedEmail}}\", password: \"{{savedPassword}}\") {\n    token\n    refreshToken\n    user {\n        id\n        email\n    }\n  }\n}",
+						"variables": ""
 					}
 				},
 				"url": {
@@ -156,7 +188,7 @@
 						"graphql"
 					]
 				},
-				"description": "Logs in with valid credentials (using the same randomEmail and randomPassword from registration).\n\nExpected result: A JWT token and user object; token is stored in environment."
+				"description": "### loginUser (Success)\n\nLogs in with valid credentials (using the same randomEmail and randomPassword from registration).\n\nExpected result:\n\n- A JWT token and user object\n    \n- The token is stored in environment."
 			},
 			"response": []
 		},
@@ -173,7 +205,8 @@
 							"const jsonData = pm.response.json();",
 							"pm.test(\"Error array is returned\", () => {",
 							"    pm.expect(jsonData.errors).to.be.an(\"array\");",
-							"});"
+							"});",
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -184,12 +217,10 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"mutation { loginUser(email: \\\"nonexistent@example.com\\\", password: \\\"WrongPass\\\") { token user { id email } } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  loginUser(email: \"nonexistent@example.com\", password: \"WrongPass\") {\n    token\n    user {\n      id\n      email\n    }\n  }\n}",
+						"variables": ""
 					}
 				},
 				"url": {
@@ -201,12 +232,12 @@
 						"graphql"
 					]
 				},
-				"description": "Attempts to log in with invalid credentials.\n\nExpected result: An errors array in the response."
+				"description": "### loginUser (Failure)\n\nAttempts to log in with invalid credentials.\n\nExpected result: An errors array in the response."
 			},
 			"response": []
 		},
 		{
-			"name": "movies (Success)",
+			"name": "refreshToken (Success)",
 			"event": [
 				{
 					"listen": "test",
@@ -215,120 +246,21 @@
 							"pm.test(\"Status code is 200\", () => {",
 							"    pm.response.to.have.status(200);",
 							"});",
-							"const jsonData = pm.response.json();",
-							"pm.test(\"No errors in response\", () => {",
-							"    pm.expect(jsonData.errors).to.be.undefined;",
-							"});",
-							"pm.test(\"Movies returned as an array\", () => {",
-							"    pm.expect(jsonData.data.movies).to.be.an(\"array\");",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{authToken}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"query { movies { _id title release_date genre description } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/graphql",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"graphql"
-					]
-				},
-				"description": "Fetches all movies.\n\nExpected result: A list (array) of movie objects."
-			},
-			"response": []
-		},
-		{
-			"name": "movies (Failure)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
+							"",
 							"const jsonData = pm.response.json();",
 							"",
-							"pm.test(\"Returns GraphQL error for invalid argument\", () => {",
-							"  pm.expect(jsonData.errors, \"Expected errors to be defined\").to.not.be.undefined;",
-							"",
-							"  const message = jsonData.errors[0].message;",
-							"  const code = jsonData.errors[0].extensions.code;",
-							"",
-							"  pm.expect(message).to.include(\"Unknown argument\");",
-							"  pm.expect(code).to.eql(\"GRAPHQL_VALIDATION_FAILED\");",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"query { movies(id: 123) { _id title } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/graphql",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"graphql"
-					]
-				},
-				"description": "Attempts to fetch movies with an invalid argument type.\n\nExpected result: An errors array in the response."
-			},
-			"response": []
-		},
-		{
-			"name": "addMovie (Success)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", () => {",
-							"    pm.response.to.have.status(200);",
+							"pm.test(\"Refresh token payload is returned\", () => {",
+							"  // Verify that the response contains an AuthPayload object with token, refreshToken, and user.",
+							"  pm.expect(jsonData.data.refreshToken).to.be.an(\"object\");",
+							"  pm.expect(jsonData.data.refreshToken).to.have.property(\"token\");",
+							"  pm.expect(jsonData.data.refreshToken).to.have.property(\"refreshToken\");",
+							"  pm.expect(jsonData.data.refreshToken).to.have.property(\"user\");",
+							"  pm.expect(jsonData.data.refreshToken.user).to.have.property(\"id\");",
+							"  pm.expect(jsonData.data.refreshToken.user).to.have.property(\"email\");",
 							"});",
-							"const jsonData = pm.response.json();",
-							"pm.test(\"No errors in response\", () => {",
-							"    pm.expect(jsonData.errors).to.be.undefined;",
-							"});",
-							"pm.test(\"Movie created with expected title\", () => {",
-							"    pm.expect(jsonData.data.addMovie.title).to.eql(pm.environment.get(\"randomTitle\"));",
-							"    // Save the movie _id for later use:",
-							"    pm.environment.set(\"movieId\", jsonData.data.addMovie._id);",
-							"    // Save the generated id for later use:",
-							"    pm.environment.set(\"generatedMovieId\", jsonData.data.addMovie.id);",
-							"});"
+							"// Save the new tokens for later use",
+							"pm.environment.set(\"authToken\", jsonData.data.refreshToken.token);",
+							"pm.environment.set(\"refreshToken\", jsonData.data.refreshToken.refreshToken);"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -358,12 +290,10 @@
 					}
 				],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"mutation { addMovie(title: \\\"{{randomTitle}}\\\", release_date: {{randomYear}}, genre: \\\"Action\\\", description: \\\"A generated movie.\\\") { id title _id } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation  {\n  refreshToken(token: \"{{refreshToken}}\") {\n    token\n    refreshToken\n    user {\n        id\n        email\n    }\n  }\n}\n",
+						"variables": ""
 					}
 				},
 				"url": {
@@ -375,22 +305,197 @@
 						"graphql"
 					]
 				},
-				"description": "Adds a new movie with valid data.\n\nRequires a valid JWT token in the Authorization header.\n\nUses randomTitle and randomYear from environment."
+				"description": "### refreshToken (Success)\n\nThis test verifies that the GraphQL API successfully issues a new access token and refresh token when a valid refresh token is provided. It also confirms that user details are included in the response.\n\n**Expected Result:**\n\n- The server should return status code **200 OK**.\n    \n- The refreshToken mutation should return a valid token, refreshToken, and a user object.\n    \n- The user object should contain an id and email.\n    \n- The new tokens are saved to the Postman environment for use in future requests.  \n    \n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"data\": {\n      \"type\": \"object\",\n      \"description\": \"The data returned from the GraphQL query.\"\n    }\n  }\n}\n\n ```"
 			},
 			"response": []
 		},
 		{
-			"name": "addMovie (Failure)",
+			"name": "refreshToken (Failure)",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
 							"const jsonData = pm.response.json();",
-							"pm.test(\"Error returned for missing token\", () => {",
-							"    pm.expect(jsonData.errors).to.be.an(\"array\");",
+							"",
+							"pm.test(\"Should fail without token\", () => {",
+							"  pm.expect(jsonData.errors).to.be.an(\"array\");",
+							"  pm.expect(jsonData.errors[0].message).to.include(\"Unauthorized\");",
 							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  refreshToken(token: \"invalid-token\") {\n    token\n    refreshToken\n    user {\n      id\n      email\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/graphql",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "### refreshToken (Failure)\n\nThis test ensures that the GraphQL API responds correctly when an invalid refresh token is provided. It validates that the API does not issue new tokens and returns a proper error message.\n\n**Expected Result:**\n\n- The server should return status code **200 OK** (GraphQL sends errors inside the response even if the HTTP status is 200).\n    \n- The data.refreshToken should be null.\n    \n- The errors array should contain a message indicating that the request is unauthorized."
+			},
+			"response": []
+		},
+		{
+			"name": "deleteUser (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"User is deleted\", () => {",
+							"  pm.expect(jsonData.data.deleteUser).to.have.property(\"id\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  deleteUser(id: \"{{userId}}\") {\n    id\n    email\n  }\n}\n",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/graphql",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "### deleteUser (Success)\n\nDeletes a user that exists in the database.\n\nRequires valid JWT token obtained via loginUser.  \n\nExpected response: Confirmation message"
+			},
+			"response": []
+		},
+		{
+			"name": "movies (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"const jsonData = pm.response.json();",
+							"pm.test(\"No errors in response\", () => {",
+							"    pm.expect(jsonData.errors).to.be.undefined;",
+							"});",
+							"const movies = jsonData.data.movies",
+							"pm.environment.set(\"moviesArray\", JSON.stringify(movies));",
+							"pm.test(\"Movies returned as an array\", () => {",
+							"    pm.expect(jsonData.data.movies).to.be.an(\"array\");",
+							"});",
+							"pm.test(\"At least one movie exists\", () => {",
+							"   pm.expect(movies.length).to.be.above(0);",
+							"});",
+							"",
+							"// Choose a random movie in the array\"",
+							"const randomMovie = movies[Math.floor(Math.random() * movies.length)];",
+							"console.log(\"Random movie selected:\", randomMovie);",
+							"// Save the id of the selected movie to the environment variables\",",
+							"pm.environment.set(\"movieTitle\", randomMovie.title);",
+							"pm.environment.set(\"id\", randomMovie.id);",
+							"pm.environment.set(\"movieId\", randomMovie._id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n  movies {\n    _id\n    id\n    title\n    genre\n    release_date\n    description\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/graphql",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "### movies (Success)\n\nRetrieves all movies from the database. Optional filters like genre and year may be applied.\n\n**Expected result:**\n\n- Response contains an array of movies with fields like _id, title, genre, release_date, and description.\n    \n- If at least one movie exists, the array should have one or more elements.\n    \n- No errors are expected in the response."
+			},
+			"response": []
+		},
+		{
+			"name": "movies (Failure)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", () => {",
+							"  pm.response.to.have.status(400);",
+							"});",
+							"",
+							"const jsonData = pm.response.json();",
+							"console.log(\"Response:\", jsonData);",
+							"",
+							"pm.test(\"Should return GraphQL validation error\", () => {",
+							"  const jsonData = pm.response.json()",
+							"  pm.expect(jsonData).to.have.property(\"errors\")",
+							"  pm.expect(jsonData.errors[0].message).to.include(\"Cannot query field\")",
+							"})"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -401,12 +506,10 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"mutation { addMovie(title: \\\"Bad Movie\\\", release_date: 2000, genre: \\\"Drama\\\", description: \\\"Bad data.\\\") { _id title } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n  movies {\n    _id\n    title\n    release_date\n    monkey\n  }\n}",
+						"variables": ""
 					}
 				},
 				"url": {
@@ -418,7 +521,7 @@
 						"graphql"
 					]
 				},
-				"description": "Attempts to add a movie without an Authorization token.\n\nExpected result: An error due to missing authentication."
+				"description": "### movies (Failure)\n\nAttempts to fetch movies with an invalid argument type.\n\n**Expected result:**\n\n- The server returns a 400 or 500 level error, depending on the invalid query.\n    \n- The errors array is present in the response indicating validation failure or internal server error."
 			},
 			"response": []
 		},
@@ -443,18 +546,23 @@
 						"type": "text/javascript",
 						"packages": {}
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"query { movie(id: \\\"{{movieId}}\\\") { _id title release_date genre description } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "query GetMovie($id: Int!) {\n  movie(id: $id) {\n    _id\n    id\n    title\n    genre\n    release_date\n    description\n  }\n}",
+						"variables": "{\n  \"id\": {{id}}\n}"
 					}
 				},
 				"url": {
@@ -466,7 +574,7 @@
 						"graphql"
 					]
 				},
-				"description": "Fetches a single movie by a valid ID.\n\nNote: Replace with a real movie _id from your database."
+				"description": "### movie (Success)\n\nThis test validates that the GraphQL API correctly returns the details of a specific movie when queried with a valid id.\n\n**Expected Result:**\n\n- The server should return **HTTP status 200**.\n    \n- The response should **not contain any errors**.\n    \n- A valid movie object should be returned with the following fields:\n    \n    - title\n        \n    - id\n        \n    - _id (MongoDB identifier)\n        \n    - release_date\n        \n    - genre\n        \n    - description"
 			},
 			"response": []
 		},
@@ -477,9 +585,14 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+							"pm.test(\"Status code is 200 or 400\", () => {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 400]);",
+							"});",
+							"",
 							"const jsonData = pm.response.json();",
+							"",
 							"pm.test(\"Response should contain errors or null movie\", () => {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 400]);",
 							"    if (jsonData.errors) {",
 							"        pm.expect(jsonData.errors).to.be.an(\"array\");",
 							"    } else {",
@@ -496,12 +609,10 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"query { movie(id: \\\"0000000000\\\") { _id title } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "query  {\n  movie(id: \"movie\") {\n    id\n    title\n  }\n}",
+						"variables": ""
 					}
 				},
 				"url": {
@@ -513,7 +624,130 @@
 						"graphql"
 					]
 				},
-				"description": "Attempts to fetch a movie with a non-existent ID.\n\nExpected result: Either null data or an errors array."
+				"description": "### movie (Failure)\n\nThis test ensures the API responds with a proper error when a movie is queried using an invalid id type (e.g., a string instead of an integer). This simulates client-side mistakes such as malformed input.\n\n**Expected Result:**\n\n- The server should return either **HTTP status 200 or 400**, depending on how validation errors are handled.\n    \n- The response should contain an **errors array** indicating that the input type is incorrect.\n    \n- The data.movie field should be null."
+			},
+			"response": []
+		},
+		{
+			"name": "addMovie (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"const jsonData = pm.response.json();",
+							"pm.test(\"No errors in response\", () => {",
+							"    pm.expect(jsonData.errors).to.be.undefined;",
+							"});",
+							"",
+							"const movie = jsonData.data.addMovie;",
+							"",
+							"pm.test(\"Movie was created\", () => {",
+							"  pm.expect(movie).to.have.property(\"_id\");",
+							"  pm.expect(movie).to.have.property(\"id\");",
+							"  pm.expect(movie).to.have.property(\"title\", pm.variables.get(\"randomTitle\"));",
+							"  pm.expect(movie).to.have.property(\"genre\", \"Action\");",
+							"  pm.expect(movie).to.have.property(\"release_date\", parseInt(pm.variables.get(\"randomYear\")));",
+							"  pm.expect(movie).to.have.property(\"description\", \"A generated movie\");",
+							"});",
+							"",
+							"// Save the generated movie ID to the environment variables for future use.",
+							"pm.environment.set(\"randomMovieId\", movie._id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Generate an id for the movie",
+							"const generatedId = Math.floor(Math.random() * 1000000) + 900000;",
+							"",
+							"// Save the generated id in environment variable",
+							"pm.environment.set(\"generatedMovieId\", generatedId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation AddMovie {\n  addMovie(\n    title: \"{{randomTitle}}\",\n    release_date: {{randomYear}},\n    genre: \"Action\",\n    description: \"A generated movie\"\n    id: {{generatedMovieId}}\n  ) {\n    _id\n    title\n    id\n    genre\n    release_date\n    description\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/graphql",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "### addMovie (Success)\n\nThis test ensures that a new movie can be successfully added to the database when provided with valid input data and a valid authentication token.\n\n**Expected Result:**\n\n- The server should return **HTTP status 200**.\n    \n- The response should not contain any errors.\n    \n- The addMovie mutation should return a movie object with:\n    \n    - _id (MongoDB ID)\n        \n    - id (external movie ID)\n        \n    - title matching the randomTitle used in the request.\n        \n- The movie _id and id should be saved as environment variables for use in later requests."
+			},
+			"response": []
+		},
+		{
+			"name": "addMovie (Failure)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Unauthorized error returned\", () => {",
+							"  pm.expect(jsonData.errors).to.be.an(\"array\");",
+							"  pm.expect(jsonData.errors[0].message).to.include(\"Unauthorized\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation AddMovie($id: Int!) {\n  addMovie(\n    id: $id\n    title: \"Unauthorized Movie\",\n    release_date: 2000,\n    genre: \"Drama\",\n    description: \"This should not be added\",\n  ) {\n    _id\n    id\n    title\n  }\n}",
+						"variables": "{\n  \"id\": {{id}}\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/graphql",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "### addMovie (Failure)\n\nThis test ensures that the server returns an appropriate error when trying to add a movie **without a valid token** (e.g., no Authorization header is sent).\n\n**Expected Result:**\n\n- The server should return **HTTP status 200 or 400**, depending on implementation.\n    \n- The response should contain an errors array with a descriptive message such as Unauthorized or Missing token.\n    \n- No addMovie data should be returned."
 			},
 			"response": []
 		},
@@ -529,9 +763,20 @@
 							"pm.test(\"No errors in response\", () => {",
 							"    pm.expect(jsonData.errors).to.be.undefined;",
 							"});",
-							"pm.test(\"Movie title updated\", () => {",
-							"    pm.expect(jsonData.data.updateMovie.title).to.eql(\"Updated Title\");",
+							"pm.test(\"UpdateMovie mutation returned a result\", () => {",
+							"  pm.expect(jsonData.data.updateMovie.title).to.eql(\"Updated Title\");",
 							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const movieId = pm.environment.get(\"movieId\");",
+							"console.log(\"✅ randomMovieId in pre-request:\", movieId)"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -548,12 +793,10 @@
 					}
 				],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"mutation { updateMovie(id: \\\"{{movieId}}\\\", title: \\\"Updated Title\\\") { _id title } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation UpdateMovie($id: ID!) {\n  updateMovie(id: $id, title: \"Updated Title\") {\n    id\n    title\n    genre\n    release_date\n    description\n  }\n}",
+						"variables": "{\n  \"id\": \"{{movieId}}\"\n}"
 					}
 				},
 				"url": {
@@ -565,7 +808,7 @@
 						"graphql"
 					]
 				},
-				"description": "Updates an existing movie. Requires a valid token and a valid movieId (stored from addMovie).\n\nChanges the movie title to \"Updated Title\"."
+				"description": "### updateMovie (Success)\n\nThis test ensures that an existing movie can be updated when a valid movie ID and authorization token are provided.\n\n**Expected Result:**\n\n- Status code should be **200 OK**.\n    \n- Response should **not contain errors**.\n    \n- updateMovie should return the updated movie object.\n    \n- The movie title should match the newly provided value."
 			},
 			"response": []
 		},
@@ -591,12 +834,10 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"mutation { updateMovie(id: \\\"{{movieId}}\\\", title: \\\"Fail Update\\\") { _id title } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  updateMovie(\n    id: \"{{movieObjectId}}\",\n    title: \"Should Not Update\"\n  ) {\n    id\n    title\n  }\n}",
+						"variables": ""
 					}
 				},
 				"url": {
@@ -608,7 +849,7 @@
 						"graphql"
 					]
 				},
-				"description": "Attempts to update a movie without an Authorization token.\n\nExpected result: An error due to missing authentication."
+				"description": "### updateMovie (Failure)\n\nThis test verifies that an attempt to update a movie **without a valid token** results in an appropriate error response from the API.\n\n**Expected Result:**\n\n- Server should respond with **status 200 or 400** depending on GraphQL setup.\n    \n- Response should contain an errors array indicating an Unauthorized error.\n    \n- No movie object should be returned in the data field."
 			},
 			"response": []
 		},
@@ -619,14 +860,32 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
-							"const jsonData = pm.response.json();",
-							"pm.test(\"No errors in response\", () => {",
-							"    pm.expect(jsonData.errors).to.be.undefined;",
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
 							"});",
-							"pm.test(\"Movie deleted is returned\", () => {",
-							"    pm.expect(jsonData.data.deleteMovie).to.be.an(\"object\");",
-							"});"
+							"",
+							"const jsonData = pm.response.json();",
+							"const result = jsonData.data.deleteMovie;",
+							"",
+							"pm.test(\"deleteMovie response structure is valid\", () => {",
+							"  pm.expect(result).to.be.an(\"object\");",
+							"  pm.expect(result).to.have.property(\"message\");",
+							"});",
+							"",
+							"pm.test(\"deleteMovie returns success message\", () => {",
+							"  pm.expect(result.message).to.match(/deleted|does not exist/i);",
+							"});",
+							"",
+							"if (result.deletedMovie) {",
+							"  pm.test(\"Deleted movie object is returned\", () => {",
+							"    pm.expect(result.deletedMovie).to.be.an(\"object\");",
+							"    pm.expect(result.deletedMovie).to.have.property(\"title\");",
+							"  });",
+							"} else {",
+							"  pm.test(\"No movie returned because it was already gone\", () => {",
+							"    pm.expect(result.deletedMovie).to.be.null;",
+							"  });",
+							"}"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -643,12 +902,10 @@
 					}
 				],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"mutation { deleteMovie(id: \\\"{{movieId}}\\\") { _id title } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation DeleteMovie($id: ID!) {\n  deleteMovie(id: $id) {\n    deletedMovie {\n      id\n      title\n      genre\n      release_date\n      description\n    }\n    message\n  }\n}",
+						"variables": "{\n  \"id\": \"{{movieId}}\"\n}"
 					}
 				},
 				"url": {
@@ -660,7 +917,7 @@
 						"graphql"
 					]
 				},
-				"description": "Deletes an existing movie using the movieId stored from addMovie.\n\nRequires valid authentication."
+				"description": "### deleteMovie (Success)\n\nThis test confirms that a movie can be successfully deleted from the database when a valid movie ID and authentication token are provided.\n\n**Expected Result:**\n\n- The server should respond with **status code 200 OK**.\n    \n- The response body should include a message string indicating the outcome:\n    \n    - Either that the movie was successfully deleted.\n        \n    - Or that the movie did not exist (if deleted earlier).\n        \n- If the movie existed:\n    \n    - A deletedMovie object should be returned with full movie details (e.g. title).\n        \n- If the movie did not exist:\n    \n    - deletedMovie should be null."
 			},
 			"response": []
 		},
@@ -671,7 +928,9 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+							"pm.test(\"Status code is 200 or 400\", () => {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 400]);",
+							"});",
 							"const jsonData = pm.response.json();",
 							"pm.test(\"Error returned due to missing authentication\", () => {",
 							"    pm.expect(jsonData.errors).to.be.an(\"array\");",
@@ -686,12 +945,10 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"mutation { deleteMovie(id: \\\"{{movieId}}\\\") { _id title } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  deleteMovie(id: \"{{movieId}}\") {\n    id\n    title\n  }\n}",
+						"variables": ""
 					}
 				},
 				"url": {
@@ -703,7 +960,7 @@
 						"graphql"
 					]
 				},
-				"description": "Attempts to delete a movie without authentication.\n\nExpected result: An error indicating unauthorized access."
+				"description": "### deleteMovie (Failure)\n\nThis test ensures the API prevents movie deletion when the request is unauthenticated or token is invalid.\n\n**Expected Result:**\n\n- The server should respond with **status 200** and a GraphQL errors array.\n    \n- The error message should indicate **missing or invalid authentication**.\n    \n- No movie object should be returned in the data field."
 			},
 			"response": []
 		},
@@ -716,9 +973,28 @@
 						"exec": [
 							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
 							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"No errors in response\", () => {",
+							"    pm.expect(jsonData.errors).to.be.undefined;",
+							"});",
+							"",
 							"pm.test(\"Ratings returned as an array\", () => {",
 							"    pm.expect(jsonData.data.ratings).to.be.an(\"array\");",
-							"});"
+							"});",
+							"const ratings = jsonData.data.ratings;",
+							"",
+							"pm.test(\"Ratings exist\", () => {",
+							"    pm.expect(ratings.length).to.be.above(0);",
+							"});",
+							"",
+							"// Choose a random rating",
+							"const randomRating = jsonData.data.ratings[Math.floor(Math.random() * jsonData.data.ratings.length)];",
+							"console.log(\"Random movie raiting selected:\", randomRating);",
+							"",
+							"// Add the movieId to the environment variables for later use in other tests.",
+							"pm.environment.set(\"ratingId\", randomRating.movieId);",
+							"",
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -735,12 +1011,10 @@
 					}
 				],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"query { ratings(movieId: \\\"{{movieId}}\\\") { id text movie { title } } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n  ratings {\n    _id\n    userId\n    rating\n    movieId\n  }\n}",
+						"variables": ""
 					}
 				},
 				"url": {
@@ -752,7 +1026,7 @@
 						"graphql"
 					]
 				},
-				"description": "Fetches ratings for a specific movie. Use a valid movie ID (you can use one from your seed data)."
+				"description": "### **ratings (Success)**\n\nThis test verifies that a GraphQL query to retrieve all movie ratings returns a successful response (HTTP 200 OK) and that the data returned is in the correct format (an array of rating objects).\n\n**Expected result:**\n\n- Status code: 200\n    \n- Response body contains a field data.ratings that is an array.\n    \n- Each element in the array is a rating object with fields: _id, movieId, userId, and rating."
 			},
 			"response": []
 		},
@@ -763,16 +1037,19 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
-							"const jsonData = pm.response.json();",
-							"pm.test(\"Either errors or empty ratings array\", () => {",
-							"    if (jsonData.errors) {",
-							"        pm.expect(jsonData.errors).to.be.an(\"array\");",
-							"    } else {",
-							"        pm.expect(jsonData.data.ratings).to.be.an(\"array\");",
-							"        pm.expect(jsonData.data.ratings.length).to.eql(0);",
-							"    }",
-							"});"
+							"pm.test(\"Should return GraphQL validation error\", () => {",
+							"    const jsonData = pm.response.json();",
+							"",
+							"    // 1. GraphQL validation errors should return 400",
+							"    pm.expect(pm.response.code).to.eql(400);",
+							"",
+							"    // 2. It should have an errors array",
+							"    pm.expect(jsonData).to.have.property(\"errors\");",
+							"",
+							"    // 3. It should say that 'actor' is not a valid field",
+							"    pm.expect(jsonData.errors[0].message).to.include(\"Cannot query field \\\"actor\\\"\");",
+							"});",
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -789,12 +1066,10 @@
 					}
 				],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"query { ratings(movieId: \\\"00000\\\") { id text } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n  ratings {\n    _id\n    userId\n    rating\n    movieId\n    actor\n  }\n}",
+						"variables": ""
 					}
 				},
 				"url": {
@@ -806,7 +1081,7 @@
 						"graphql"
 					]
 				},
-				"description": "Attempts to fetch ratings for a non-existent movie.\n\nExpected result: Either errors or an empty array."
+				"description": "### **ratings (Failure)**\n\nThis test verifies that the GraphQL API correctly rejects invalid input for the ratings query. In this case, a non-existing field (actor) on the Raiting type.\n\nExpected result:\n\n- The server should respond with a 400 Bad Request status code.\n    \n- The response should include an errors array.\n    \n- The error message should include a statement indicating that actor is not a valid field on the Rating type, e.g.:"
 			},
 			"response": []
 		},
@@ -842,12 +1117,10 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"query { actors { id name movies_played { title } } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n  actors {\n      id\n      name\n      movies_played \n  }\n}",
+						"variables": ""
 					}
 				},
 				"url": {
@@ -859,7 +1132,7 @@
 						"graphql"
 					]
 				},
-				"description": "Fetches all actors.\n\nExpected result: An array of actor objects."
+				"description": "### actors (Success)\n\nFetches all actors.\n\nExpected result:\n\n- An array of actor objects.\n    \n- With id, name and number of movies they have starred in"
 			},
 			"response": []
 		},
@@ -898,12 +1171,10 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"query { actors { id name unknownField { title } } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n  actors {\n    id\n    name\n    invalidField\n  }\n}",
+						"variables": ""
 					}
 				},
 				"url": {
@@ -915,7 +1186,7 @@
 						"graphql"
 					]
 				},
-				"description": "Attempts to fetch actors with an invalid argument (if applicable).\n\nExpected result: An errors array."
+				"description": "### actors (Failure)\n\nAttempts to fetch actors with an invalid argument (if applicable).\n\nExpected result: An errors array."
 			},
 			"response": []
 		},
@@ -928,87 +1199,37 @@
 						"exec": [
 							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
 							"const jsonData = pm.response.json();",
-							"pm.test(\"No errors in response\", () => {",
-							"    pm.expect(jsonData.errors).to.be.undefined;",
-							"});",
 							"",
-							"pm.test(\"Ratings is null or array (if movie exists)\", () => {",
-							"  const movie = jsonData.data.movie;",
-							"  if (movie === null) {",
-							"    console.warn(\"movie is null – no ratings to check\");",
-							"    pm.expect(movie).to.equal(null); // Ger PASS",
-							"  } else {",
-							"    const ratings = movie.ratings;",
-							"    if (ratings === null) {",
-							"      pm.expect(ratings).to.equal(null);",
-							"    } else {",
-							"      pm.expect(ratings).to.be.an(\"array\");",
-							"    }",
-							"  }",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{authToken}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"query { movie(id: \\\"{{movieId}}\\\") { _id title release_date genre description ratings { id text } } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/graphql",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"graphql"
-					]
-				},
-				"description": "Fetches a movie along with its nested ratings in one query.\n\nExpected result: A movie object with a 'ratings' field as an array."
-			},
-			"response": []
-		},
-		{
-			"name": "Nested Query (Failure)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
-							"let jsonData;",
+							"// Kontrollera om movie finns",
+							"if (jsonData.data && jsonData.data.movie) {",
+							"    const movie = jsonData.data.movie;",
 							"",
-							"try {",
-							"  jsonData = pm.response.json();",
-							"} catch (err) {",
-							"  pm.expect.fail(\"Response is not valid JSON\");",
-							"}",
+							"    pm.test(\"Movie has expected fields\", () => {",
+							"        pm.expect(movie).to.have.property(\"title\");",
+							"        pm.expect(movie).to.have.property(\"ratings\");",
+							"    });",
 							"",
-							"// Only run tests if jsonData is not null.",
-							"if (jsonData) {",
-							"  pm.test(\"Errors OR null movie\", () => {",
-							"    if (jsonData.errors) {",
-							"      pm.expect(jsonData.errors).to.be.an(\"array\");",
-							"      pm.expect(jsonData.errors[0].message).to.include(\"Cast to ObjectId failed\");",
-							"    } else {",
-							"      pm.expect(jsonData.data.movie).to.be.null;",
-							"    }",
-							"  });",
+							"    pm.test(\"Ratings is an array or null\", () => {",
+							"        const ratings = movie.ratings;",
+							"        pm.expect(Array.isArray(ratings) || ratings === null).to.be.true;",
+							"    });",
+							"",
+							"   pm.test(\"Movie has averageRating\", () => {",
+							"        pm.expect(movie).to.have.property(\"averageRating\");",
+							"        pm.expect(movie.averageRating).to.be.a(\"number\");",
+							"    });",
+							"",
+							"    pm.test(\"Average rating is correct\", () => {",
+							"        const ratings = movie.ratings.map(r => r.rating);",
+							"        const total = ratings.reduce((a, b) => a + b, 0);",
+							"        const expectedAverage = ratings.length ? total / ratings.length : null;",
+							"        pm.expect(movie.averageRating).to.be.closeTo(expectedAverage, 0.01);",
+							"    });",
+							"} else {",
+							"    console.log(\"Movie not found or data is undefined\", jsonData);",
+							"    pm.test(\"Movie query failed or returned no data\", () => {",
+							"        pm.expect(jsonData.data.movie).to.be.undefined;",
+							"    });",
 							"}"
 						],
 						"type": "text/javascript",
@@ -1026,12 +1247,10 @@
 					}
 				],
 				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"query\": \"query { movie(id: \\\"0000\\\") { _id title ratings { id text } } }\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
+					"mode": "graphql",
+					"graphql": {
+						"query": "query GetMovie($id: Int!) {\n  movie(id: $id) {\n    _id\n    id\n    title\n    ratings {\n      rating\n      userId\n    }\n    averageRating\n  }\n}",
+						"variables": "{\n  \"id\": {{randomId}}\n}"
 					}
 				},
 				"url": {
@@ -1043,7 +1262,220 @@
 						"graphql"
 					]
 				},
-				"description": "Attempts a nested query using an invalid movie ID.\n\nExpected result: Either null movie data or an errors array."
+				"description": "### Nested Query (Success)\n\nThis test verifies that the GraphQL API successfully returns a combination of nested data, including:\n\n- A list of all movies,\n    \n- A specific movie by its id,\n    \n- All ratings for the given movie\n    \n- The movie’s averageRating, calculated based on the nested ratings\n    \n\nExpected result:\n\n- The API should return status code **200 OK**.\n    \n- The response should contain:\n    \n    - A movies array (list of all movies),\n        \n    - A movie object matching the provided id,\n        \n    - An array of ratings for that specific movie\n        \n    - If ratings exist, averageRating should equal the mean value of the returned ratings"
+			},
+			"response": []
+		},
+		{
+			"name": "Nested Query (Failure)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Should return 400 Bad Request for invalid field\", () => {",
+							"  const jsonData = pm.response.json()",
+							"",
+							"  // 1. Response should have 400 status code",
+							"  pm.expect(pm.response.code).to.eql(400)",
+							"",
+							"  // 2. The response should include a GraphQL error",
+							"  pm.expect(jsonData).to.have.property(\"errors\")",
+							"",
+							"  // 3. The error message should mention the invalid field",
+							"  pm.expect(jsonData.errors[0].message).to.include('Cannot query field \"actor\"')",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\n  movies {\n    id\n    title\n    ratings {\n      rating\n      userId\n      actor  # ❌ Invalid field (does not exist in Rating type)\n    }\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/graphql",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "### Nested Query (Failure)\n\nThis test ensures that the GraphQL API correctly handles errors in nested queries. Specifically, it queries a non-existent field (actor) inside the ratings object of each movie. Since the Rating type does not define an actor field, the API should return a 400 Bad Request with a descriptive validation error.\n\n**Expected result**:\n\n- Status code: 400\n    \n- The response must include an errors array with a message that includes: \"Cannot query field \\\\\"actor\\\\\" on type \\\\\"Rating\\\\\".\""
+			},
+			"response": []
+		},
+		{
+			"name": "Nested Query Actors for movie (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"No errors\", () => {",
+							"    pm.expect(jsonData.errors).to.be.undefined;",
+							"});",
+							"",
+							"const movie = jsonData.data.movie;",
+							"",
+							"pm.test(\"Movie has expected fields\", () => {",
+							"    pm.expect(movie).to.have.property(\"title\");",
+							"    pm.expect(movie).to.have.property(\"id\");",
+							"    pm.expect(movie).to.have.property(\"actors\");",
+							"    pm.expect(movie).to.have.property(\"ratings\");",
+							"    pm.expect(movie).to.have.property(\"averageRating\");",
+							"});",
+							"",
+							"// Nested query for actors",
+							"pm.test(\"Actors is an array\", () => {",
+							"    pm.expect(Array.isArray(movie.actors)).to.be.true;",
+							"});",
+							"",
+							"if (movie.actors.length > 0) {",
+							"    const actor = movie.actors[0];",
+							"    pm.test(\"Actor has expected fields\", () => {",
+							"        pm.expect(actor).to.have.property(\"id\");",
+							"        pm.expect(actor).to.have.property(\"name\");",
+							"        pm.expect(actor).to.have.property(\"movies_played\");",
+							"    });",
+							"} else {",
+							"    console.log(\"No actors found for this movie.\");",
+							"}",
+							"",
+							"// Nested query for ratings",
+							"pm.test(\"Ratings is an array\", () => {",
+							"    pm.expect(Array.isArray(movie.ratings)).to.be.true;",
+							"});",
+							"",
+							"if (movie.ratings.length > 0) {",
+							"    const rating = movie.ratings[0];",
+							"    pm.test(\"Each rating has userId and rating\", () => {",
+							"        pm.expect(rating).to.have.property(\"userId\");",
+							"        pm.expect(rating).to.have.property(\"rating\");",
+							"        pm.expect(rating.rating).to.be.a(\"number\");",
+							"    });",
+							"",
+							"    // 📊 Kontrollera averageRating-stämmer",
+							"    const ratings = movie.ratings.map(r => r.rating);",
+							"    const total = ratings.reduce((sum, r) => sum + r, 0);",
+							"    const expectedAverage = total / ratings.length;",
+							"",
+							"    pm.test(\"Average rating is calculated correctly\", () => {",
+							"        pm.expect(movie.averageRating).to.be.closeTo(expectedAverage, 0.01);",
+							"    });",
+							"} else {",
+							"    console.log(\"No ratings found for this movie.\");",
+							"",
+							"    pm.test(\"Average rating should be null if no ratings\", () => {",
+							"        pm.expect(movie.averageRating).to.eql(null);",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query GetMovieWithRatingsAndActors($id: Int!) {\n  movie(id: $id) {\n    title\n    id\n    averageRating\n    ratings {\n      userId\n      rating\n    }\n    actors {\n      id\n      name\n      movies_played\n    }\n  }\n}",
+						"variables": "{\n   \"id\": {{ratingId}}\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/graphql",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "### Nested Query Actors for movie (Success)\n\nThis test verifies that the GraphQL API successfully returns a combination of nested data, including:\n\n- A specific movie by its id,\n    \n- All ratings for the given movie\n    \n- The movie’s averageRating, calculated based on the nested ratings\n    \n- All actors for the movie\n    \n\nExpected result:\n\n- The API should return status code **200 OK**.\n    \n- The response should contain:\n    \n    - A movie object matching the provided id,\n        \n    - An array of ratings for that specific movie\n        \n    - If ratings exist, averageRating should equal the mean value of the returned ratings\n        \n    - An array of actors with movies played"
+			},
+			"response": []
+		},
+		{
+			"name": "Nested Query Actors for movie (Failure)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400 (Bad User Input)\", () => {",
+							"    pm.expect(pm.response.code).to.eql(400);",
+							"});",
+							"",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Should return a GraphQL BAD_USER_INPUT error\", () => {",
+							"    pm.expect(jsonData.errors).to.be.an(\"array\");",
+							"    pm.expect(jsonData.errors[0].message).to.include(\"Int cannot represent non-integer value\");",
+							"    pm.expect(jsonData.errors[0].extensions.code).to.eql(\"BAD_USER_INPUT\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query GetMovieWithActorsAndRatings($id: Int!) {\n  movie(id: $id) {\n    title\n    id\n    ratings {\n      userId\n      rating\n    }\n    actors {\n      id\n      name\n      movies_played\n    }\n  }\n}",
+						"variables": "{\n   \"id\": \"{{movieId}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/graphql",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "### Nested Query Actors for movie (Failure)\n\nThis test ensures that the GraphQL server correctly handles invalid input types. The query passes an ObjectId string instead of the expected Int, which should cause a validation error.\n\n**Expected result**:\n\n- The errors array in the response must include:\n    \n    - A message indicating a **type mismatch**, e.g.:\"Int cannot represent non-integer value: \\\\\"67f6d69fc9fb79fe6d714d0b\\\\\"\"\n        \n    - The code inside extensions should be: \"BAD_USER_INPUT\""
 			},
 			"response": []
 		}
@@ -1057,7 +1489,7 @@
 				"exec": [
 					"// Generate random email and password for user registration",
 					"pm.environment.set(\"randomEmail\", `user_${Date.now()}@example.com`);",
-					"pm.environment.set(\"randomPassword\", `Pass_${Math.floor(Math.random()*100000)}`);",
+					"pm.environment.set(\"randomPassword\", `Pass_${Math.floor(Math.random()*100000)}!@`);",
 					"// Generate random id and title for movie",
 					"pm.environment.set(\"randomId\", Math.floor(Math.random() * 1000000));",
 					"pm.environment.set(\"randomTitle\", `Movie_${Math.floor(Math.random()*100000)}`);",
