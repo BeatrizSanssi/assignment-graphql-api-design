@@ -84,7 +84,7 @@ export class MovieController {
    */
   static async updateMovie (id, updateData, user) {
     if (!user) throw new UnauthorizedError('Unauthorized')
-    return await MovieModel.findByIdAndUpdate(id, updateData, { new: true })
+    return await MovieModel.findByIdAndUpdate({ id: Number(id) }, updateData, { new: true })
   }
 
   /**

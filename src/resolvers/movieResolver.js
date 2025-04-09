@@ -35,9 +35,6 @@ export default {
       }
       return movie
     },
-    // movie: async (_, { id }) => {
-    //   return await MovieController.getMovieById(id)
-    // },
     /**
      * Get all actors.
      *
@@ -46,15 +43,6 @@ export default {
     actors: async () => {
       return await ActorController.getAllActors()
     }
-    // /**
-    //  * Field resolver to get all ratings for a movie.
-    //  *
-    //  * @param {object} parent - The parent object.
-    //  * @returns {Promise<object[]>} - A list of ratings.
-    //  */
-    // rating: async (parent) => {
-    //   return await RatingController.getRatingsByMovieId(parent._id)
-    // }
   },
   Mutation: {
     /**
