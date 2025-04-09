@@ -11,16 +11,14 @@ export default {
     /**
      * Get all actors.
      *
-     * @param {object} _ - The parent object.
-     * @param {object} args - Arguments for filtering the actors.
      * @returns {Promise<object[]>} - A list of actors.
      */
-    actors: async (_, args) => {
-      return await ActorController.getAllActors(args.limit)
-    }
-    // actors: async () => {
-    //   return await ActorController.getAllActors()
+    // actors: async (_, args) => {
+    //   return await ActorController.getAllActors(args.limit)
     // }
+    actors: async () => {
+      return await ActorController.getAllActors()
+    }
   },
   Actor: {
     /**
