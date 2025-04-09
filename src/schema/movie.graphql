@@ -3,7 +3,7 @@
 
 type Movie {
   _id: ID!
-  # id: Int!
+  id: Int!
   title: String!
   release_date: Int!
   genre: String!

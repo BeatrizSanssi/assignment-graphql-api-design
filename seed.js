@@ -16,6 +16,7 @@ dotenv.config()
 console.log('Seeding MOVIES_CSV_PATH =', process.env.MOVIES_CSV_PATH)
 console.log('Seeding RATINGS_CSV_PATH =', process.env.RATINGS_CSV_PATH)
 console.log('Seeding ACTORS_CSV_PATH =', process.env.ACTORS_CSV_PATH)
+console.log('Seeding LINKS_CSV_PATH =', process.env.LINKS_CSV_PATH)
 
 /**
  * Parses a CSV file and returns an array of objects.
@@ -183,39 +184,47 @@ export async function seed () {
     console.log(`Inserted ${insertedMovies.length} movies`)
 
     // 4. Create movieId map
-    const movieIdMap = new Map()
-    insertedMovies.forEach((movie) => {
-      movieIdMap.set(movie.id, movie._id)
-    })
+    // const movieIdMap = new Map()
+    // insertedMovies.forEach((movie) => {
+    //   movieIdMap.set(movie.id, movie._id)
+    // })
 
     // 5. PARSE & SEED ACTORS (from credits.csv)
     await seedActors()
 
     // 6. PARSE & SEED RATINGS
-    const seenRatings = new Set()
+    const ratingSeed = new Set()
     const ratings = await parseCSV(process.env.RATINGS_CSV_PATH, (row) => {
       const movieId = parseInt(row.movieId)
       const userId = parseInt(row.userId)
       const rating = parseFloat(row.rating)
 
-      if (!movieIdMap.has(movieId)) {
+      // if (!movieIdMap.has(movieId)) {
+      //   console.warn(`No match for movieId ${movieId}`)
+      //   return null
+      // }
+      // console.log('Matched rating movieId:', movieId)
+      // const key = `${movieId}-${userId}`
+      // if (!movieIdMap.has(movieId)) return null
+      // if (seenRatings.has(key)) return null
+      if (!seenMovieIds.has(movieId)) {
         console.warn(`No match for movieId ${movieId}`)
         return null
       }
-      console.log('Matched rating movieId:', movieId)
+
       const key = `${movieId}-${userId}`
-      if (!movieIdMap.has(movieId)) return null
-      if (seenRatings.has(key)) return null
+      if (ratingSeed.has(key)) return null
+      ratingSeed.add(key)
       // if (seenRatings.has(key)) {
       //   return null // Skip duplicates
       // }
 
-      seenRatings.add(key)
+      // seenRatings.add(key)
 
       return {
         userId,
         rating,
-        movieId: movieIdMap.get(movieId)
+        movieId
       }
     })
     await RatingModel.deleteMany({})
