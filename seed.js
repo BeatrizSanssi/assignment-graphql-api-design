@@ -107,12 +107,12 @@ async function seedActors () {
   }
 
   const uniqueActors = Array.from(actorMap.values())
-  const limitedActors = uniqueActors.slice(0, 1000)
+  // const limitedActors = uniqueActors.slice(0, 1000)
   await ActorModel.deleteMany({})
-  // await ActorModel.insertMany(uniqueActors)
-  await ActorModel.insertMany(limitedActors)
-  // console.log(`Successfully inserted ${uniqueActors.length} actors into DB.`)
-  console.log(`Successfully inserted ${limitedActors.length} actors into DB.`)
+  await ActorModel.insertMany(uniqueActors)
+  // await ActorModel.insertMany(limitedActors)
+  console.log(`Successfully inserted ${uniqueActors.length} actors into DB.`)
+  // console.log(`Successfully inserted ${limitedActors.length} actors into DB.`)
 }
 
 /**
@@ -222,12 +222,12 @@ async function seed () {
       //   movieId: movieIdFromCSV
       // }
     })
-    const limitedRatings = ratings.slice(0, 1000)
+    // const limitedRatings = ratings.slice(0, 1000)
     await RatingModel.deleteMany({})
-    // await RatingModel.insertMany(ratings)
-    await RatingModel.insertMany(limitedRatings)
-    // console.log(`Successfully inserted ${ratings.length} ratings into DB.`)
-    console.log(`Successfully inserted ${limitedRatings.length} ratings into DB.`)
+    await RatingModel.insertMany(ratings)
+    // await RatingModel.insertMany(limitedRatings)
+    console.log(`Successfully inserted ${ratings.length} ratings into DB.`)
+    // console.log(`Successfully inserted ${limitedRatings.length} ratings into DB.`)
   } catch (error) {
     console.error('Error while seeding:', error)
   } finally {
