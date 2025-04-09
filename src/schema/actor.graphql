@@ -2,12 +2,13 @@
 # Author: Beatriz Sanssi
 
 type Actor {
-  id: ID!
+  _id: ID!
+  id: Int!
   name: String!
   movies_played: Int!
   movies: [Movie]  
 }
 
 extend type Query {
-  actors(limit: Int): [Actor]
+  actors(id: Int): [Actor]
 }

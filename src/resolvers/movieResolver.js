@@ -100,11 +100,11 @@ export default {
      */
     ratings: async (parent) => {
       // Use the parent object to get the movie ID
-      if (!parent.id) {
-        console.warn('No parent.id in movie object:', parent)
-        return []
+      const ratings = await RatingController.getRatingsByMovieId(parent.id)
+      if (!ratings.length) {
+        console.warn(`No ratings found for movie id=${parent.id}`)
       }
-      return await RatingController.getRatingsByMovieId(parent.id)
+      return ratings
     },
     /**
      * Field resolver to get the average rating for a movie.

@@ -133,7 +133,7 @@ export async function seed () {
       const id = parseInt(row.id)
 
       // Skip duplicates
-      if (!id || seenMovieIds.has(id)) return null
+      if (!id || isNaN(id) || seenMovieIds.has(id)) return null
       seenMovieIds.add(id)
 
       // Extract data from each row
@@ -207,8 +207,14 @@ export async function seed () {
       // const key = `${movieId}-${userId}`
       // if (!movieIdMap.has(movieId)) return null
       // if (seenRatings.has(key)) return null
-      if (!seenMovieIds.has(movieId)) {
-        console.warn(`No match for movieId ${movieId}`)
+      // if (!seenMovieIds.has(movieId)) {
+      //   console.warn(`No match for movieId ${movieId}`)
+      //   return null
+      // }
+
+      // Keep all ratings, even if the movieId is not in the database
+      if (isNaN(movieId) || isNaN(userId) || isNaN(rating)) {
+        console.warn('Invalid rating row:', row)
         return null
       }
 
