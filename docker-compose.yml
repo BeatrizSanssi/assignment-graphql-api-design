@@ -15,6 +15,8 @@ services:
       - RATINGS_CSV_PATH=/app/archive/ratings.csv
       - DB_CONNECTION_STRING=mongodb://root:secret@mongo:27017/graphql-api-db?authSource=admin
       - DOCKER=true
+      - MONGO_USER=root
+      - MONGO_PASSWORD=secret
     # env_file:
     #   - .env
     # volumes:
@@ -39,6 +41,13 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    command: >
+      bash -c "
+        mongod --bind_ip_all --auth &
+        sleep 5 &&
+        mongorestore -u root -p secret --authenticationDatabase admin /dump &&
+        fg
+      "
 
   # api:
   #   build: .
