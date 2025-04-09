@@ -20,6 +20,7 @@ services:
       - MONGO_PASSWORD=secret
     volumes:
       - ./archive:/app/archive
+    restart: unless-stopped
     # env_file:
     #   - .env
     # volumes:
@@ -27,7 +28,7 @@ services:
     # restart: unless-stopped
   mongo:
     image: mongo:latest
-    restart: always
+    restart: unless-stopped
     container_name: mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
