@@ -116,7 +116,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Run Seeder
-        run: docker-compose -f docker-compose.seed.yml up --build --abort-on-container-exit
+        run: docker compose -f docker-compose.seed.yml up --build --abort-on-container-exit
       
   deploy:
     runs-on : ubuntu-latest
