@@ -31,10 +31,9 @@ import { limiter } from './config/rateLimiter.js'
 import { logger } from './config/winston.js'
 import { sessionMiddleware } from './config/session.js'
 import { errorHandler } from './middleware/errorHandler.js'
-// import { setUserLocals } from './middleware/setUserLocals.js'
-import { authenticate } from './middleware/authenticate.js'
 import resolvers from './resolvers/index.js'
 import { typeDefs } from './schema/index.js'
+import { verifyToken } from './middleware/authenticate.js'
 
 dotenv.config()
 
@@ -86,7 +85,7 @@ try {
 
   // Use the session middleware for managing secure sessions.
   app.use(sessionMiddleware)
-  app.use(authenticate)
+  // app.use(authenticate)
 
   app.use(cookieParser())
 
@@ -133,7 +132,8 @@ try {
      * @returns {object} - The context object.
      */
     context: ({ req }) => {
-      return { user: req.user }
+      const user = verifyToken(req)
+      return { user }
     }
   })
   // Start the Apollo Server asynchronously and apply the middleware.

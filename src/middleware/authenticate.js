@@ -10,6 +10,21 @@ import { UnauthorizedError } from '../lib/errors/index.js'
 const JWT_SECRET = process.env.JWT_SECRET
 
 /**
+ * Verifies the JWT token from the request headers.
+ *
+ * @param {object} req - Express request object.
+ * @returns {object|null} - The decoded token if valid, null otherwise.
+ */
+export function verifyToken (req) {
+  const authHeader = req.headers.authorization
+  if (authHeader) {
+    const token = authHeader.split(' ')[1]
+    return jwt.verify(token, process.env.JWT_SECRET)
+  }
+  return null
+}
+
+/**
  * Middleware to authenticate the user.
  *
  * @param {object} req - Express request object.
