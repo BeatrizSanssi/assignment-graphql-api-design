@@ -42,6 +42,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      
     # command: >
     #   bash -c "
     #     mongod --bind_ip_all --auth &
