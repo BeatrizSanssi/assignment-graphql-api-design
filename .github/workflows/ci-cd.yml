@@ -177,8 +177,8 @@ jobs:
         
         - name: Run Postman tests
           run: |
-            newman run tests/GraphQL Movie API Tests.postman_collection.json \
-              --environment tests/GraphQL-Env.postman_environment.json\
+            newman run tests/postman_collection.json \
+              --environment tests/postman_environment.json\
               --folder "registerUser (Success)" \
               --folder "registerUser (Failure)" \
               --folder "loginUser (Success)" \
