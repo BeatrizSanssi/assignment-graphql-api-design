@@ -8,16 +8,16 @@ import mongoose from 'mongoose'
 
 // Create a schema.
 const schema = new mongoose.Schema({
-  id: {
-    type: Number,
-    required: true
-    // /**
-    //  * Generates a random number between 100000 and 999999.
-    //  *
-    //  * @returns {number} A random number between 100000 and 999999.
-    //  */
-    // default: () => Math.floor(100000 + Math.random() * 900000)
-  },
+  // id: {
+  //   type: Number,
+  //   required: true
+  //   // /**
+  //   //  * Generates a random number between 100000 and 999999.
+  //   //  *
+  //   //  * @returns {number} A random number between 100000 and 999999.
+  //   //  */
+  //   // default: () => Math.floor(100000 + Math.random() * 900000)
+  // },
   title: {
     type: String,
     required: true
