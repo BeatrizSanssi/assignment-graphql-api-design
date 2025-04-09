@@ -10,15 +10,15 @@ services:
      - "8081:8081"
     environment: 
       - NODEJS_EXPRESS_PORT=8081
-      - MOVIES_CSV_PATH=../archive/movies_metadata.csv
-      - ACTORS_CSV_PATH=../archive/credits.csv
-      - RATINGS_CSV_PATH=../archive/ratings_small.csv
+      - MOVIES_CSV_PATH=/app/archive/movies_metadata.csv
+      - ACTORS_CSV_PATH=/app/archive/credits.csv
+      - RATINGS_CSV_PATH=/app/archive/ratings_small.csv
       - DB_CONNECTION_STRING=mongodb://root:secret@mongo:27017/graphql-api-db?authSource=admin
       - DOCKER=true
       - MONGO_USER=${MONGO_USER}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
     volumes:
-      - ./archive:/../archive
+      - ./archive:/app/archive
     restart: unless-stopped
     env_file:
       - .env
@@ -53,14 +53,14 @@ services:
     environment:
       - DB_CONNECTION_STRING=mongodb://root:secret@mongo:27017/graphql-api-db?authSource=admin
       - DOCKER=true
-      - MOVIES_CSV_PATH=../archive/movies_metadata.csv
-      - ACTORS_CSV_PATH=../archive/credits.csv
-      - RATINGS_CSV_PATH=../archive/ratings_small.csv
+      - MOVIES_CSV_PATH=/app/archive/movies_metadata.csv
+      - ACTORS_CSV_PATH=/app/archive/credits.csv
+      - RATINGS_CSV_PATH=/app/archive/ratings_small.csv
     depends_on:
       - mongo
     command: ["node", "seed.js"]
     volumes:
-      - ./archive:/../archive
+      - ./archive:/app/archive
       
     # command: >
     #   bash -c "
