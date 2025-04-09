@@ -20,28 +20,35 @@ RUN npm ci
 # COPY . .
 # COPY ./mongodb-seed /dump
 
-COPY . /app
+# COPY . /app
 
-# 5. Install dependencies for testing
-RUN apt-get update && apt-get install -y netcat-openbsd
-RUN npm install -g newman
+# # 5. Install dependencies for testing
+# RUN apt-get update && apt-get install -y netcat-openbsd
+# RUN npm install -g newman
 
-# Lägg till efter att du installerat netcat, exempelvis efter:
-  RUN apt-get update && apt-get install -y netcat-openbsd
+# # Lägg till efter att du installerat netcat, exempelvis efter:
+#   RUN apt-get update && apt-get install -y netcat-openbsd
 
   # Lägg till det här:
-  RUN apt-get install -y wget gnupg && \
-      wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | apt-key add - && \
-      echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/debian bookworm/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list && \
-      apt-get update && \
-      apt-get install -y mongodb-database-tools
+  # Installera systemverktyg: netcat + MongoDB Database Tools
+RUN apt-get update && \
+  apt-get install -y wget gnupg netcat-openbsd && \
+  wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | apt-key add - && \
+  echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/debian bookworm/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list && \
+  apt-get update && \
+  apt-get install -y mongodb-database-tools && \
+  rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g newman
+
+COPY . .
 # # 6. Expose the port the app runs on
 # EXPOSE 8081
 # 8. Run the entrypoint script
 # This script will run the server and then run the tests
 # It will also wait for the server to be ready before running the tests
 
-COPY entrypoint.sh .
+# COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 CMD ["./entrypoint.sh"]
 
