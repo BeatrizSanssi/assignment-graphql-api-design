@@ -31,7 +31,7 @@ export default {
     movie: async (_, { id }) => {
       const movie = await MovieController.getMovieById(id)
       if (!movie) {
-        throw new Error(`Movie with _id ${id} not found.`)
+        throw new Error(`Movie with id ${id} not found.`)
       }
       return movie
     },
