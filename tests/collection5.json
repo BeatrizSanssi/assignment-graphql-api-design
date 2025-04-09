@@ -547,7 +547,7 @@
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "query GetMovie($id: ID!) {\n  movie(id: $movieId) {\n    title\n    id\n    _id \n    release_date \n    genre \n    description\n  }\n}",
+						"query": "query GetMovie($id: ID!) {\n  movie(id: $movieId) {\n    title\n    id\n    release_date \n    genre \n    description\n  }\n}",
 						"variables": "{\n  \"id\": {{movieId}}\n}"
 					}
 				},

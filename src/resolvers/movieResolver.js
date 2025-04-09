@@ -29,8 +29,15 @@ export default {
      * @returns {Promise<object>} - The movie.
      */
     movie: async (_, { id }) => {
-      return await MovieController.getMovieById(id)
+      const movie = await MovieController.getMovieById(id)
+      if (!movie) {
+        throw new Error(`Movie with _id ${id} not found.`)
+      }
+      return movie
     },
+    // movie: async (_, { id }) => {
+    //   return await MovieController.getMovieById(id)
+    // },
     /**
      * Get all actors.
      *

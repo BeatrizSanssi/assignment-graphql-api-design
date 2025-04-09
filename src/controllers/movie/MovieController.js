@@ -32,10 +32,20 @@ export class MovieController {
    * @returns {Promise<object>} - The
    */
   static async getMovieById (id) {
-    // return await MovieModel.findOne({ id: Number(id) })
-    // return await MovieModel.findOne({ id })
-    return await MovieModel.findById(id)
+    // If id is an objectId, use findById
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      const movieByObjectId = await MovieModel.findById(id)
+      if (movieByObjectId) return movieByObjectId
+    }
+    // If id is a number, use findOne
+    const movieByNumberId = await MovieModel.findOne({ id: Number(id) })
+    return movieByNumberId
   }
+  // static async getMovieById (id) {
+  //   // return await MovieModel.findOne({ id: Number(id) })
+  //   // return await MovieModel.findOne({ id })
+  //   return await MovieModel.findById(id)
+  // }
 
   /**
    * Get movies by IDs.
