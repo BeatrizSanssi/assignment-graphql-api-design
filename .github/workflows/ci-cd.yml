@@ -66,9 +66,6 @@ jobs:
         
       - name: Run Docker Compose
         run: docker compose up --build -d
-
-      - name: Seed database
-        run: docker exec graphql-api node seed.js
       
       - name: Show Docker logs
         run: docker logs graphql-api || true
