@@ -25,7 +25,21 @@ extend type Query {
 }
 
 extend type Mutation {
-  addMovie(id: Int! title: String!, release_date: Int!, genre: String!, description: String!): Movie
-  updateMovie(id: ID!, title: String, release_date: Int, genre: String, description: String): Movie
+  addMovie(
+    id: Int!
+    title: String!
+    release_date: Int!
+    genre: String!
+    description: String!
+  ): Movie  
+  
+  updateMovie(
+    id: ID!
+    title: String
+    release_date: Int
+    genre: String
+    description: String
+  ): Movie  
+  
   deleteMovie(id: ID!): DeleteMovieResponse
 }
