@@ -16,8 +16,6 @@ dotenv.config()
 console.log('Seeding MOVIES_CSV_PATH =', process.env.MOVIES_CSV_PATH)
 console.log('Seeding RATINGS_CSV_PATH =', process.env.RATINGS_CSV_PATH)
 console.log('Seeding ACTORS_CSV_PATH =', process.env.ACTORS_CSV_PATH)
-// const isDocker = process.env.DOCKER === 'true'
-// const host = isDocker ? 'mongo' : 'localhost'
 
 /**
  * Parses a CSV file and returns an array of objects.
@@ -107,12 +105,10 @@ async function seedActors () {
   }
 
   const uniqueActors = Array.from(actorMap.values())
-  // const limitedActors = uniqueActors.slice(0, 1000)
+  // Delete all existing actors from the database and insert the new ones
   await ActorModel.deleteMany({})
   await ActorModel.insertMany(uniqueActors)
-  // await ActorModel.insertMany(limitedActors)
   console.log(`Successfully inserted ${uniqueActors.length} actors into DB.`)
-  // console.log(`Successfully inserted ${limitedActors.length} actors into DB.`)
 }
 
 /**
@@ -124,26 +120,26 @@ async function seed () {
   try {
     // 1. CONNECT TO DB
     await connectToDatabase(process.env.DB_CONNECTION_STRING)
-    // await connectToDatabase(getMongoUri())
-    // const port = getPort()
-    // console.log(`MongoDB URI for seeding: ${getMongoUri()}`)
-    // console.log(`MongoDB Port for seeding: ${port}`)
     console.log('Connected to MongoDB for seeding.')
 
-    // 2. PARSE & SEED MOVIES
+    // 2. DROP DB TO START FRESH
+    await (await import('mongoose')).default.connection.db.dropDatabase()
+    console.log('Database dropped before seeding.')
+
+    // 3. PARSE & SEED MOVIES
     const movies = await parseCSV((process.env.MOVIES_CSV_PATH), (row) => {
       // Extract data from each row
-      // A. Titel
+      // Titel
       const title = row.title || row.original_title || 'N/A'
 
-      // B. Release date => release_year
+      // Release date => release_year
       let releaseYear = 0
       if (row.release_date) {
         const parts = row.release_date.split('-')
         releaseYear = parseInt(parts[0]) || 0
       }
 
-      // C. Genre => genre
+      // Genre => genre
       let genre = 'Unknown' // Default value
       if (row.genres) {
         try {
@@ -159,10 +155,10 @@ async function seed () {
         }
       }
 
-      // D. Overview => description
+      // Overview => description
       const description = row.overview || 'N/A'
 
-      // E. Create a movie object with the extracted data
+      // Create a movie object with the extracted data
       return {
         id: parseInt(row.id),
         title,
@@ -172,28 +168,24 @@ async function seed () {
       }
     })
 
-    // const limitedMovies = movies.slice(0, 1000)
     // Clear the existing movies from the database
     await MovieModel.deleteMany({})
+
     // Insert the new movies into the database
-    const insertedMovies = await MovieModel.insertMany(movies)
+    const insertedMovies = await MovieModel.insertMany(movies, { ordered: false })
     console.log(`Inserted ${insertedMovies.length} movies`)
 
-    // 3. Create movieId map
+    // 4. Create movieId map
     const movieIdMap = new Map()
     insertedMovies.forEach((movie) => {
       movieIdMap.set(movie.id, movie._id)
     })
 
-    // 4. PARSE & SEED ACTORS (from credits.csv)
-    // const uniqueActors = await seedActors()
+    // 5. PARSE & SEED ACTORS (from credits.csv)
     await seedActors()
-    // await ActorModel.deleteMany({})
-    // await ActorModel.insertMany(uniqueActors)
-    // console.log(`Successfully inserted ${length} actors into DB.`)
 
-    // 5. PARSE & SEED RATINGS
-    const ratingSeen = new Set()
+    // 6. PARSE & SEED RATINGS
+    const ratingSeed = new Set()
     const ratings = await parseCSV(process.env.RATINGS_CSV_PATH, (row) => {
       const movieIdFromCSV = parseInt(row.movieId)
       const userId = parseInt(row.userId)
@@ -205,33 +197,25 @@ async function seed () {
       }
       console.log('Matched rating movieId:', movieIdFromCSV)
       const key = `${movieIdFromCSV}-${userId}`
-      if (ratingSeen.has(key)) {
+      if (ratingSeed.has(key)) {
         return null // Skip duplicates
       }
 
-      ratingSeen.add(key)
+      ratingSeed.add(key)
 
       return {
         userId,
         rating,
         movieId: movieIdFromCSV
       }
-      // return {
-      //   userId: parseInt(row.userId),
-      //   rating: parseFloat(row.rating),
-      //   movieId: movieIdFromCSV
-      // }
     })
-    // const limitedRatings = ratings.slice(0, 1000)
     await RatingModel.deleteMany({})
-    await RatingModel.insertMany(ratings)
-    // await RatingModel.insertMany(limitedRatings)
+    await RatingModel.insertMany(ratings, { ordered: false })
     console.log(`Successfully inserted ${ratings.length} ratings into DB.`)
-    // console.log(`Successfully inserted ${limitedRatings.length} ratings into DB.`)
   } catch (error) {
     console.error('Error while seeding:', error)
   } finally {
-    // 6. CLOSE DB
+    // 7. CLOSE DB
     await (await import('mongoose')).default.connection.close()
     console.log('Database connection closed. Seeding complete.')
   }
