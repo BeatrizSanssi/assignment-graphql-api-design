@@ -203,7 +203,7 @@ async function seed () {
         console.warn(`No match for movieId ${movieIdFromCSV}`)
         return null
       }
-
+      console.log('Matched rating movieId:', movieIdFromCSV)
       const key = `${movieIdFromCSV}-${userId}`
       if (ratingSeen.has(key)) {
         return null // Skip duplicates
