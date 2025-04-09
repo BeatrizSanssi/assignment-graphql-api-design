@@ -6,6 +6,9 @@ until nc -z mongo 27017; do sleep 1; done
 
 echo "✅ Mongo is up!"
 
+echo "Seeding database..."
+npm run seed
+
 echo "Starting server..."
 npm start
 
