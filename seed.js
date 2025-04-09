@@ -116,7 +116,7 @@ export async function seedActors () {
  *
  * @returns {Promise<void>} - A Promise.
  */
-async function seed () {
+export async function seed () {
   try {
     // 1. CONNECT TO DB
     await connectToDatabase(process.env.DB_CONNECTION_STRING)
