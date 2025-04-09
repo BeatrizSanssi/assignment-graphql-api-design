@@ -20,9 +20,8 @@ type DeleteMovieResponse {
 }
 
 extend type Query {
-  # movies: [Movie]
   movies(genre: String, year: Int, id: Int): [Movie]
-  movie: [Movie]
+  movie(id: ID!): Movie
 }
 
 extend type Mutation {
