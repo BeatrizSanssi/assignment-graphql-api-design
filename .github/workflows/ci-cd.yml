@@ -67,9 +67,9 @@ jobs:
       - name: Run Docker Compose
         run: docker compose up --build -d
 
-      # - name: Restore MongoDB dump
-      #   run: |
-      #     docker exec mongo mongorestore --username=root --password=secret --authenticationDatabase=admin /dump
+      - name: Restore MongoDB dump
+        run: |
+          docker exec mongo mongorestore --username=root --password=secret --authenticationDatabase=admin /dump
       
       - name: Show Docker logs
         run: docker logs graphql-api || true
