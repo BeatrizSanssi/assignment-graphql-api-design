@@ -33,13 +33,14 @@ export class MovieController {
    */
   static async getMovieById (id) {
     // If id is an objectId, use findById
-    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (typeof id === 'string' && id.match(/^[0-9a-fA-F]{24}$/)) {
       const movieByObjectId = await MovieModel.findById(id)
       if (movieByObjectId) return movieByObjectId
     }
     // If id is a number, use findOne
-    const movieByNumberId = await MovieModel.findOne({ id: Number(id) })
-    return movieByNumberId
+    if (!isNaN(id)) {
+      return await MovieModel.findOne({ id: Number(id) })
+    }
   }
   // static async getMovieById (id) {
   //   // return await MovieModel.findOne({ id: Number(id) })
