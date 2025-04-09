@@ -32,15 +32,18 @@ export class MovieController {
    * @returns {Promise<object>} - The
    */
   static async getMovieById (id) {
-    // If id is an objectId, use findById
+    let movie = null
+
+    // Check if the ID is a valid ObjectId
     if (typeof id === 'string' && id.match(/^[0-9a-fA-F]{24}$/)) {
-      const movieByObjectId = await MovieModel.findById(id)
-      if (movieByObjectId) return movieByObjectId
+      movie = await MovieModel.findById(id)
     }
-    // If id is a number, use findOne
-    if (!isNaN(id)) {
-      return await MovieModel.findOne({ id: Number(id) })
+    // If not, check if it's a valid number
+    if (!movie && !isNaN(id)) {
+      movie = await MovieModel.findOne({ id: Number(id) })
     }
+
+    return movie
   }
   // static async getMovieById (id) {
   //   // return await MovieModel.findOne({ id: Number(id) })

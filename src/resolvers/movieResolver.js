@@ -100,6 +100,10 @@ export default {
      */
     ratings: async (parent) => {
       // Use the parent object to get the movie ID
+      if (!parent.id) {
+        console.warn('No parent.id in movie object:', parent)
+        return []
+      }
       return await RatingController.getRatingsByMovieId(parent.id)
     },
     /**
