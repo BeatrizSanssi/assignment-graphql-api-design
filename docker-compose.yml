@@ -6,6 +6,7 @@ services:
       mongo:
         condition: service_healthy
     container_name: graphql-api
+    image: bsan89/assignment-api-design:latest
     ports: 
      - "8081:8081"
     environment: 
@@ -17,6 +18,8 @@ services:
       - DOCKER=true
       - MONGO_USER=root
       - MONGO_PASSWORD=secret
+    volumes:
+      - ./archive:/app/archive
     # env_file:
     #   - .env
     # volumes:
@@ -32,11 +35,11 @@ services:
       MONGO_INITDB_DATABASE: graphql-api-db
     ports:
       - "27017:27017"
-    volumes:
+    # volumes:
       # - ./mongo-init-scripts:/docker-entrypoint-initdb.d
       # - mongo-data:/data/db
-      - ./mongodb-seed:/dump
-      - mongo-data:/data/db
+      # - ./mongodb-seed:/dump
+      # - mongo-data:/data/db
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })"]
       interval: 10s
