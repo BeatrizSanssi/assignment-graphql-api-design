@@ -74,7 +74,7 @@ function parseCast (castStr) {
  *
  * @returns {Promise<object[]>} - An array of objects containing actor IDs, names, and film counts.
  */
-async function seedActors () {
+export async function seedActors () {
   // Read all rows from the credits CSV
   const rows = await parseCSV(process.env.ACTORS_CSV_PATH, (row) => row)
   // Create a Map: key = actor ID, value = { name, movies_played }
