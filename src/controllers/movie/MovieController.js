@@ -45,11 +45,6 @@ export class MovieController {
 
     return movie
   }
-  // static async getMovieById (id) {
-  //   // return await MovieModel.findOne({ id: Number(id) })
-  //   // return await MovieModel.findOne({ id })
-  //   return await MovieModel.findById(id)
-  // }
 
   /**
    * Get movies by IDs.
@@ -111,6 +106,5 @@ export class MovieController {
       deletedMovie: movie,
       message: 'Movie successfully deleted and is no longer available in the database.'
     }
-    // return await MovieModel.findByIdAndDelete(id)
   }
 }

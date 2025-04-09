@@ -9,6 +9,5 @@ type Rating {
 }
 
 extend type Query {
-  # ratings: [Rating]
   ratings(movieId: Int): [Rating]
 }

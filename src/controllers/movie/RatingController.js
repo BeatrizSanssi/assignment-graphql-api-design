@@ -28,6 +28,5 @@ export class RatingController {
   static async getRatingsByMovieId (movieId) {
     console.log('Looking for ratings with movieId:', movieId)
     return await RatingModel.find({ movieId: Number(movieId) })
-    // return await RatingModel.find({ movieId })
   }
 }

@@ -86,10 +86,6 @@ export class UserController {
     if (email) {
       updateData.email = email
     }
-    // if (password) {
-    //   const hashedPassword = await bcrypt.hash(password, 10)
-    //   updateData.password = hashedPassword
-    // }
     try {
       const updatedUser = await UserModel.findByIdAndUpdate(userId, updateData, { new: true })
       if (!updatedUser) {
@@ -98,11 +94,6 @@ export class UserController {
       console.log('UpdateUser input:', userId, email)
       return updatedUser
     } catch (err) {
-      // If the error is a duplicate key error, you can customize the message.
-      // if (err.code === 11000) {
-      //   throw new UnauthorizedError('Email already in use')
-      // }
-      // Otherwise, rethrow the original error.
       throw new UnauthorizedError(err.message)
     }
   }
@@ -122,13 +113,6 @@ export class UserController {
       throw new UnauthorizedError(err.message)
     }
   }
-  //   //   const user = await UserModel.findById(userId)
-  //   //   if (!user) throw new NotFoundError('User not found')
-  //   // }
-  //   const deleted = await UserModel.findByIdAndDelete(userId)
-  //   if (!deleted) throw new NotFoundError('User not found')
-  //   return deleted
-  // }
 }
 
 export const userController = new UserController()

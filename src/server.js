@@ -14,7 +14,6 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { ApolloServer } from 'apollo-server-express'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
-// import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core'
 
 // User-land modules.
 import '@lnu/json-js-cycle'
@@ -39,12 +38,8 @@ dotenv.config()
 
 try {
   // Connect to MongoDB.
-  // await connectToDatabase(getMongoUri())
-  // const port = getPort()
   await connectToDatabase(process.env.DB_CONNECTION_STRING)
   console.log(`Database Connection String: ${process.env.DB_CONNECTION_STRING}`)
-  // console.log(`MongoDB URI: ${getMongoUri()}`)
-  // console.log(`MongoDB Port: ${port}`)
   console.log(`Base URL: ${process.env.BASE_URL}`)
 
   // Determine current file directory.
@@ -85,7 +80,6 @@ try {
 
   // Use the session middleware for managing secure sessions.
   app.use(sessionMiddleware)
-  // app.use(authenticate)
 
   app.use(cookieParser())
 
@@ -100,9 +94,6 @@ try {
 
   // Apply the rate limiting middleware to all requests.
   app.use(limiter)
-
-  // Set the user locals.
-  // app.use(setUserLocals)
 
   // Middleware to be executed before the routes.
   app.use((req, res, next) => {
@@ -122,9 +113,6 @@ try {
       // Activate the Apollo Server plugin for GraphQL Playground.
       ApolloServerPluginLandingPageGraphQLPlayground()
     ],
-    // plugins: [
-    //   ApolloServerPluginLandingPageLocalDefault({ embed: true })
-    // ],
     /**
      * Extracts the user from the request and adds it to the context.
      *
@@ -140,8 +128,6 @@ try {
   await apolloServer.start()
   apolloServer.applyMiddleware({ app, path: '/graphql' })
 
-  // Error handler.
-  // app.use(errorHandler)
   app.use((err, req, res, next) => {
     logger.error(err.message, { error: err })
 
@@ -181,12 +167,6 @@ try {
     logger.info(`GraphQL endpoint at http://localhost:${server.address().port}/graphql`)
     logger.info('Press Ctrl-C to terminate...')
     console.log('Server is up and listening on', process.env.NODEJS_EXPRESS_PORT)
-
-  // const server = app.listen(process.env.NODEJS_EXPRESS_PORT, () => {
-  //   logger.info(`Server running at http://localhost:${server.address().port}`)
-  //   logger.info(`GraphQL endpoint at http://localhost:${server.address().port}/graphql`)
-  //   logger.info('Press Ctrl-C to terminate...')
-  //   console.log('Server is up and listening on', process.env.NODEJS_EXPRESS_PORT_LOCAL)
   })
 } catch (err) {
   logger.error(err.message, { error: err })

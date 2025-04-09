@@ -8,14 +8,6 @@ import { RatingController } from '../controllers/movie/RatingController.js'
 
 export default {
   Query: {
-    // /**
-    //  * Get all ratings.
-    //  *
-    //  * @returns {Promise<object[]>} - A list of ratings.
-    //  */
-    // ratings: async () => {
-    //   return await RatingController.getAllRatings()
-    // }
 
     /**
      * Get ratings by movie ID.
@@ -25,9 +17,6 @@ export default {
      * @param {string} args.movieId - The ID of the movie.
      * @returns {Promise<object[]>} - A list of ratings.
      */
-    // ratings: async (_, { movieId }) => {
-    //   return await RatingController.getRatingsByMovieId(movieId)
-    // }
     ratings: async (_, args) => {
       if (args.movieId) {
         return await RatingController.getRatingsByMovieId(args.movieId)

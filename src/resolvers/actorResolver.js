@@ -13,9 +13,6 @@ export default {
      *
      * @returns {Promise<object[]>} - A list of actors.
      */
-    // actors: async (_, args) => {
-    //   return await ActorController.getAllActors(args.limit)
-    // }
     actors: async () => {
       return await ActorController.getAllActors()
     }

@@ -776,7 +776,7 @@
 					"script": {
 						"exec": [
 							"const movieId = pm.environment.get(\"movieId\");",
-							"console.log(\"✅ randomMovieId in pre-request:\", movieId)"
+							"console.log(\"randomMovieId in pre-request:\", movieId)"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -1250,7 +1250,7 @@
 					"mode": "graphql",
 					"graphql": {
 						"query": "query GetMovie($id: Int!) {\n  movie(id: $id) {\n    _id\n    id\n    title\n    ratings {\n      rating\n      userId\n    }\n    averageRating\n  }\n}",
-						"variables": "{\n  \"id\": {{randomId}}\n}"
+						"variables": "{\n  \"id\": {{ratingId}}\n}"
 					}
 				},
 				"url": {

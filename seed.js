@@ -159,11 +159,10 @@ export async function seed () {
           }
         } catch (err) {
           console.warn(`Could not parse genre for movie: ${row.title}`, err)
-          // If there's an error, just use the default value
         }
       }
 
-      // Overview => description
+      // Description => overview
       const description = row.overview || 'N/A'
 
       // Create a movie object with the extracted data
@@ -183,34 +182,15 @@ export async function seed () {
     const insertedMovies = await MovieModel.insertMany(movies, { ordered: false })
     console.log(`Inserted ${insertedMovies.length} movies`)
 
-    // 4. Create movieId map
-    // const movieIdMap = new Map()
-    // insertedMovies.forEach((movie) => {
-    //   movieIdMap.set(movie.id, movie._id)
-    // })
-
-    // 5. PARSE & SEED ACTORS (from credits.csv)
+    // 4. PARSE & SEED ACTORS (from credits.csv)
     await seedActors()
 
-    // 6. PARSE & SEED RATINGS
+    // 5. PARSE & SEED RATINGS
     const ratingSeed = new Set()
     const ratings = await parseCSV(process.env.RATINGS_CSV_PATH, (row) => {
       const movieId = parseInt(row.movieId)
       const userId = parseInt(row.userId)
       const rating = parseFloat(row.rating)
-
-      // if (!movieIdMap.has(movieId)) {
-      //   console.warn(`No match for movieId ${movieId}`)
-      //   return null
-      // }
-      // console.log('Matched rating movieId:', movieId)
-      // const key = `${movieId}-${userId}`
-      // if (!movieIdMap.has(movieId)) return null
-      // if (seenRatings.has(key)) return null
-      // if (!seenMovieIds.has(movieId)) {
-      //   console.warn(`No match for movieId ${movieId}`)
-      //   return null
-      // }
 
       // Keep all ratings, even if the movieId is not in the database
       if (isNaN(movieId) || isNaN(userId) || isNaN(rating)) {
@@ -218,15 +198,12 @@ export async function seed () {
         return null
       }
 
+      // Skip duplicates
       const key = `${movieId}-${userId}`
       if (ratingSeed.has(key)) return null
       ratingSeed.add(key)
-      // if (seenRatings.has(key)) {
-      //   return null // Skip duplicates
-      // }
 
-      // seenRatings.add(key)
-
+      // Create a rating object with the extracted data
       return {
         userId,
         rating,

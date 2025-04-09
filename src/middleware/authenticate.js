@@ -42,7 +42,6 @@ export function authenticate (req, res, next) {
     } catch (err) {
       console.error('Invalid token', err)
       return next(new UnauthorizedError('Invalid or expired session'))
-      // TODO: Throw an error so that unauthorized req dosn't crash the program
     }
   }
   next()
