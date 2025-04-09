@@ -32,10 +32,11 @@ RUN npm ci
   # Lägg till det här:
   # Installera systemverktyg: netcat + MongoDB Database Tools
 
-RUN apt-get update && \
-  apt-get install -y wget gnupg netcat-openbsd && \
-  rm -rf /var/lib/apt/lists/*  
-  # RUN apt-get update && \
+# RUN apt-get update && \
+#   apt-get install -y wget gnupg netcat-openbsd && \
+#   rm -rf /var/lib/apt/lists/*  
+#   # RUN apt-get update && \
+RUN apt-get update && apt-get install -y netcat-openbsd && npm install -g newman
 #   apt-get install -y wget gnupg netcat-openbsd && \
 #   wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | apt-key add - && \
 #   echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/debian bookworm/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list && \
@@ -43,7 +44,7 @@ RUN apt-get update && \
 #   apt-get install -y mongodb-database-tools && \
 #   rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g newman
+# RUN npm install -g newman
 
 COPY . .
 # # 6. Expose the port the app runs on

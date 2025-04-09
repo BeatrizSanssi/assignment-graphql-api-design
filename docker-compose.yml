@@ -1,6 +1,8 @@
 version: '3'
 services:
   app:
+    build:
+      context: .
     depends_on:
       mongo:
         condition: service_healthy
@@ -38,30 +40,30 @@ services:
       - "27017:27017"
     env_file:
       - .env
-    # volumes:
+    volumes:
       # - ./mongo-init-scripts:/docker-entrypoint-initdb.d
       # - mongo-data:/data/db
       # - ./mongodb-seed:/dump
-      # - mongo-data:/data/db
+      - mongo-data:/data/db
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })"]
       interval: 10s
       timeout: 5s
       retries: 5
     
-  seeder:
-    image: bsan89/assignment-api-design:latest
-    environment:
-      - DB_CONNECTION_STRING=mongodb://root:secret@mongo:27017/graphql-api-db?authSource=admin
-      - DOCKER=true
-      - MOVIES_CSV_PATH=/app/archive/movies_metadata.csv
-      - ACTORS_CSV_PATH=/app/archive/credits.csv
-      - RATINGS_CSV_PATH=/app/archive/ratings_small.csv
-    depends_on:
-      - mongo
-    command: ["node", "seed.js"]
-    volumes:
-      - ./archive:/app/archive
+  # seeder:
+  #   image: bsan89/assignment-api-design:latest
+  #   environment:
+  #     - DB_CONNECTION_STRING=mongodb://root:secret@mongo:27017/graphql-api-db?authSource=admin
+  #     - DOCKER=true
+  #     - MOVIES_CSV_PATH=/app/archive/movies_metadata.csv
+  #     - ACTORS_CSV_PATH=/app/archive/credits.csv
+  #     - RATINGS_CSV_PATH=/app/archive/ratings_small.csv
+  #   depends_on:
+  #     - mongo
+  #   command: ["node", "seed.js"]
+  #   volumes:
+  #     - ./archive:/app/archive
       
     # command: >
     #   bash -c "
