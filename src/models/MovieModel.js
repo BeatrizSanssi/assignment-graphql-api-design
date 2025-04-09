@@ -10,7 +10,6 @@ import mongoose from 'mongoose'
 const schema = new mongoose.Schema({
   id: {
     type: Number,
-    unique: true,
     required: true
     // /**
     //  * Generates a random number between 100000 and 999999.
