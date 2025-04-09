@@ -56,7 +56,7 @@ jobs:
           echo "DB_CONNECTION_STRING=mongodb://${{ secrets.MONGO_USER }}:${{ secrets.MONGO_PASSWORD }}@mongo:27017/graphql-api-db?authSource=admin" >> .env
           echo "MOVIES_CSV_PATH=/app/archive/movies_metadata.csv" >> .env
           echo "ACTORS_CSV_PATH=/app/archive/credits.csv" >> .env
-          echo "RATINGS_CSV_PATH=/app/archive/ratings.csv" >> .env
+          echo "RATINGS_CSV_PATH=/app/archive/ratings_small.csv" >> .env
 
       - name: Remove existing MongoDB volume
         run: docker volume rm assignment-graphql-api-design_mongo-data || true
