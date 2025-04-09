@@ -16,13 +16,13 @@ services:
       - RATINGS_CSV_PATH=/app/archive/ratings.csv
       - DB_CONNECTION_STRING=mongodb://root:secret@mongo:27017/graphql-api-db?authSource=admin
       - DOCKER=true
-      - MONGO_USER=root
-      - MONGO_PASSWORD=secret
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
     volumes:
       - ./archive:/app/archive
     restart: unless-stopped
-    # env_file:
-    #   - .env
+    env_file:
+      - .env
     # volumes:
     #   - .:/app
     # restart: unless-stopped
@@ -36,6 +36,8 @@ services:
       MONGO_INITDB_DATABASE: graphql-api-db
     ports:
       - "27017:27017"
+    env_file:
+      - .env
     # volumes:
       # - ./mongo-init-scripts:/docker-entrypoint-initdb.d
       # - mongo-data:/data/db
