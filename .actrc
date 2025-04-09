@@ -1,4 +1,0 @@
--P ubuntu-latest=catthehacker/ubuntu:act-latest
---bind
---container-architecture linux/amd64
--v ./archive:/home/runner/work/assignment-graphql-api-design/assignment-graphql-api-design/archive
