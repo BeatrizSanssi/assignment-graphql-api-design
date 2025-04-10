@@ -102,30 +102,10 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/assignment-api-design:latest
 
-  deploy-server:
-    runs-on: ubuntu-latest
-    needs: deploy
-
-    steps:
-      - name: Set up SSH key
-        run: |
-          mkdir -p ~/.ssh
-          printf "%s\n" "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H cscloud6-136.lnu.se >> ~/.ssh/known_hosts
-
-      - name: Deploy via SSH to Ubuntu server
-        run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@cscloud6-136.lnu.se << 'EOF'
-            cd /opt/graphql-api
-            docker pull bsan89/assignment-api-design:latest
-            docker compose down
-            docker compose up -d
-          EOF
 
   test:
       runs-on: ubuntu-latest  
-      needs: [build, docker, deploy, deploy-server]
+      needs: [build, docker, deploy]
   
       steps:
         - name: Checkout repo
