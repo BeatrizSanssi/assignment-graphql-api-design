@@ -25,9 +25,6 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    # volumes:
-    #   - .:/app
-    # restart: unless-stopped
   mongo:
     image: mongo:latest
     restart: unless-stopped
@@ -41,54 +38,12 @@ services:
     env_file:
       - .env
     volumes:
-      # - ./mongo-init-scripts:/docker-entrypoint-initdb.d
-      # - mongo-data:/data/db
-      # - ./mongodb-seed:/dump
       - mongo-data:/data/db
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.runCommand({ ping: 1 })"]
       interval: 10s
       timeout: 5s
       retries: 5
-    
-  # seeder:
-  #   image: bsan89/assignment-api-design:latest
-  #   environment:
-  #     - DB_CONNECTION_STRING=mongodb://root:secret@mongo:27017/graphql-api-db?authSource=admin
-  #     - DOCKER=true
-  #     - MOVIES_CSV_PATH=/app/archive/movies_metadata.csv
-  #     - ACTORS_CSV_PATH=/app/archive/credits.csv
-  #     - RATINGS_CSV_PATH=/app/archive/ratings_small.csv
-  #   depends_on:
-  #     - mongo
-  #   command: ["node", "seed.js"]
-  #   volumes:
-  #     - ./archive:/app/archive
-      
-    # command: >
-    #   bash -c "
-    #     mongod --bind_ip_all --auth &
-    #     sleep 5 &&
-    #     mongorestore -u root -p secret --authenticationDatabase admin /dump &&
-    #     fg
-    #   "
-
-  # api:
-  #   build: .
-  #   container_name: graphql-api
-  #   depends_on:
-  #     mongo:
-  #       condition: service_healthy
-  #   env_file:
-  #     - .env
-  #   ports:
-  #     - "8081:8081"
-  #   environment:
-  #     DB_CONNECTION_STRING: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/graphql-api-db?authSource=admin
-  #   command: ./entrypoint.sh
-  #   volumes:
-  #     - .:/app
-  #   restart: unless-stopped
 
 volumes:
   mongo-data:

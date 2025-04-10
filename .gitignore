@@ -198,3 +198,6 @@ script.js
 archive/
 
 .env.local
+.env
+ecosystem.config.js
+ecosystem.config1.js
