@@ -7,13 +7,10 @@ module.exports = {
       env_production: {
         NODEJS_EXPRESS_PORT: 8081,
         DB_CONNECTION_STRING: 'mongodb://root:secret@mongo:27017/graphql-api-db?authSource=admin',
-        // MONGO_URI: 'mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/graphql-api-db',
         MONGO_USER: 'root',
         MONGO_PASSWORD: 'secret',
         PORT: '8081',
         SESSION_SECRET: 'my-Super-Secret-Session',
-        // BASE_URL: '/',
-        // BASE_URL: 'http://localhost:8081',
         BASE_URL: 'https://cscloud6-136.lnu.se/graphql-api',
         JWT_SECRET: 'supersecretjwtvalue',
         CSV_FILE_PATH: '/app/archive/movies_metadata.csv',
