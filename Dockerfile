@@ -1,5 +1,5 @@
 # 1. Base image
-FROM node:20.6.
+FROM node:20.6.0
 
 # 2. Create app directory and copy files
 WORKDIR /app
