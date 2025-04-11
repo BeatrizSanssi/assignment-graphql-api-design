@@ -5,7 +5,7 @@
  */
 
 import { MovieModel } from '../../models/MovieModel.js'
-import { UnauthorizedError } from '../../lib/errors/index.js'
+import { AuthenticationError, ApolloError } from 'apollo-server-errors'
 
 /**
  * Encapsulates the movie controller.
@@ -64,7 +64,9 @@ export class MovieController {
    * @returns {Promise<object>} - The added movie.
    */
   static async addMovie (args, user) {
-    if (!user) throw new UnauthorizedError('Unauthorized')
+    if (!user) {
+      throw new AuthenticationError('User is not authenticated')
+    }
     const movie = new MovieModel(args)
     return await movie.save()
   }
@@ -78,8 +80,15 @@ export class MovieController {
    * @returns {Promise<object>} - The updated movie.
    */
   static async updateMovie (id, updateData, user) {
-    if (!user) throw new UnauthorizedError('Unauthorized')
-    return await MovieModel.findByIdAndUpdate(id, updateData, { new: true })
+    if (!user) {
+      throw new AuthenticationError('User is not authenticated')
+    }
+    const updatedMovie = await MovieModel.findByIdAndUpdate(id, updateData, { new: true })
+    if (!updatedMovie) {
+      throw new ApolloError('Movie not found', 'MOVIE_NOT_FOUND', { id })
+    }
+    return updatedMovie
+    // return await MovieModel.findByIdAndUpdate(id, updateData, { new: true })
   }
 
   /**
@@ -90,15 +99,20 @@ export class MovieController {
    * @returns {Promise<object>} - The deleted movie.
    */
   static async deleteMovie (id, user) {
-    if (!user) throw new UnauthorizedError('Unauthorized')
+    if (!user) {
+      throw new AuthenticationError('User is not authenticated')
+    }
     const movie = await MovieModel.findById(id)
 
     if (!movie) {
-      return {
-        deletedMovie: null,
-        message: 'Movie already deleted or does not exist in the database.'
-      }
+      throw new ApolloError('Movie not found', 'MOVIE_NOT_FOUND', { id })
     }
+    // if (!movie) {
+    //   return {
+    //     deletedMovie: null,
+    //     message: 'Movie already deleted or does not exist in the database.'
+    //   }
+    // }
 
     await MovieModel.deleteOne({ _id: id })
 

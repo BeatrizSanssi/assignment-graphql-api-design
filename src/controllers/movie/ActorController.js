@@ -6,6 +6,7 @@
 
 import { ActorModel } from '../../models/ActorModel.js'
 import { MovieController } from './MovieController.js'
+import { ApolloError } from 'apollo-server-errors'
 
 /**
  * Encapsulates the actor controller.
@@ -20,7 +21,14 @@ export class ActorController {
   static async getAllActors (limit) {
     const query = ActorModel.find()
     if (limit) query.limit(limit)
-    return await query.exec()
+    const actors = await query.exec()
+
+    if (!actors.length) {
+      throw new ApolloError('No actors found', 'NO_ACTORS_FOUND')
+    }
+
+    return actors
+    // return await query.exec()
     // return await ActorModel.find({})
   }
 
@@ -31,7 +39,14 @@ export class ActorController {
    * @returns {Promise<object>} - The actor.
    */
   static async getActorsByMovieId (movieId) {
-    return await ActorModel.find({ movies: movieId })
+    const actors = await ActorModel.find({ movies: movieId })
+
+    if (!actors.length) {
+      throw new ApolloError('No actors found for this movie', 'NO_ACTORS_FOR_MOVIE', { movieId })
+    }
+
+    return actors
+    // return await ActorModel.find({ movies: movieId })
   }
 
   /**
@@ -41,6 +56,16 @@ export class ActorController {
    * @returns {Promise<object[]>} - A list of movies.
    */
   static async getMoviesByIds (ids) {
-    return await MovieController.getMoviesByIds(ids)
+    if (!ids?.length) {
+      throw new ApolloError('No movie IDs provided', 'NO_IDS_PROVIDED')
+    }
+
+    const movies = await MovieController.getMoviesByIds(ids)
+    if (!movies.length) {
+      throw new ApolloError('No movies found for these IDs', 'NO_MOVIES_FOUND', { ids })
+    }
+
+    return movies
+    // return await MovieController.getMoviesByIds(ids)
   }
 }

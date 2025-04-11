@@ -8,6 +8,7 @@ import { UserModel } from '../../models/UserModel.js'
 import { userController } from './UserController.js'
 import jwt from 'jsonwebtoken'
 import { UnauthorizedError } from '../../lib/errors/index.js'
+import { AuthenticationError, ApolloError } from 'apollo-server-errors'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -24,15 +25,26 @@ export class AuthController {
    * @returns {Promise<object>} An object with the token, refresh token, and user data.
    */
   async loginUser ({ email, password }) {
-    // Check if the user and password are valid
-    const { token, refreshToken } = await userController.loginUser({ email, password })
+    try {
+      // Check if the user and password are valid
+      const { token, refreshToken } = await userController.loginUser({ email, password })
 
-    // Now retrieve the full user data (if needed) and return all fields
-    const user = await UserModel.findOne({ email })
-    if (!user) {
-      throw new UnauthorizedError('User not found after login')
+      // Now retrieve the full user data (if needed) and return all fields
+      const user = await UserModel.findOne({ email })
+      if (!user) {
+        throw new ApolloError('User not found after login', 'USER_NOT_FOUND', { email })
+      }
+      // if (!user) {
+      //   throw new UnauthorizedError('User not found after login')
+      // }
+      return { token, refreshToken, user: { id: user._id.toString(), email: user.email } }
+    } catch (err) {
+      // If the error is an instance of AuthenticationError or has the code 'UNAUTHENTICATED', rethrow it
+      if (err instanceof AuthenticationError || err.extensions?.code === 'UNAUTHENTICATED') {
+        throw err
+      }
+      throw new AuthenticationError(err.message || 'Authentication failed')
     }
-    return { token, refreshToken, user: { id: user._id.toString(), email: user.email } }
   }
 
   /**
@@ -45,12 +57,16 @@ export class AuthController {
   async refreshToken (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET)
-      const newAccessToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, { expiresIn: '15m' })
+      // const newAccessToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, { expiresIn: '15m' })
       const user = await UserModel.findById(decoded.id)
-      if (!user) throw new UnauthorizedError('User not found')
+      if (!user) {
+        throw new ApolloError('User not found', 'USER_NOT_FOUND', { id: decoded.id })
+      }
+      // if (!user) throw new UnauthorizedError('User not found')
+      const newAccessToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, { expiresIn: '30m' })
       return { token: newAccessToken, refreshToken: token, user: { id: user._id.toString(), email: user.email } }
     } catch (err) {
-      throw new UnauthorizedError('Invalid refresh token')
+      throw new AuthenticationError('Invalid or expired refresh token')
     }
   }
 
@@ -65,13 +81,17 @@ export class AuthController {
     try {
       const payload = jwt.verify(refreshToken, process.env.JWT_SECRET)
       const user = await UserModel.findById(payload.id)
+
       if (!user) {
-        throw new UnauthorizedError('User not found')
+        throw new ApolloError('User not found', 'USER_NOT_FOUND', { id: payload.id })
+        // throw new UnauthorizedError('User not found')
       }
+
       const newToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' })
       return { token: newToken }
     } catch (err) {
-      throw new UnauthorizedError('Invalid refresh token')
+      throw new AuthenticationError('Invalid or expired refresh token')
+      // throw new UnauthorizedError('Invalid refresh token')
     }
   }
 }

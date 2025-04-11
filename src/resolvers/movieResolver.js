@@ -29,11 +29,12 @@ export default {
      * @returns {Promise<object>} - The movie.
      */
     movie: async (_, { id }) => {
-      const movie = await MovieController.getMovieById(id)
-      if (!movie) {
-        throw new Error(`Movie with id ${id} not found.`)
-      }
-      return movie
+      return await MovieController.getMovieById(id)
+      // const movie = await MovieController.getMovieById(id)
+      // if (!movie) {
+      //   throw new ApolloError(`Movie with id ${id} not found`, 'MOVIE_NOT_FOUND')
+      // }
+      // return movie
     },
     /**
      * Get all actors.

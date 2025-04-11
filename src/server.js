@@ -9,9 +9,9 @@ import httpContext from 'express-http-context'
 
 // Built-in modules.
 import { randomUUID } from 'node:crypto'
-import http from 'node:http'
-import path from 'path'
-import { fileURLToPath } from 'url'
+// import http from 'node:http'
+// import path from 'path'
+// import { fileURLToPath } from 'url'
 import { ApolloServer } from 'apollo-server-express'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 
@@ -21,15 +21,15 @@ import cors from 'cors'
 import express from 'express'
 import helmet from 'helmet'
 import dotenv from 'dotenv'
-import cookieParser from 'cookie-parser'
+// import cookieParser from 'cookie-parser'
 
 // Application modules.
 import { connectToDatabase } from './config/mongoose.js'
 import { morganLogger } from './config/morgan.js'
 import { limiter } from './config/rateLimiter.js'
 import { logger } from './config/winston.js'
-import { sessionMiddleware } from './config/session.js'
-import { errorHandler } from './middleware/errorHandler.js'
+// import { sessionMiddleware } from './config/session.js'
+// import { errorHandler } from './middleware/errorHandler.js'
 import resolvers from './resolvers/index.js'
 import { typeDefs } from './schema/index.js'
 import { verifyToken } from './middleware/authenticate.js'
@@ -42,9 +42,9 @@ try {
   console.log(`Database Connection String: ${process.env.DB_CONNECTION_STRING}`)
   console.log(`Base URL: ${process.env.BASE_URL}`)
 
-  // Determine current file directory.
-  const __filename = fileURLToPath(import.meta.url)
-  const __dirname = path.dirname(__filename)
+  // // Determine current file directory.
+  // const __filename = fileURLToPath(import.meta.url)
+  // // const __dirname = path.dirname(__filename)
 
   // Create an Express application.
   const app = express()
@@ -79,11 +79,11 @@ try {
   app.set('trust proxy', 1) // Trust the first proxy.
 
   // Use the session middleware for managing secure sessions.
-  app.use(sessionMiddleware)
+  // app.use(sessionMiddleware)
 
-  app.use(cookieParser())
+  // app.use(cookieParser())
 
-  app.use(express.static(path.join(__dirname, '..', 'public')))
+  // app.use(express.static(path.join(__dirname, '..', 'public')))
   // Add the request-scoped context.
   // NOTE! Must be placed before any middle that needs access to the context!
   //       See https://www.npmjs.com/package/express-http-context.
@@ -104,7 +104,7 @@ try {
 
     next()
   })
-  app.use(errorHandler)
+  // app.use(errorHandler)
   // Create and configure an Apollo Server.
   const apolloServer = new ApolloServer({
     typeDefs,
@@ -120,46 +120,55 @@ try {
      * @returns {object} - The context object.
      */
     context: ({ req }) => {
-      const user = verifyToken(req)
-      return { user }
+      try {
+        const user = verifyToken(req)
+        return { user }
+      } catch (err) {
+        logger.warn('Invalid token', { error: err })
+        throw err // Apollo Server will handle the error
+      }
     }
+    // context: ({ req }) => {
+    //   const user = verifyToken(req)
+    //   return { user }
+    // }
   })
   // Start the Apollo Server asynchronously and apply the middleware.
   await apolloServer.start()
   apolloServer.applyMiddleware({ app, path: '/graphql' })
 
-  app.use((err, req, res, next) => {
-    logger.error(err.message, { error: err })
+  // app.use((err, req, res, next) => {
+  //   logger.error(err.message, { error: err })
 
-    if (process.env.NODE_ENV === 'production') {
-      // Ensure a valid status code is set for the error.
-      // If the status code is not provided, default to 500 (Internal Server Error).
-      // This prevents leakage of sensitive error details to the client.
-      if (!err.status) {
-        err.status = 500
-        err.message = http.STATUS_CODES[err.status]
-      }
+  //   if (process.env.NODE_ENV === 'production') {
+  //     // Ensure a valid status code is set for the error.
+  //     // If the status code is not provided, default to 500 (Internal Server Error).
+  //     // This prevents leakage of sensitive error details to the client.
+  //     if (!err.status) {
+  //       err.status = 500
+  //       err.message = http.STATUS_CODES[err.status]
+  //     }
 
-      // Send only the error message and status code to prevent leakage of
-      // sensitive information.
-      res.status(err.status).json({
-        error: err.message
-      })
+  //     // Send only the error message and status code to prevent leakage of
+  //     // sensitive information.
+  //     res.status(err.status).json({
+  //       error: err.message
+  //     })
 
-      return
-    }
+  //     return
+  //   }
 
-    // ---------------------------------------------------
-    // ⚠️ WARNING: Development Environment Only!
-    //             Detailed error information is provided.
-    // ---------------------------------------------------
+  //   // ---------------------------------------------------
+  //   // ⚠️ WARNING: Development Environment Only!
+  //   //             Detailed error information is provided.
+  //   // ---------------------------------------------------
 
-    // Deep copies the error object and returns a new object with
-    // enumerable and non-enumerable properties (cyclical structures are handled).
-    const copy = JSON.decycle(err, { includeNonEnumerableProperties: true })
+  //   // Deep copies the error object and returns a new object with
+  //   // enumerable and non-enumerable properties (cyclical structures are handled).
+  //   const copy = JSON.decycle(err, { includeNonEnumerableProperties: true })
 
-    return res.status(err.status || 500).json(copy)
-  })
+  //   return res.status(err.status || 500).json(copy)
+  // })
 
   // Starts the HTTP server listening for connections.
   const server = app.listen(process.env.NODEJS_EXPRESS_PORT, () => {
