@@ -18,7 +18,7 @@ export class CheckDataService {
    * @returns {Promise<object>} - The response data from the API.
    */
   static async fetchData (endpoint, params) {
-    const client = CheckDataClientFactory.createDataClient()
+    const client = CheckDataClientFactory.createGraphQLApiClient()
     try {
       const response = await client.get(endpoint, { params })
       return response.data

@@ -18,7 +18,7 @@ export class CheckDataClientFactory {
    *
    * @returns {object} - A configured axios instance.
    */
-  static createProductionGraphQLApiClient () {
+  static createGraphQLApiClient () {
     return axios.create({
       baseURL: process.env.PRODUCTION_GRAPHQL_API || 'https://cscloud6-136.lnu.se/graphql-api',
       headers: {
