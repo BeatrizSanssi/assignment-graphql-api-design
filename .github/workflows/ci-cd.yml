@@ -112,7 +112,7 @@ jobs:
           uses: actions/checkout@v3
   
         - name: Run CheckDataService test
-          run: node tests/scripts/check-data.js
+          run: node src/scripts/check-data.js
 
         - name: Install Newman
           run: npm install -g newman
