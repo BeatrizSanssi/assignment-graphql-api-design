@@ -15,6 +15,7 @@ export class RatingController {
    * Get all ratings.
    *
    * @returns {Promise<object[]>} List with ratings.
+   * @throws {ApolloError} If no ratings are found.
    */
   static async getAllRatings () {
     const ratings = await RatingModel.find()
@@ -24,7 +25,6 @@ export class RatingController {
     }
 
     return ratings
-    // return await RatingModel.find()
   }
 
   /**
@@ -32,6 +32,7 @@ export class RatingController {
    *
    * @param {string} movieId - The movies id.
    * @returns {Promise<object[]>} List with ratings.
+   * @throws {ApolloError} If no ratings are found or if the movie ID is invalid.
    */
   static async getRatingsByMovieId (movieId) {
     console.log('Looking for ratings with movieId:', movieId)
@@ -46,6 +47,5 @@ export class RatingController {
     }
 
     return ratings
-    // return await RatingModel.find({ movieId: Number(movieId) })
   }
 }

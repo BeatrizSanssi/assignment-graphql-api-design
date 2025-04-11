@@ -5,7 +5,6 @@
  */
 
 import jwt from 'jsonwebtoken'
-// import { UnauthorizedError } from '../lib/errors/index.js'
 import { AuthenticationError } from 'apollo-server-errors'
 
 const JWT_SECRET = process.env.JWT_SECRET
@@ -15,6 +14,7 @@ const JWT_SECRET = process.env.JWT_SECRET
  *
  * @param {object} req - Express request object.
  * @returns {object|null} The decoded token if valid, otherwise null.
+ * @throws {AuthenticationError} If the token is invalid or expired.
  */
 export function verifyToken (req) {
   const authHeader = req.headers.authorization
@@ -27,8 +27,6 @@ export function verifyToken (req) {
       throw new AuthenticationError('Invalid or expired token')
     }
   }
-  //   return jwt.verify(token, process.env.JWT_SECRET)
-  // }
   return null // No token provided
 }
 
@@ -39,6 +37,7 @@ export function verifyToken (req) {
  * @param {object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  * @returns {void} Calls the next middleware function.
+ * @throws {AuthenticationError} If the token is invalid or expired.
  */
 export function authenticate (req, res, next) {
   const authHeader = req.headers.authorization
@@ -50,7 +49,6 @@ export function authenticate (req, res, next) {
     } catch (err) {
       console.error('Invalid token', err)
       return res.status(401).json({ error: 'Invalid or expired token' })
-      // return next(new UnauthorizedError('Invalid or expired session'))
     }
   }
   next()

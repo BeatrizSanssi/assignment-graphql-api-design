@@ -17,6 +17,7 @@ export class ActorController {
    *
    * @param {number} limit - The maximum number of actors to return.
    * @returns {Promise<object[]>} - A list of actors.
+   * @throws {ApolloError} - If no actors are found.
    */
   static async getAllActors (limit) {
     const query = ActorModel.find()
@@ -28,8 +29,6 @@ export class ActorController {
     }
 
     return actors
-    // return await query.exec()
-    // return await ActorModel.find({})
   }
 
   /**
@@ -37,6 +36,7 @@ export class ActorController {
    *
    * @param {string} movieId - The ID of the movie.
    * @returns {Promise<object>} - The actor.
+   * @throws {ApolloError} - If no actors are found for the movie.
    */
   static async getActorsByMovieId (movieId) {
     const actors = await ActorModel.find({ movies: movieId })
@@ -46,7 +46,6 @@ export class ActorController {
     }
 
     return actors
-    // return await ActorModel.find({ movies: movieId })
   }
 
   /**
@@ -54,6 +53,7 @@ export class ActorController {
    *
    * @param {Array<string>} ids - The IDs of the movies.
    * @returns {Promise<object[]>} - A list of movies.
+   * @throws {ApolloError} - If no movie IDs are provided or if no movies are found.
    */
   static async getMoviesByIds (ids) {
     if (!ids?.length) {
@@ -66,6 +66,5 @@ export class ActorController {
     }
 
     return movies
-    // return await MovieController.getMoviesByIds(ids)
   }
 }

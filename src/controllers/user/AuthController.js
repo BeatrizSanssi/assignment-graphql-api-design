@@ -7,7 +7,6 @@
 import { UserModel } from '../../models/UserModel.js'
 import { userController } from './UserController.js'
 import jwt from 'jsonwebtoken'
-import { UnauthorizedError } from '../../lib/errors/index.js'
 import { AuthenticationError, ApolloError } from 'apollo-server-errors'
 import dotenv from 'dotenv'
 dotenv.config()
@@ -23,6 +22,7 @@ export class AuthController {
    * @param {string} param0.email - The email of the user.
    * @param {string} param0.password - The password of the user.
    * @returns {Promise<object>} An object with the token, refresh token, and user data.
+   * @throws {ApolloError} If the login fails.
    */
   async loginUser ({ email, password }) {
     try {
@@ -34,9 +34,7 @@ export class AuthController {
       if (!user) {
         throw new ApolloError('User not found after login', 'USER_NOT_FOUND', { email })
       }
-      // if (!user) {
-      //   throw new UnauthorizedError('User not found after login')
-      // }
+
       return { token, refreshToken, user: { id: user._id.toString(), email: user.email } }
     } catch (err) {
       // If the error is an instance of AuthenticationError or has the code 'UNAUTHENTICATED', rethrow it
@@ -52,12 +50,11 @@ export class AuthController {
    *
    * @param {string} token - The refresh token.
    * @returns {Promise<object>} An object with the new access token, the old refresh token, and the user.
-   * @throws {UnauthorizedError} If the token is invalid.
+   * @throws {ApolloError} If the refresh token is invalid or expired.
    */
   async refreshToken (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET)
-      // const newAccessToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, { expiresIn: '15m' })
       const user = await UserModel.findById(decoded.id)
       if (!user) {
         throw new ApolloError('User not found', 'USER_NOT_FOUND', { id: decoded.id })
@@ -75,7 +72,7 @@ export class AuthController {
    *
    * @param {string} refreshToken - The refresh token.
    * @returns {Promise<object>} An object with the new access token.
-   * @throws {UnauthorizedError} If the token is invalid or user is not found.
+   * @throws {ApolloError} If the refresh token is invalid or expired.
    */
   async refreshAccessToken (refreshToken) {
     try {
@@ -84,14 +81,12 @@ export class AuthController {
 
       if (!user) {
         throw new ApolloError('User not found', 'USER_NOT_FOUND', { id: payload.id })
-        // throw new UnauthorizedError('User not found')
       }
 
       const newToken = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' })
       return { token: newToken }
     } catch (err) {
       throw new AuthenticationError('Invalid or expired refresh token')
-      // throw new UnauthorizedError('Invalid refresh token')
     }
   }
 }

@@ -16,6 +16,7 @@ export class MovieController {
    *
    * @param {object} args - Arguments for filtering the movies.
    * @returns {Promise<object[]>} - A list of movies.
+   * @throws {ApolloError} - If no movies are found.
    */
   static async getMovies (args) {
     const filter = {}
@@ -29,7 +30,8 @@ export class MovieController {
    * Get a movie by its ID.
    *
    * @param {string} id - The ID of the movie to fetch.
-   * @returns {Promise<object>} - The
+   * @returns {Promise<object>} - The movie.
+   * @throws {ApolloError} - If the movie is not found.
    */
   static async getMovieById (id) {
     let movie = null
@@ -51,6 +53,7 @@ export class MovieController {
    *
    * @param {Array<string>} ids - The IDs of the movies.
    * @returns {Promise<object[]>} - A list of movies.
+   * @throws {ApolloError} - If no movie IDs are provided.
    */
   static async getMoviesByIds (ids) {
     return await MovieModel.find({ id: { $in: ids } })
@@ -88,7 +91,6 @@ export class MovieController {
       throw new ApolloError('Movie not found', 'MOVIE_NOT_FOUND', { id })
     }
     return updatedMovie
-    // return await MovieModel.findByIdAndUpdate(id, updateData, { new: true })
   }
 
   /**
@@ -107,12 +109,6 @@ export class MovieController {
     if (!movie) {
       throw new ApolloError('Movie not found', 'MOVIE_NOT_FOUND', { id })
     }
-    // if (!movie) {
-    //   return {
-    //     deletedMovie: null,
-    //     message: 'Movie already deleted or does not exist in the database.'
-    //   }
-    // }
 
     await MovieModel.deleteOne({ _id: id })
 
