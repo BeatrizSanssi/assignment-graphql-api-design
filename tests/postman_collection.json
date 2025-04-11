@@ -320,7 +320,7 @@
 							"",
 							"pm.test(\"Should fail without token\", () => {",
 							"  pm.expect(jsonData.errors).to.be.an(\"array\");",
-							"  pm.expect(jsonData.errors[0].message).to.include(\"Unauthorized\");",
+							"  pm.expect(jsonData.errors[0].message).to.include(\"Invalid or expired refresh token\");",
 							"});"
 						],
 						"type": "text/javascript",
@@ -720,7 +720,7 @@
 							"",
 							"pm.test(\"Unauthorized error returned\", () => {",
 							"  pm.expect(jsonData.errors).to.be.an(\"array\");",
-							"  pm.expect(jsonData.errors[0].message).to.include(\"Unauthorized\");",
+							"  pm.expect(jsonData.errors[0].message).to.include(\"Invalid or expired refresh token\");",
 							"});"
 						],
 						"type": "text/javascript",
