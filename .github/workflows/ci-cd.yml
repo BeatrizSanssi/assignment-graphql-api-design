@@ -110,12 +110,12 @@ jobs:
       steps:
         - name: Checkout repo
           uses: actions/checkout@v3
-  
-        - name: Run CheckDataService test
-          run: node src/scripts/check-data.js
 
         - name: Install Newman
           run: npm install -g newman
+
+        - name: Run CheckDataService test
+          run: node src/scripts/check-data.js
         
         - name: Run Postman tests
           run: |
