@@ -10,8 +10,8 @@ import { CheckDataService } from '../services/CheckDataService.js'
  */
 async function runCheck () {
   try {
-    const data = await CheckDataService.fetchData('/graphql', { id: 123 })
-    console.log('Data fetched:', data)
+    const data = await CheckDataService.fetchData()
+    console.log('Data fetched:', JSON.stringify(data, null, 2))
   } catch (err) {
     console.error('Check failed:', err.message)
   }

@@ -20,7 +20,16 @@ export class CheckDataService {
   static async fetchData (endpoint, params) {
     const client = CheckDataClientFactory.createGraphQLApiClient()
     try {
-      const response = await client.get(endpoint, { params })
+      const response = await client.post('/graphql', {
+        query: `
+        query {
+          movies {
+            id
+            title
+          }
+        }
+      `
+      })
       return response.data
     } catch (error) {
       console.error('Error fetching data:', error.message)
