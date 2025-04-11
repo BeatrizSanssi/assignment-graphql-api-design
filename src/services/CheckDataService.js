@@ -4,7 +4,7 @@
  * @author Beatriz Sanssi <bs222eh@student.lnu.se>
  */
 
-import { CheckDataClientFactory } from '../utils/CheckDataClientFactory'
+import { CheckDataClientFactory } from '../utils/CheckDataClientFactory.js'
 
 /**
  * Service for interacting with the GraphQL API.
