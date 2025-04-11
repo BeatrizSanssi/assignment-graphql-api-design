@@ -3,7 +3,7 @@
  * @module check-data
  * @author Beatriz Sanssi <bs222eh@student.lnu.se>
  */
-import { CheckDataService } from '../services/CheckDataService.js'
+import { CheckDataService } from './services/CheckDataService.js'
 
 /**
  * Checks if the data is present in the database.
