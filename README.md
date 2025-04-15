@@ -65,8 +65,13 @@ This project is a GraphQL-based API designed for managing and retrieving movie d
 ### Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd <project-directory>
+git clone git@github.com:BeatrizSanssi/assignment-graphql-api-design.git
+```
+
+### Navigate to the project directory
+
+```bash
+cd assignment-graphql-api-design
 ```
 
 ### Install Dependencies
@@ -77,21 +82,21 @@ npm install
 
 ## Configuration
 
-Create a `.env` file in the project root with the following variables (adjust values as needed):
-
-```env
-MONGO_USER=yourMongoUsername
-MONGO_PASSWORD=yourMongoPassword
-JWT_SECRET=yourJWTSecret
-NODEJS_EXPRESS_PORT=8081
-DB_CONNECTION_STRING=mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/movieDB?authSource=admin
-CSV_FILE_PATH=./path/to/movies_metadata.csv
-ACTORS_CSV_PATH=./path/to/credits.csv
-RATINGS_CSV_PATH=./path/to/ratings_small.csv
-````
+Create a `.env` file in the project root based on the variables in `.env.example`.
 
 ## Database Seeding
 
+**Step 1:**
+Download the required CSV files from [this Kaggle dataset](https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset):
+
+- `movies_metadata.csv`
+- `credits.csv`
+- `ratings_small.csv`
+
+**Step 2:**
+Place the csv files in the empty existing folder `archive`
+
+**Step 3:**
 Populate your MongoDB database with sample movie, actor, and rating data by running the seed script:
 
 ```bash
@@ -117,7 +122,9 @@ The API will run on the port specified in your .env (e.g., <http://localhost:808
 
 To run the application along with a MongoDB container:
 
+```bash
 docker-compose up --build
+```
 
 This command starts both the API and MongoDB according to the settings in `docker-compose.yml`.  
 *(See `docker-compose.yml`)*
@@ -133,8 +140,29 @@ This project includes a comprehensive set of automated tests using Postman. The 
 
 **Test Files:**
 
-- **Postman Collection:** `collection3.json`
-- **Postman Environment:** `environment1.json`
+- **Postman Collection:** `tests/postman_collection.json`
+- **Postman Environment:** `tests/postman_environment.json`
+
+### Run tests with Postman
+
+- Open the folder `tests`in the repository
+- Import the collection file and the environment file to Postman
+- Choose the `GraphQL-Env` environment
+- Open the collection and run the tests
+
+### Run tests via Newman (CLI)
+
+#### Install Newman
+
+```bash
+npm install -g newman
+```
+
+#### Run the tests
+
+```bash
+newman run tests/postman_collection.json -e tests/postman_environment.json
+```
 
 Tests can be executed manually in Postman or integrated into a CI/CD pipeline using Newman.
 
@@ -142,7 +170,7 @@ Tests can be executed manually in Postman or integrated into a CI/CD pipeline us
 
 All GraphQL operations are available at:
 
-<http://localhost:8081/graphql>
+[<https://cscloud6-136.lnu.se/graphql-api>](https://cscloud6-136.lnu.se/graphql-api)
 
 You can use GraphQL Playground (integrated via Apollo Server) to explore and test queries and mutations.
 

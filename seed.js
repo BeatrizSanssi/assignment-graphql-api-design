@@ -16,7 +16,6 @@ dotenv.config()
 console.log('Seeding MOVIES_CSV_PATH =', process.env.MOVIES_CSV_PATH)
 console.log('Seeding RATINGS_CSV_PATH =', process.env.RATINGS_CSV_PATH)
 console.log('Seeding ACTORS_CSV_PATH =', process.env.ACTORS_CSV_PATH)
-console.log('Seeding LINKS_CSV_PATH =', process.env.LINKS_CSV_PATH)
 
 /**
  * Parses a CSV file and returns an array of objects.
