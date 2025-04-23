@@ -9,7 +9,7 @@ services:
     container_name: graphql-api
     image: bsan89/assignment-api-design:latest
     ports: 
-     - "8085:8081"
+     - "8081:8081"
     environment: 
       - NODEJS_EXPRESS_PORT=8081
       - MOVIES_CSV_PATH=/app/archive/movies_metadata.csv
