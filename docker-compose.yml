@@ -34,7 +34,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
       MONGO_INITDB_DATABASE: graphql-api-db
     ports:
-      - "27017:27017"
+      - "27018:27017"
     env_file:
       - .env
     volumes:
