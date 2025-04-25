@@ -561,14 +561,7 @@
 							"pm.test(\"Movie object is returned\", () => {",
 							"    pm.expect(jsonData.data.movie).to.be.an(\"object\");",
 							"});",
-							"",
-							"const movie = jsonData.data.movie;",
-							"if (movie.ratings && movie.ratings.length > 0) {",
-							"  pm.environment.set(\"ratingId\", movie.id);",
-							"  console.log(\"ratingId set to:\", movie.id);",
-							"} else {",
-							"  console.log(\"Skipping ratingId set, movie has no ratings\");",
-							"}"
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -1047,7 +1040,7 @@
 							"console.log(\"Random movie raiting selected:\", randomRating);",
 							"",
 							"// Add the movieId to the environment variables",
-							"pm.environment.set(\"ratingId\", randomRating.movieIid);",
+							"pm.environment.set(\"ratingId\", randomRating.movieId);",
 							""
 						],
 						"type": "text/javascript",
