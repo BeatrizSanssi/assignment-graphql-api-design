@@ -202,7 +202,7 @@ export async function seed () {
       const rating = parseFloat(row.rating)
 
       // Keep all ratings, even if the movieId is not in the database
-      if (isNaN(movieId) || isNaN(userId) || isNaN(rating)) {
+      if (isNaN(originalMovieId) || isNaN(userId) || isNaN(rating)) {
         console.warn('Invalid rating row:', row)
         return null
       }
@@ -214,7 +214,7 @@ export async function seed () {
       }
 
       // Skip duplicates
-       const key = `${tmdbId}-${userId}`
+      const key = `${tmdbId}-${userId}`
       if (ratingSeed.has(key)) return null
       ratingSeed.add(key)
 
