@@ -92,6 +92,7 @@ Download the required CSV files from [this Kaggle dataset](https://www.kaggle.co
 - `movies_metadata.csv`
 - `credits.csv`
 - `ratings_small.csv`
+- `links_small.csv`
 
 **Step 2:**
 Place the csv files in the empty existing folder `archive`
