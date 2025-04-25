@@ -781,237 +781,6 @@
 			"response": []
 		},
 		{
-			"name": "updateMovie (Success)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
-							"const jsonData = pm.response.json();",
-							"pm.test(\"No errors in response\", () => {",
-							"    pm.expect(jsonData.errors).to.be.undefined;",
-							"});",
-							"pm.test(\"UpdateMovie mutation returned a result\", () => {",
-							"  pm.expect(jsonData.data.updateMovie.title).to.eql(\"Updated Title\");",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"const movieId = pm.environment.get(\"movieId\");",
-							"console.log(\"randomMovieId in pre-request:\", movieId)",
-							"",
-							"function tokenIsExpired() {",
-							"  const expiry = parseInt(pm.environment.get(\"tokenExpiry\") || \"0\", 10);",
-							"  return Date.now() > expiry;",
-							"}"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{authToken}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "graphql",
-					"graphql": {
-						"query": "mutation UpdateMovie($id: ID!) {\n  updateMovie(id: $id, title: \"Updated Title\") {\n    id\n    title\n    genre\n    release_date\n    description\n  }\n}",
-						"variables": "{\n  \"id\": \"{{movieId}}\"\n}"
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/graphql",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"graphql"
-					]
-				},
-				"description": "### updateMovie (Success)\n\nThis test ensures that an existing movie can be updated when a valid movie ID and authorization token are provided.\n\n**Expected Result:**\n\n- Status code should be **200 OK**.\n    \n- Response should **not contain errors**.\n    \n- updateMovie should return the updated movie object.\n    \n- The movie title should match the newly provided value."
-			},
-			"response": []
-		},
-		{
-			"name": "updateMovie (Failure)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
-							"const jsonData = pm.response.json();",
-							"pm.test(\"Error returned for unauthorized update\", () => {",
-							"    pm.expect(jsonData.errors).to.be.an(\"array\");",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "graphql",
-					"graphql": {
-						"query": "mutation {\n  updateMovie(\n    id: \"{{movieObjectId}}\",\n    title: \"Should Not Update\"\n  ) {\n    id\n    title\n  }\n}",
-						"variables": ""
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/graphql",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"graphql"
-					]
-				},
-				"description": "### updateMovie (Failure)\n\nThis test verifies that an attempt to update a movie **without a valid token** results in an appropriate error response from the API.\n\n**Expected Result:**\n\n- Server should respond with **status 200 or 400** depending on GraphQL setup.\n    \n- Response should contain an errors array indicating an Unauthorized error.\n    \n- No movie object should be returned in the data field."
-			},
-			"response": []
-		},
-		{
-			"name": "deleteMovie (Success)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", () => {",
-							"  pm.response.to.have.status(200);",
-							"});",
-							"",
-							"const jsonData = pm.response.json();",
-							"const result = jsonData.data.deleteMovie;",
-							"",
-							"pm.test(\"deleteMovie response structure is valid\", () => {",
-							"  pm.expect(result).to.be.an(\"object\");",
-							"  pm.expect(result).to.have.property(\"message\");",
-							"});",
-							"",
-							"pm.test(\"deleteMovie returns success message\", () => {",
-							"  pm.expect(result.message).to.match(/deleted|does not exist/i);",
-							"});",
-							"",
-							"if (result.deletedMovie) {",
-							"  pm.test(\"Deleted movie object is returned\", () => {",
-							"    pm.expect(result.deletedMovie).to.be.an(\"object\");",
-							"    pm.expect(result.deletedMovie).to.have.property(\"title\");",
-							"  });",
-							"} else {",
-							"  pm.test(\"No movie returned because it was already gone\", () => {",
-							"    pm.expect(result.deletedMovie).to.be.null;",
-							"  });",
-							"}"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"function tokenIsExpired() {",
-							"  const expiry = parseInt(pm.environment.get(\"tokenExpiry\") || \"0\", 10);",
-							"  return Date.now() > expiry;",
-							"}"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{authToken}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "graphql",
-					"graphql": {
-						"query": "mutation DeleteMovie($id: ID!) {\n  deleteMovie(id: $id) {\n    deletedMovie {\n      id\n      title\n      genre\n      release_date\n      description\n    }\n    message\n  }\n}",
-						"variables": "{\n  \"id\": \"{{movieId}}\"\n}"
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/graphql",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"graphql"
-					]
-				},
-				"description": "### deleteMovie (Success)\n\nThis test confirms that a movie can be successfully deleted from the database when a valid movie ID and authentication token are provided.\n\n**Expected Result:**\n\n- The server should respond with **status code 200 OK**.\n    \n- The response body should include a message string indicating the outcome:\n    \n    - Either that the movie was successfully deleted.\n        \n    - Or that the movie did not exist (if deleted earlier).\n        \n- If the movie existed:\n    \n    - A deletedMovie object should be returned with full movie details (e.g. title).\n        \n- If the movie did not exist:\n    \n    - deletedMovie should be null."
-			},
-			"response": []
-		},
-		{
-			"name": "deleteMovie (Failure)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200 or 400\", () => {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 400]);",
-							"});",
-							"const jsonData = pm.response.json();",
-							"pm.test(\"Error returned due to missing authentication\", () => {",
-							"    pm.expect(jsonData.errors).to.be.an(\"array\");",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "graphql",
-					"graphql": {
-						"query": "mutation {\n  deleteMovie(id: \"{{movieId}}\") {\n    id\n    title\n  }\n}",
-						"variables": ""
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/graphql",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"graphql"
-					]
-				},
-				"description": "### deleteMovie (Failure)\n\nThis test ensures the API prevents movie deletion when the request is unauthenticated or token is invalid.\n\n**Expected Result:**\n\n- The server should respond with **status 200** and a GraphQL errors array.\n    \n- The error message should indicate **missing or invalid authentication**.\n    \n- No movie object should be returned in the data field."
-			},
-			"response": []
-		},
-		{
 			"name": "ratings (Success)",
 			"event": [
 				{
@@ -1523,6 +1292,237 @@
 					]
 				},
 				"description": "### Nested Query Actors for movie (Failure)\n\nThis test ensures that the GraphQL server correctly handles invalid input types. The query passes an ObjectId string instead of the expected Int, which should cause a validation error.\n\n**Expected result**:\n\n- The errors array in the response must include:\n    \n    - A message indicating a **type mismatch**, e.g.:\"Int cannot represent non-integer value: \\\\\"67f6d69fc9fb79fe6d714d0b\\\\\"\"\n        \n    - The code inside extensions should be: \"BAD_USER_INPUT\""
+			},
+			"response": []
+		},
+		{
+			"name": "updateMovie (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+							"const jsonData = pm.response.json();",
+							"pm.test(\"No errors in response\", () => {",
+							"    pm.expect(jsonData.errors).to.be.undefined;",
+							"});",
+							"pm.test(\"UpdateMovie mutation returned a result\", () => {",
+							"  pm.expect(jsonData.data.updateMovie.title).to.eql(\"Updated Title\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const movieId = pm.environment.get(\"movieId\");",
+							"console.log(\"randomMovieId in pre-request:\", movieId)",
+							"",
+							"function tokenIsExpired() {",
+							"  const expiry = parseInt(pm.environment.get(\"tokenExpiry\") || \"0\", 10);",
+							"  return Date.now() > expiry;",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation UpdateMovie($id: ID!) {\n  updateMovie(id: $id, title: \"Updated Title\") {\n    id\n    title\n    genre\n    release_date\n    description\n  }\n}",
+						"variables": "{\n  \"id\": \"{{movieId}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/graphql",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "### updateMovie (Success)\n\nThis test ensures that an existing movie can be updated when a valid movie ID and authorization token are provided.\n\n**Expected Result:**\n\n- Status code should be **200 OK**.\n    \n- Response should **not contain errors**.\n    \n- updateMovie should return the updated movie object.\n    \n- The movie title should match the newly provided value."
+			},
+			"response": []
+		},
+		{
+			"name": "updateMovie (Failure)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
+							"const jsonData = pm.response.json();",
+							"pm.test(\"Error returned for unauthorized update\", () => {",
+							"    pm.expect(jsonData.errors).to.be.an(\"array\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  updateMovie(\n    id: \"{{movieObjectId}}\",\n    title: \"Should Not Update\"\n  ) {\n    id\n    title\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/graphql",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "### updateMovie (Failure)\n\nThis test verifies that an attempt to update a movie **without a valid token** results in an appropriate error response from the API.\n\n**Expected Result:**\n\n- Server should respond with **status 200 or 400** depending on GraphQL setup.\n    \n- Response should contain an errors array indicating an Unauthorized error.\n    \n- No movie object should be returned in the data field."
+			},
+			"response": []
+		},
+		{
+			"name": "deleteMovie (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const jsonData = pm.response.json();",
+							"const result = jsonData.data.deleteMovie;",
+							"",
+							"pm.test(\"deleteMovie response structure is valid\", () => {",
+							"  pm.expect(result).to.be.an(\"object\");",
+							"  pm.expect(result).to.have.property(\"message\");",
+							"});",
+							"",
+							"pm.test(\"deleteMovie returns success message\", () => {",
+							"  pm.expect(result.message).to.match(/deleted|does not exist/i);",
+							"});",
+							"",
+							"if (result.deletedMovie) {",
+							"  pm.test(\"Deleted movie object is returned\", () => {",
+							"    pm.expect(result.deletedMovie).to.be.an(\"object\");",
+							"    pm.expect(result.deletedMovie).to.have.property(\"title\");",
+							"  });",
+							"} else {",
+							"  pm.test(\"No movie returned because it was already gone\", () => {",
+							"    pm.expect(result.deletedMovie).to.be.null;",
+							"  });",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function tokenIsExpired() {",
+							"  const expiry = parseInt(pm.environment.get(\"tokenExpiry\") || \"0\", 10);",
+							"  return Date.now() > expiry;",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{authToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation DeleteMovie($id: ID!) {\n  deleteMovie(id: $id) {\n    deletedMovie {\n      id\n      title\n      genre\n      release_date\n      description\n    }\n    message\n  }\n}",
+						"variables": "{\n  \"id\": \"{{movieId}}\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/graphql",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "### deleteMovie (Success)\n\nThis test confirms that a movie can be successfully deleted from the database when a valid movie ID and authentication token are provided.\n\n**Expected Result:**\n\n- The server should respond with **status code 200 OK**.\n    \n- The response body should include a message string indicating the outcome:\n    \n    - Either that the movie was successfully deleted.\n        \n    - Or that the movie did not exist (if deleted earlier).\n        \n- If the movie existed:\n    \n    - A deletedMovie object should be returned with full movie details (e.g. title).\n        \n- If the movie did not exist:\n    \n    - deletedMovie should be null."
+			},
+			"response": []
+		},
+		{
+			"name": "deleteMovie (Failure)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 400\", () => {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 400]);",
+							"});",
+							"const jsonData = pm.response.json();",
+							"pm.test(\"Error returned due to missing authentication\", () => {",
+							"    pm.expect(jsonData.errors).to.be.an(\"array\");",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation {\n  deleteMovie(id: \"{{movieId}}\") {\n    id\n    title\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/graphql",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"graphql"
+					]
+				},
+				"description": "### deleteMovie (Failure)\n\nThis test ensures the API prevents movie deletion when the request is unauthenticated or token is invalid.\n\n**Expected Result:**\n\n- The server should respond with **status 200** and a GraphQL errors array.\n    \n- The error message should indicate **missing or invalid authentication**.\n    \n- No movie object should be returned in the data field."
 			},
 			"response": []
 		}
