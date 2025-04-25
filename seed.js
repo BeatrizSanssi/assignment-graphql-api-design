@@ -16,6 +16,7 @@ dotenv.config()
 console.log('Seeding MOVIES_CSV_PATH =', process.env.MOVIES_CSV_PATH)
 console.log('Seeding RATINGS_CSV_PATH =', process.env.RATINGS_CSV_PATH)
 console.log('Seeding ACTORS_CSV_PATH =', process.env.ACTORS_CSV_PATH)
+console.log('Seeding LINKS_CSV_PATH =', process.env.LINKS_CSV_PATH)
 
 /**
  * Parses a CSV file and returns an array of objects.
@@ -184,10 +185,19 @@ export async function seed () {
     // 4. PARSE & SEED ACTORS (from credits.csv)
     await seedActors()
 
-    // 5. PARSE & SEED RATINGS
+    // 5. PARSE LINKS TO MAP RATINGS TO MOVIES
+    const links = await parseCSV(process.env.LINKS_CSV_PATH, (row) => row)
+    const movieIdMap = new Map()
+    for (const row of links) {
+      if (row.movieId && row.tmdbId) {
+        movieIdMap.set(parseInt(row.movieId), parseInt(row.tmdbId))
+      }
+    }
+    // 6. PARSE & SEED RATINGS
     const ratingSeed = new Set()
     const ratings = await parseCSV(process.env.RATINGS_CSV_PATH, (row) => {
-      const movieId = parseInt(row.movieId)
+      const originalMovieId = parseInt(row.movieId)
+      const tmdbId = movieIdMap.get(originalMovieId)
       const userId = parseInt(row.userId)
       const rating = parseFloat(row.rating)
 
@@ -197,8 +207,14 @@ export async function seed () {
         return null
       }
 
+      // Check if the movieId is in the database
+      if (!tmdbId) {
+        console.warn('No TMDB ID mapping for rating movieId:', originalMovieId)
+        return null
+      }
+
       // Skip duplicates
-      const key = `${movieId}-${userId}`
+       const key = `${tmdbId}-${userId}`
       if (ratingSeed.has(key)) return null
       ratingSeed.add(key)
 
@@ -206,7 +222,7 @@ export async function seed () {
       return {
         userId,
         rating,
-        movieId
+        movieId: tmdbId
       }
     })
     await RatingModel.deleteMany({})
