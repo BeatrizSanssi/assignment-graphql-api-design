@@ -137,10 +137,6 @@ jobs:
               --folder "movie (Failure)" \
               --folder "addMovie (Success)" \
               --folder "addMovie (Failure)" \
-              --folder "updateMovie (Success)" \
-              --folder "updateMovie (Failure)" \
-              --folder "deleteMovie (Success)" \
-              --folder "deleteMovie (Failure)" \
               --folder "ratings (Success)" \
               --folder "ratings (Failure)" \
               --folder "actors (Success)" \
@@ -149,5 +145,9 @@ jobs:
               --folder "Nested Query (Failure)" \
               --folder "Nested Query Actors for movie (Success)" \
               --folder "Nested Query Actors for movie (Failure)" \
+              --folder "updateMovie (Success)" \
+              --folder "updateMovie (Failure)" \
+              --folder "deleteMovie (Success)" \
+              --folder "deleteMovie (Failure)" \
               --delay-request 1000
     
