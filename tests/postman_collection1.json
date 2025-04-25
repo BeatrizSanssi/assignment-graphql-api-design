@@ -149,10 +149,7 @@
 							"",
 							"// Optionally, save the tokens for later use:",
 							"pm.environment.set(\"authToken\", jsonData.data.loginUser.token);",
-							"pm.environment.set(\"refreshToken\", jsonData.data.loginUser.refreshToken);",
-							"",
-							"const expiryTimestamp = Date.now() + 3600 * 1000;",
-							"pm.environment.set(\"tokenExpiry\", expiryTimestamp);"
+							"pm.environment.set(\"refreshToken\", jsonData.data.loginUser.refreshToken);"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -263,10 +260,7 @@
 							"});",
 							"// Save the new tokens for later use",
 							"pm.environment.set(\"authToken\", jsonData.data.refreshToken.token);",
-							"pm.environment.set(\"refreshToken\", jsonData.data.refreshToken.refreshToken);",
-							"",
-							"const expiryTimestamp = Date.now() + 3600 * 1000;",
-							"pm.environment.set(\"tokenExpiry\", expiryTimestamp);"
+							"pm.environment.set(\"refreshToken\", jsonData.data.refreshToken.refreshToken);"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -376,19 +370,6 @@
 							"pm.test(\"User is deleted\", () => {",
 							"  pm.expect(jsonData.data.deleteUser).to.have.property(\"id\");",
 							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"function tokenIsExpired() {",
-							"  const expiry = parseInt(pm.environment.get(\"tokenExpiry\") || \"0\", 10);",
-							"  return Date.now() > expiry;",
-							"}"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -688,16 +669,7 @@
 							"const generatedId = Math.floor(Math.random() * 1000000) + 900000;",
 							"",
 							"// Save the generated id in environment variable",
-							"pm.environment.set(\"generatedMovieId\", generatedId);",
-							"",
-							"if (!pm.environment.get(\"authToken\") || tokenIsExpired()) {",
-							"  postman.setNextRequest(\"refreshToken (Success)\");",
-							"}",
-							"",
-							"function tokenIsExpired() {",
-							"  const expiry = parseInt(pm.environment.get(\"tokenExpiry\") || \"0\", 10);",
-							"  return Date.now() > expiry;",
-							"}"
+							"pm.environment.set(\"generatedMovieId\", generatedId);"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -804,12 +776,7 @@
 					"script": {
 						"exec": [
 							"const movieId = pm.environment.get(\"movieId\");",
-							"console.log(\"randomMovieId in pre-request:\", movieId)",
-							"",
-							"function tokenIsExpired() {",
-							"  const expiry = parseInt(pm.environment.get(\"tokenExpiry\") || \"0\", 10);",
-							"  return Date.now() > expiry;",
-							"}"
+							"console.log(\"randomMovieId in pre-request:\", movieId)"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -923,19 +890,6 @@
 						"type": "text/javascript",
 						"packages": {}
 					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"function tokenIsExpired() {",
-							"  const expiry = parseInt(pm.environment.get(\"tokenExpiry\") || \"0\", 10);",
-							"  return Date.now() > expiry;",
-							"}"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
 				}
 			],
 			"request": {
@@ -1034,7 +988,7 @@
 							"});",
 							"",
 							"// Choose a random rating",
-							"const randomRating = ratings[Math.floor(Math.random() * ratings.length)];",
+							"const randomRating = jsonData.data.ratings[Math.floor(Math.random() * jsonData.data.ratings.length)];",
 							"console.log(\"Random movie raiting selected:\", randomRating);",
 							"",
 							"// Add the movieId to the environment variables for later use in other tests.",
@@ -1246,7 +1200,7 @@
 							"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));",
 							"const jsonData = pm.response.json();",
 							"",
-							"// Check if movie data is present and has expected fields",
+							"// Kontrollera om movie finns",
 							"if (jsonData.data && jsonData.data.movie) {",
 							"    const movie = jsonData.data.movie;",
 							"",
