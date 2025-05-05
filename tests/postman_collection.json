@@ -1043,7 +1043,8 @@
 							"const randomRating = jsonData.data.ratings[Math.floor(Math.random() * jsonData.data.ratings.length)];",
 							"console.log(\"Random movie raiting selected:\", randomRating);",
 							"",
-							"",
+							"// Add the movieId to the environment variables for later use in other tests.",
+							"pm.environment.set(\"ratingId\", randomRating.movieId);",
 							"",
 							""
 						],
