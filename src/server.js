@@ -100,20 +100,16 @@ try {
      * @param {*} param0 - The request object.
      * @returns {object} - The context object.
      */
-    context: ({ req }) => {
+    context: async ({ req }) => {
       try {
         const user = verifyToken(req)
         return { user }
       } catch (err) {
-        logger.warn('Invalid token', { error: err })
-        throw err // Apollo Server will handle the error
+        return { user: null } // Return null user if token verification fails
       }
     }
-    // context: ({ req }) => {
-    //   const user = verifyToken(req)
-    //   return { user }
-    // }
   })
+
   // Start the Apollo Server asynchronously and apply the middleware.
   await apolloServer.start()
   apolloServer.applyMiddleware({ app, path: '/graphql' })

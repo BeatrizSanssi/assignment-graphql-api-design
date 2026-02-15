@@ -1,7 +1,7 @@
 {
   "name": "assignment-api-design",
-  "version": "1.0.0",
-  "description": "Clearly state the name of your API project.",
+  "version": "1.0.1",
+  "description": "GraphQL API for managing movies, actors, and ratings with authentication and authorization.",
   "type": "module",
   "main": "src/server.js",
   "engines": {
@@ -24,7 +24,6 @@
     "@lnu/json-js-cycle": "^2.0.5",
     "apollo-server-express": "^3.13.0",
     "axios": "^1.8.4",
-    "bcrypt": "^5.1.1",
     "bcryptjs": "^3.0.2",
     "connect-mongo": "^5.1.0",
     "cookie-parser": "^1.4.7",

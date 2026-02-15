@@ -7,6 +7,7 @@
 import { MovieController } from '../controllers/movie/MovieController.js'
 import { ActorController } from '../controllers/movie/ActorController.js'
 import { RatingController } from '../controllers/movie/RatingController.js'
+import { requireAuth } from '../middleware/requireAuth.js'
 
 export default {
   Query: {
@@ -55,6 +56,7 @@ export default {
      * @returns {Promise<object>}  - The added movie.
      */
     addMovie: async (_, args, context) => {
+      requireAuth(context) // Ensure the user is authenticated
       return await MovieController.addMovie(args, context.user)
     },
     /**
@@ -66,6 +68,7 @@ export default {
      * @returns {Promise<object>} - The updated movie.
      */
     updateMovie: async (_, { id, ...updateData }, context) => {
+      requireAuth(context) // Ensure the user is authenticated
       return await MovieController.updateMovie(id, updateData, context.user)
     },
     /**
@@ -77,6 +80,7 @@ export default {
      * @returns {Promise<object>} - The deleted movie.
      */
     deleteMovie: async (_, { id }, context) => {
+      requireAuth(context) // Ensure the user is authenticated
       return await MovieController.deleteMovie(id, context.user)
     }
   },
